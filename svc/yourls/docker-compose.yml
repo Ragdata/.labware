@@ -1,0 +1,50 @@
+# name:
+# logo:
+# description:
+# category:
+# tags:
+# website:
+# docs:
+# repo:
+---
+services:
+  yourls:
+    image: yourls:latest
+    # security options optional - uncomment if required
+    # security_opt:
+    #   - apparmor:unconfined
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      YOURLS_SITE: ${YOURLS_SITE}
+      YOURLS_USER: ${YOURLS_USER}
+      YOURLS_PASS: ${YOURLS_PASS}
+      YOURLS_DB_HOST: mysql
+      YOURLS_DB_USER: yourls
+      YOURLS_DB_PASS: ${YOURLS_DB_PASS}
+      YOURLS_DB_NAME: yourls
+      YOURLS_DB_PREFIX: yourls_
+    ports:
+      - ${PORT:-8090}:8080
+    volumes:
+      # Mount only the user directory (for configs, plugins, themes)
+      - yourls-user-data:/var/www/html/user
+
+  mysql:
+    image: mysql:5.7
+    # security options optional - uncomment if required
+    # security_opt:
+    #   - apparmor:unconfined
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: yourls
+      MYSQL_USER: yourls
+      MYSQL_PASSWORD: ${YOURLS_DB_PASS}
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  yourls-user-data:
+  mysql-data:

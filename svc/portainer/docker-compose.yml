@@ -1,0 +1,100 @@
+services:
+
+    portainer-agent:
+        image: portainer/agent:alpine-sts
+        hostname: portainer-agent
+        container_name: portainer-agent
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            AGENT_CLUSTER_ADDR: tasks.portainer-agent
+        networks:
+            - portainer
+        ports:
+            - 9001:9001
+        volumes:
+            - /:/host
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+
+    portainer:
+        image: portainer/portainer-ce:alpine-sts
+        hostname: portainer
+        container_name: portainer
+        restart: unless-stopped
+        command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify
+        healthcheck:
+            test: ["CMD-SHELL", "wget --no-verbose --tries=3 --spider http://portainer:9000 || exit 1"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            VIRTUAL_HOST: ${VIRTUAL_HOST}
+            VIRTUAL_PORT: ${VIRTUAL_PORT}
+            VIRTUAL_PROTO: ${VIRTUAL_PROTO}
+        networks:
+            portainer:
+                ipv4_address: ${IPv4}
+        ports:
+            - 9000:9000
+            - 8000:8000
+        volumes:
+            - portainer-data:/data
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+
+    portainer-tools:
+        image: technorabilia/portainer-tools
+        hostname: portainer-tools
+        container_name: portainer-tools
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            PUID: 1000
+            PGID: 1000
+            SERVER_URL: ${TOOLS_URL}
+            PORTAINER_URL: ${PORTAINER_URL}
+            PORTAINER_USERNAME: ${PORTAINER_USERNAME}
+            PORTAINER_PASSWORD: ${PORTAINER_PASSWORD}
+        networks:
+            portainer:
+                ipv4_address: ${IPv4_TOOLS}
+        ports:
+            - 9999:9999
+        volumes:
+            - portainer-tools:/config
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+
+volumes:
+    portainer-data:
+        name: portainer-data
+        driver: local
+    portainer-tools:
+        name: portainer-tools
+        driver: local
+
+networks:
+    portainer:
+        name: portainer
+        driver: bridge
+        ipam:
+            config:
+                - subnet: ${SUBNET}
+                  gateway: ${GATEWAY}

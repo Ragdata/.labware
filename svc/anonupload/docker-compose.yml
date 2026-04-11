@@ -1,0 +1,23 @@
+# name: AnonUpload
+# description: Self-hosted anonymous file upload service compatible with anonfiles-style uploads.
+# category: file-sharing
+# tags: uploads, anonymous, file-sharing, web
+# website: https://github.com/supernova3339/anonfiles
+# docs: https://github.com/supernova3339/anonfiles#readme
+# repo: https://github.com/supernova3339/anonfiles
+---
+services:
+  anonupload:
+    image: ghcr.io/supernova3339/anonfiles:1
+    restart: unless-stopped
+    ports:
+      - 80
+    environment:
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - CONTACT_EMAIL=${CONTACT_EMAIL}
+    volumes:
+      - uploads:/var/www/html/uploads
+
+volumes:
+  uploads: {}

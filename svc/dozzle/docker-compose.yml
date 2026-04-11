@@ -1,0 +1,16 @@
+# name: Dozzle
+# description: Lightweight web-based log viewer for Docker containers.
+# category: monitoring
+# tags: logs,viewer,docker,ui
+# website: https://dozzle.dev
+# docs: https://github.com/amir20/dozzle#readme
+# repo: https://github.com/amir20/dozzle
+---
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    expose:
+      - 8080

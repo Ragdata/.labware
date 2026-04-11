@@ -1,0 +1,16 @@
+services:
+  whatsupdocker:
+    image: getwud/wud
+    hostname: wud
+    container_name: wud
+    restart: unless-stopped
+    ports:
+      - '${HOST_PORT}:3000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: UTC
+      WUD_SERVER_PORT: 3005
+      WUD_WATCHER_LOCAL_SOCKET: /var/run/docker.sock
+      WUD_WATCHER_LOCAL_WATCHALL: "true"
+#      WUD_WATCHER_MYREMOTEHOST1_HOST: 10.0.0.1

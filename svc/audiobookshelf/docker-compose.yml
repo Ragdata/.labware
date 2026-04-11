@@ -1,0 +1,24 @@
+# name: Audiobookshelf
+# description: Self-hosted audiobook and audio library server with web UI and mobile support.
+# category: media
+# tags: audiobooks, media-server, streaming, library
+# website: https://audiobookshelf.org
+# docs: https://github.com/advplyr/audiobookshelf#readme
+# repo: https://github.com/advplyr/audiobookshelf
+---
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:2.19.4
+    restart: unless-stopped
+    ports:
+      - 80
+    environment:
+      - TZ=UTC
+    volumes:
+      - config:/config
+      - metadata:/metadata
+      - ${AUDIOBOOKS_PATH}:/audiobooks
+
+volumes:
+  config: {}
+  metadata: {}

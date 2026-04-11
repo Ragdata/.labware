@@ -1,0 +1,22 @@
+# name: Chromium (linuxserver)
+# description: Containerized Chromium browser built by LinuxServer — useful for headless or GUI browser use in containers.
+# category: utilities
+# tags: chromium, browser, linuxserver, gui, headless
+# website: https://www.linuxserver.io
+# docs: https://docs.linuxserver.io/images/docker-chromium
+# repo: https://github.com/linuxserver/docker-chromium
+---
+services:
+  chromium:
+    image: lscr.io/linuxserver/chromium:5f5dd27e-ls102
+    ports:
+      - "3000"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - config:/config
+
+volumes:
+  config:

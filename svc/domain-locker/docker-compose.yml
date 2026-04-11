@@ -1,0 +1,87 @@
+# name: Domain Locker
+# description: Self-hosted domain monitoring and management service for tracking domains, expirations and DNS records.
+# category: domain-management
+# tags: domain,dns,monitoring,whois,expiry
+# website: https://domain-locker.com/
+# docs: https://domain-locker.com/about
+# repo: https://github.com/Lissy93/domain-locker
+---
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: locker-postgres
+    restart: unless-stopped
+    # security_opt:
+    #   - apparmor:unconfined
+    environment:
+      POSTGRES_DB: ${DL_PG_NAME:-domain_locker}
+      POSTGRES_USER: ${DL_PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
+    networks:
+      - locker
+    expose:
+      - "5432"
+    volumes:
+      - locker-postgres:/var/lib/postgresql/data
+      # - ./db/schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DL_PG_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    image: lissy93/domain-locker:latest
+    container_name: locker-app
+    restart: unless-stopped
+    # security_opt:
+    #   - apparmor:unconfined
+    environment:
+      NODE_ENV: "production"
+      DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
+      DL_PG_HOST: ${DL_PG_HOST:-postgres}
+      DL_PG_PORT: ${DL_PG_PORT:-5432}
+      DL_PG_USER: ${DL_PG_USER:-postgres}
+      DL_PG_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
+      DL_PG_NAME: ${DL_PG_NAME:-domain_locker}
+    networks:
+      locker:
+        ipv4_address: ${IPv4}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      - postgres
+
+  updater:
+    image: alpine:3.20
+    container_name: locker-updater
+    restart: unless-stopped
+    # security_opt:
+    #   - apparmor:unconfined
+    depends_on:
+      - app
+    networks:
+      - locker
+    command: >
+      /bin/sh -c "
+        apk update &&
+        apk add --no-cache curl &&
+        echo '0 3 * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-updater' > /etc/crontabs/root &&
+        echo '0 4 * * * /usr/bin/curl -s -X POST http://app:3000/api/expiration-reminders' >> /etc/crontabs/root &&
+        crond -f -L /dev/stdout
+      "
+
+volumes:
+  locker-postgres:
+    name: locker-postgres
+    driver: local
+
+networks:
+  locker:
+    name: locker
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${SUBNET}
+          gateway: ${GATEWAY}

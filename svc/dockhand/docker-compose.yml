@@ -1,0 +1,53 @@
+# name: Dockhand
+# description: Web-based Docker management UI for viewing and controlling containers, images and volumes.
+# category: container-management
+# tags: docker,ui,containers,management,postgres
+# website: https://github.com/fnsys/dockhand
+# docs: https://github.com/fnsys/dockhand#readme
+# repo: https://github.com/fnsys/dockhand
+---
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: dockhand-postgres
+    networks:
+      - dockhand
+    environment:
+      POSTGRES_USER: dockhand
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: dockhand
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  dockhand:
+    image: fnsys/dockhand:latest
+    container_name: dockhand
+    user: "0:0"
+    networks:
+      - dockhand
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://dockhand:${DB_PASSWORD}@postgres:5432/dockhand
+    volumes:
+      # Docker Socket
+      # - /var/run/docker.sock:/var/run/docker.sock
+      # Podman Socket
+      - /var/run/podman/podman.sock:/var/run/docker.sock
+      - dockhand-data:/app/data
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
+    name: postgres-data
+    driver: local
+  dockhand-data:
+    name: dockhand-data
+    driver: local
+
+networks:
+  dockhand:
+    name: dockhand
+    driver: bridge

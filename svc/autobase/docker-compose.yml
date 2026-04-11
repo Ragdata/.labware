@@ -1,0 +1,25 @@
+# name: Autobase Console
+# description: Web console for Autobase — Ansible-driven automation/ops console for managing playbooks and infrastructure.
+# category: automation
+# tags: automation, ansible, console, ops
+# website: https://github.com/autobase/console
+# docs: https://github.com/autobase/console#readme
+# repo: https://github.com/autobase/console
+---
+services:
+  autobase-console:
+    image: autobase/console:2.3.0
+    restart: unless-stopped
+    ports:
+      - "80"
+      - "8080"
+    environment:
+      - PG_CONSOLE_API_URL=${PG_CONSOLE_API_URL}
+      - PG_CONSOLE_AUTHORIZATION_TOKEN=${PG_CONSOLE_AUTHORIZATION_TOKEN}
+    volumes:
+      - console_postgres:/var/lib/postgresql
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/ansible:/tmp/ansible
+
+volumes:
+  console_postgres:

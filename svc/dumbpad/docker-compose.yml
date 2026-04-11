@@ -1,0 +1,19 @@
+# name: DumbPad
+# description: Lightweight self-hosted note/pad app for quick notes and pastes.
+# category: notes
+# tags: notes,paste,pad,web
+# website: https://hub.docker.com/r/dumbwareio/dumbpad
+# docs: https://hub.docker.com/r/dumbwareio/dumbpad
+# repo: https://github.com/dumbwareio/dumbpad
+---
+services:
+  dumbpad:
+    image: dumbwareio/dumbpad:latest
+    restart: unless-stopped
+    ports:
+      - 3000
+    volumes:
+      - dumbpad-data:/app/data
+
+volumes:
+  dumbpad-data: {}

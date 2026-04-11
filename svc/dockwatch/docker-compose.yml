@@ -1,0 +1,51 @@
+# name: Dockwatch
+# description: Monitor Docker containers and send notifications (Notifiarr Dockwatch).
+# category: monitoring
+# tags: docker,monitoring,notifications,notifiarr
+# website: https://notifiarr.com
+# docs: https://github.com/notifiarr/dockwatch#readme
+# repo: https://github.com/notifiarr/dockwatch
+---
+services:
+
+    dockwatch:
+        image: ghcr.io/notifiarr/dockwatch:main
+        hostname: dockwatch
+        container_name: dockwatch
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "curl --fail http://dockwatch:80 || exit 1"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        networks:
+            dockwatch:
+                ipv4_address: ${IPv4}
+        ports:
+            - ${HOST_PORT}:80/tcp
+        environment:
+            #-DOCKER_HOST=127.0.0.1:2375 # Uncomment and adjust accordingly if you use a socket proxy
+            - PUID=${PUID:-1000}
+            - PGID=${PGID:-1000}
+            - TZ=${TZ:-UTC}
+        volumes:
+            - dockwatch-config:/config
+            - /var/run/docker.sock:/var/run/docker.sock # Comment this line if you use a socket proxy
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+
+volumes:
+    dockwatch-config:
+        name: dockwatch-config
+        driver: local
+
+networks:
+    dockwatch:
+        name: dockwatch
+        driver: bridge
+        ipam:
+            config:
+                - subnet: ${SUBNET}
+                  gateway: ${GATEWAY}

@@ -1,0 +1,26 @@
+# name: Baby Buddy
+# description: Self-hosted baby tracking app for logging feeds, sleeps, diapers and milestones.
+# category: parenting
+# tags: baby, parenting, tracker, health, django
+# website: https://baby-buddy.org
+# docs: https://baby-buddy.readthedocs.io
+# repo: https://github.com/likemike/babybuddy
+---
+services:
+  babybuddy:
+    image: linuxserver/babybuddy:2.7.0
+    restart: unless-stopped
+    ports:
+      - 8000
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - CSRF_TRUSTED_ORIGINS=https://${DOMAIN}
+      - TIME_ZONE=${TIME_ZONE:-UTC}
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - config:/config
+
+volumes:
+  config: {}

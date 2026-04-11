@@ -1,0 +1,27 @@
+# name: AdGuard Home
+# description: Network-wide ads and trackers blocking DNS server with web UI.
+# category: network
+# tags: dns, ad-blocker, privacy, network
+# website: https://adguard.com
+# docs: https://github.com/AdguardTeam/AdGuardHome#readme
+# repo: https://github.com/AdguardTeam/AdGuardHome
+---
+services:
+  adguardhome:
+    image: adguard/adguardhome:latest
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp" # DNS
+      - "53:53/udp" # DNS
+      - "67:67/udp" # DHCP Server
+      - "68:68/tcp" # DHCP Client
+      - "853:853/tcp" # DNS over TLS, DNS-over-QUIC
+      - "853:853/udp" # DNS over TLS, DNS-over-QUIC
+      - "6060:6060/tcp" # HTTP (pprof)
+    volumes:
+      - adguardhome-work:/opt/adguardhome/work
+      - adguardhome-conf:/opt/adguardhome/conf
+
+volumes:
+  adguardhome-work: {}
+  adguardhome-conf: {}

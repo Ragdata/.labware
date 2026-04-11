@@ -1,0 +1,31 @@
+services:
+  flink:
+    image: 'quay.io/rtraceio/flink:latest'
+    container_name: flink
+    # security options optional - uncomment if required
+    # security_opt:
+    #   - apparmor:unconfined
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://flink:8080 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    networks:
+      - flink
+    ports:
+      - '${HOST_PORT:-8882}:8080'
+    volumes:
+      # Use only one or the other of these depending on whether you want to use a volume or a bind mount
+      # - 'flink-data:/app/flink_data'
+      - ${ROOTDIR}/data:/app/flink_data
+
+#volumes:
+#  flink-data:
+#    name: flink-data
+#    driver: local
+
+networks:
+  flink:
+    name: flink
+    driver: bridge

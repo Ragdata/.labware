@@ -1,0 +1,27 @@
+# name: Borgitory
+# description: Web UI for browsing and serving Borg backup repositories (requires FUSE).
+# category: backup
+# tags: borg, backups, fuse, storage
+# website: https://github.com/mlapaglia/borgitory
+# docs: https://github.com/mlapaglia/borgitory#readme
+# repo: https://github.com/mlapaglia/borgitory
+---
+services:
+  borgitory:
+    image: mlapaglia/borgitory:latest
+    restart: unless-stopped
+    expose:
+      - 8000
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse
+    volumes:
+      - borgitory-data:/app/data
+      - borgitory-sources:/mnt/sources:ro
+      - borgitory-repos:/mnt/repos:ro
+
+volumes:
+  borgitory-data: {}
+  borgitory-sources: {}
+  borgitory-repos: {}

@@ -1,0 +1,24 @@
+# name: CookieCloud
+# description: Cookie management and sharing service with a web API and persistent data storage.
+# category: utilities
+# tags: cookies, sharing, api, web, storage
+# website: https://github.com/easychen/cookiecloud
+# docs: https://github.com/easychen/cookiecloud#readme
+# repo: https://github.com/easychen/cookiecloud
+---
+services:
+  cookiecloud:
+    image: easychen/cookiecloud:latest
+    restart: unless-stopped
+    expose:
+      - 8088
+    volumes:
+      - cookiecloud-data:/data/api/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8088"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  cookiecloud-data: {}

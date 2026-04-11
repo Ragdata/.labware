@@ -1,0 +1,123 @@
+name: pangolin
+services:
+
+  pangolin:
+    image: docker.io/fosrl/pangolin:ee-latest
+    container_name: pangolin
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/"]
+      interval: "10s"
+      timeout: "10s"
+      retries: 15
+    networks:
+      - pangolin
+    volumes:
+      - ${ROOTDIR}/config:/app/config
+      - pangolin-data:/var/certificates
+      - pangolin-data:/var/dynamic
+
+
+  gerbil:
+    # image: docker.io/fosrl/gerbil:1.2.2
+    image: docker.io/fosrl/gerbil:latest
+    container_name: gerbil
+    restart: unless-stopped
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --reachableAt=http://gerbil:3004
+      - --generateAndSaveKeyTo=/var/config/key
+      - --remoteConfig=http://pangolin:3001/api/v1/
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    networks:
+      - pangolin
+    ports:
+      - "51820:51820/udp"
+      - "21820:21820/udp"
+      - "8080:8080"
+      - "443:8443"
+      - "80:80"
+    volumes:
+      - ${ROOTDIR}/config:/var/config
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --configFile=/etc/traefik/traefik_config.yml
+    network_mode: service:gerbil
+    environment:
+      TZ: Australia/Brisbane
+      CLOUDFLARE_DNS_API_TOKEN: ${CLOUDFLARE_TOKEN}
+    volumes:
+      - ${ROOTDIR}/config/traefik:/etc/traefik:ro
+      - ${ROOTDIR}/config/traefik/rules:/rules:ro
+      - ${ROOTDIR}/config/traefik/logs:/logs
+      - ${ROOTDIR}/config/traefik/letsencrypt:/letsencrypt
+      # Shared volume for certificates & dynamic config
+      - pangolin-data:/var/certificates:ro
+      - pangolin-data:/var/dynamic:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+
+
+  middleware-manager:
+    image: hhftechnology/middleware-manager:latest
+    container_name: middleware
+    environment:
+      PANGOLIN_API_URL: http://pangolin:3001/api/v1
+      TRAEFIK_CONF_DIR: /conf
+      DB_PATH: /data/middleware.db
+      PORT: 3456
+    networks:
+      - pangolin
+    ports:
+      - "3456:3456"
+    volumes:
+      - ${ROOTDIR}/data:/data
+      - ${ROOTDIR}/config/traefik/rules:/conf
+      - ${ROOTDIR}/config/middleware/templates.yaml:/app/config/templates.yaml  # Optional custom templates
+
+
+  geoipupdate:
+    image: ghcr.io/maxmind/geoipupdate
+    container_name: geoipupdate
+    restart: unless-stopped
+    environment:
+      GEOIPUPDATE_ACCOUNT_ID: ${MAXMIND_ID}
+      GEOIPUPDATE_LICENSE_KEY: ${MAXMIND_KEY}
+      GEOIPUPDATE_EDITION_IDS: GeoLite2-ASN GeoLite2-City GeoLite2-Country
+      GEOIPUPDATE_FREQUENCY: 72
+    networks:
+      - pangolin
+    volumes:
+      - ${ROOTDIR}/config/maxmind:/usr/share/GeoIP
+
+
+volumes:
+  pangolin-data:
+    name: pangolin-data
+    driver: local
+
+
+networks:
+  pangolin:
+    driver: bridge
+    name: pangolin
+    ipam:
+      config:
+        - subnet: ${SUBNET}
+          gateway: ${GATEWAY}
+

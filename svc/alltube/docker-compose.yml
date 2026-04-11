@@ -1,0 +1,19 @@
+# name: AllTube
+# description: Web UI for streaming, downloading and remuxing videos from various sources.
+# category: media
+# tags: video, streaming, downloader, remux
+# website: https://github.com/dnomd343/alltube
+# docs: https://github.com/dnomd343/alltube#readme
+# repo: https://github.com/dnomd343/alltube
+---
+services:
+  alltube:
+    image: dnomd343/alltube:latest
+    restart: unless-stopped
+    ports:
+      - 80
+    environment:
+      - TITLE=${TITLE}
+      - CONVERT=${CONVERT}
+      - STREAM=${STREAM}
+      - REMUX=${REMUX}

@@ -1,0 +1,20 @@
+# name: Atlas
+# description: Container that provides a lightweight host-level tooling/monitoring utility (runs in host network mode).
+# category: utilities
+# tags: monitoring, docker, host, tools
+# website: https://github.com/keinstien/atlas
+# docs: https://github.com/keinstien/atlas#readme
+# repo: https://github.com/keinstien/atlas
+---
+services:
+
+    atlas:
+        image: keinstien/atlas:latest
+        container_name: atlas
+        restart: unless-stopped
+        cap_add:
+            - NET_RAW
+            - NET_ADMIN
+        network_mode: host
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock

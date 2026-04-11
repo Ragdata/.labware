@@ -1,0 +1,23 @@
+# name: AnythingLLM
+# description: Local LLM orchestration and serving platform for running models and managing storage.
+# category: ai
+# tags: llm, model-serving, ai, inference
+# website: https://github.com/mintplexlabs/anythingllm
+# docs: https://github.com/mintplexlabs/anythingllm#readme
+# repo: https://github.com/mintplexlabs/anythingllm
+---
+services:
+  anythingllm:
+    image: mintplexlabs/anythingllm:latest
+    restart: unless-stopped
+    ports:
+      - 3001
+    environment:
+      - STORAGE_DIR=/app/server/storage
+    volumes:
+      - storage:/app/server/storage
+    cap_add:
+      - SYS_ADMIN
+
+volumes:
+  storage: {}

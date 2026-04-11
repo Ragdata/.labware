@@ -1,0 +1,24 @@
+# name: Browserless
+# description: Headless Chromium service for Puppeteer/Playwright-style browser automation and rendering.
+# category: automation
+# tags: browser, chromium, puppeteer, headless, automation
+# website: https://www.browserless.io
+# docs: https://docs.browserless.io
+# repo: https://github.com/browserless/chrome
+---
+services:
+  browserless:
+    image: ghcr.io/browserless/chromium:latest
+    environment:
+      TOKEN: ${BROWSERLESS_TOKEN}
+    expose:
+      - 3000
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1:3000/docs'
+      interval: 2s
+      timeout: 10s
+      retries: 15

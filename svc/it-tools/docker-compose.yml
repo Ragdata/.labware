@@ -1,0 +1,27 @@
+services:
+
+  it-tools:
+    image: corentinth/it-tools
+    hostname: it-tools
+    container_name: it-tools
+    # security options optional - uncomment if required
+    # security_opt:
+    #   - apparmor:unconfined
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://it-tools:80 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    networks:
+      - it-tools
+    ports:
+      - "${HOST_PORT:-8080}:80"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+networks:
+  it-tools:
+    name: it-tools
+    driver: bridge

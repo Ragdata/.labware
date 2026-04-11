@@ -1,0 +1,87 @@
+services:
+
+    huginn-postgres:
+        image: 'postgres:latest'
+        hostname: huginn-postgres
+        container_name: huginn-postgres
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U huginn || exit 1"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            POSTGRES_PORT_5432_TCP_ADDR: huginn-postgres
+            POSTGRES_PORT_5432_TCP_PORT: 5432
+            POSTGRES_USER: huginn
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        networks:
+            - huginn-internal
+        volumes:
+            - huginn-postgres:/var/lib/postgresql/data
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+
+    huginn:
+        image: 'ghcr.io/huginn/huginn:latest'
+        hostname: huginn
+        container_name: huginn
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "curl --fail http://huginn:3000 || exit 1"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            SMTP_DOMAIN: ${SMTP_DOMAIN}
+            SMTP_USER_NAME: ${SMTP_USER_NAME}
+            SMTP_PASSWORD: ${SMTP_PASSWORD}
+            SMTP_SERVER: ${SMTP_SERVER:-smtp.gmail.com}
+            SMTP_PORT: ${SMTP_PORT:-587}
+            SMTP_AUTHENTICATION: ${SMTP_AUTHENTICATION:-STARTTLS}
+            SMTP_ENABLE_STARTTLS_AUTO: ${SMTP_ENABLE_STARTTLS_AUTO:-true}
+            INVITATION_CODE: ${INVITATION_CODE}
+            POSTGRES_PORT_5432_TCP_ADDR: huginn-postgres
+            POSTGRES_PORT_5432_TCP_PORT: 5432
+            DATABASE_USERNAME: huginn
+            DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+            DATABASE_ADAPTER: postgresql
+            TWITTER_OAUTH_KEY: ${TWITTER_OAUTH_KEY:-}
+            TWITTER_OAUTH_SECRET: ${TWITTER_OAUTH_SECRET:-}
+            BACKUP_NUM_KEEP: 7
+            BACKUP_FREQUENCY: 1d
+        networks:
+            huginn:
+                ipv4_address: ${IPv4}
+            huginn-internal:
+        ports:
+            - "${HOST_PORT}:3000"
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro
+
+volumes:
+    huginn-postgres:
+        name: huginn-postgres
+        driver: local
+
+networks:
+    huginn:
+        name: huginn
+        driver: bridge
+        ipam:
+            config:
+                - subnet: ${SUBNET}
+                  gateway: ${GATEWAY}
+    huginn-internal:
+        name: huginn-internal
+        driver: bridge
+        internal: true
+        ipam:
+            config:
+                - subnet: ${SUBNET_INTERNAL}
+                  gateway: ${GATEWAY_INTERNAL}

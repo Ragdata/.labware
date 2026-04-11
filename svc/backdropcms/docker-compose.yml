@@ -1,0 +1,48 @@
+# name: Backdrop CMS
+# description: Open-source content management system forked from Drupal, focused on small-to-medium sites.
+# category: cms
+# tags: cms, php, drupal, content-management
+# website: https://backdropcms.org
+# docs: https://backdropcms.org/guide
+# repo: https://github.com/backdrop/backdrop
+---
+services:
+  backdrop:
+    image: backdrop:latest
+    container_name: backdrop
+    ports:
+      - "${HOST_PORT}:80"
+    environment:
+      BACKDROP_DB_HOST: mysql
+      BACKDROP_DB_USER: backdrop
+      BACKDROP_DB_PASSWORD: ${MYSQL_PASSWORD}
+      BACKDROP_DB_NAME: backdrop
+    volumes:
+      - ${SITE_DIR}/files:/var/www/html/files
+      - ${SITE_DIR}/sites:/var/www/html/sites
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: backdrop-db
+    environment:
+      MYSQL_DATABASE: backdrop
+      MYSQL_USER: backdrop
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  name: mysql-data
+  driver: local

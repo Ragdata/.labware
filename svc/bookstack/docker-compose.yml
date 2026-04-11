@@ -1,0 +1,42 @@
+# name: BookStack
+# description: Documentation/wiki platform for creating and organizing documentation, books and notes.
+# category: knowledge-base
+# tags: wiki, documentation, php, mariadb, mysql
+# website: https://www.bookstackapp.com
+# docs: https://www.bookstackapp.com/docs
+# repo: https://github.com/BookStackApp/BookStack
+---
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:24.12.1
+    restart: unless-stopped
+    ports:
+      - 80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=http://${DOMAIN}
+      - DB_HOST=bookstack-db
+      - DB_USERNAME=mariadb
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=bookstack
+      - APP_KEY=${APP_KEY}
+    volumes:
+      - config:/config
+    depends_on:
+      - bookstack-db
+
+  bookstack-db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=bookstack
+      - MYSQL_USER=mariadb
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  config: {}
+  db_data: {}

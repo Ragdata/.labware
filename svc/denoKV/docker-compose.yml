@@ -1,0 +1,27 @@
+# name: DenoKV
+# description: The Denoland key-value database (DenoKV), lightweight key-value store for Deno apps.
+# category: database
+# tags: deno,kv,key-value,database
+# website: https://deno.com/kv
+# docs: https://docs.deno.com/deploy/kv/manual/
+# repo: https://github.com/denoland/denokv
+---
+services:
+  denokv:
+    image: ghcr.io/denoland/denokv:latest
+    environment:
+      - 'ACCESS_TOKEN=${SERVICE_PASSWORD_DENOKV}'
+      - SERVICE_URL_DENOKV_4512
+    volumes:
+      - '${COOLIFY_VOLUME_APP}:/data'
+    command: '--sqlite-path /data/denokv.sqlite serve --access-token ${SERVICE_PASSWORD_DENOKV}'
+    healthcheck:
+      test:
+        - CMD
+        - nc
+        - '-zv'
+        - 127.0.0.1
+        - '4512'
+      interval: 5s
+      timeout: 5s
+      retries: 3

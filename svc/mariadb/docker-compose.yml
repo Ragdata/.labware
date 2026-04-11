@@ -1,0 +1,33 @@
+#file: noinspection ComposeUnknownValues
+---
+networks:
+  1panel-network:
+    external: true
+
+volumes:
+  mariadb:
+    external: true
+
+services:
+  mariadb:
+    container_name: ${CONTAINER_NAME}
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPUS}
+          memory: ${MEMORY_LIMIT}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PANEL_DB_ROOT_PASSWORD}
+    image: mariadb:latest
+    labels:
+      createdBy: Apps
+    networks:
+      - 1panel-network
+    ports:
+      - ${HOST_IP}:${PANEL_APP_PORT_HTTP}:3306
+    restart: always
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - mariadb:/var/lib/mysql
+      - /mnt/dkvol/dk1/mariadb/conf/my.cnf:/etc/mysql/my.cnf

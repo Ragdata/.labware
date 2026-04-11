@@ -1,0 +1,59 @@
+services:
+  - id: simple-http
+    name: Simple HTTP LoadBalancer
+    type: loadBalancer
+    config:
+      servers:
+        - url: "http://localhost:8080"
+  - id: multi-server-http
+    name: Multi-Server HTTP LoadBalancer
+    type: loadBalancer
+    config:
+      servers:
+        - url: "http://server1:8080"
+        - url: "http://server2:8080"
+  - id: health-check
+    name: HTTP Service with Health Check
+    type: loadBalancer
+    config:
+      healthCheck:
+        interval: 10s
+        path: "/health"
+        timeout: 3s
+      servers:
+        - url: "http://backend:8080"
+  - id: tcp-service
+    name: TCP Service
+    type: loadBalancer
+    config:
+      servers:
+        - address: "backend:9000"
+  - id: udp-service
+    name: UDP Service
+    type: loadBalancer
+    config:
+      servers:
+        - address: "backend:53"
+  - id: weighted-service
+    name: Weighted Service
+    type: weighted
+    config:
+      services:
+        - name: service1@file
+          weight: 3
+        - name: service2@file
+          weight: 1
+  - id: traffic-mirror
+    name: Traffic Mirroring Service
+    type: mirroring
+    config:
+      mirrors:
+        - name: test-service@file
+          percent: 10
+      service: main-service@file
+  - id: failover-service
+    name: Failover Service
+    type: failover
+    config:
+      fallback: backup-service@file
+      service: main-service@file

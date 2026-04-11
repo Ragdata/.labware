@@ -1,0 +1,48 @@
+# name: Apprise API
+# description: Notification delivery API supporting dozens of services (Slack, Email, SMS, etc.).
+# category: notifications
+# tags: notifications, alerts, api, web
+# website: https://github.com/caronc/apprise-api
+# docs: https://github.com/caronc/apprise-api#readme
+# repo: https://github.com/caronc/apprise-api
+---
+services:
+  apprise:
+    image: lscr.io/linuxserver/apprise-api:latest
+    container_name: apprise
+    # Hardened runtime
+    # read_only: true
+    security_opt:
+      - apparmor:unconfined
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      apprise:
+        ipv4_address: ${IPV4_ADDRESS}
+    ports:
+      - "8000:8000"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Australia/Brisbane
+      APPRISE_STATEFUL_MODE: simple
+      APPRISE_WORKER_COUNT: "1"
+      APPRISE_ADMIN: "y"
+    # Persistent state
+    volumes:
+      - ${BASEDIR}/config:/config
+      - ${BASEDIR}/plugin:/plugin
+      - ${BASEDIR}/attach:/attach
+    # Ephemeral runtime and temp files
+    tmpfs:
+      - /tmp
+
+networks:
+  apprise:
+    name: apprise
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${SUBNET}
+          gateway: ${GATEWAY}

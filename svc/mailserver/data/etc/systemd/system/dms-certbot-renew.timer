@@ -1,0 +1,14 @@
+[Unit]
+Description=Timer for DMS certificates renewal
+
+[Timer]
+Persistent=true
+#OnCalendar=daily
+# Daily (long-form syntax) at 4am instead of midnight (local timezone):
+#OnCalendar=*-*-* 4:00:00
+# Alternatively, twice daily (randomly within their 12 hour span):
+OnCalendar=*-*-* 00,12:00:00
+RandomizedDelaySec=43200
+
+[Install]
+WantedBy=timers.target

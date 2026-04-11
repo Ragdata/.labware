@@ -1,0 +1,258 @@
+middlewares:
+  - id: authelia
+    name: Authelia
+    type: forwardAuth
+    config:
+      address: "http://authelia:9091/api/authz/forward-auth"
+      authResponseHeaders:
+        - Remote-User
+        - Remote-Groups
+        - Remote-Name
+        - Remote-Email
+      trustForwardHeader: true
+  - id: authentik
+    name: Authentik
+    type: forwardAuth
+    config:
+      address: "http://authentik:9000/outpost.goauthentik.io/auth/traefik"
+      authResponseHeaders:
+        - X-authentik-username
+        - X-authentik-groups
+        - X-authentik-email
+        - X-authentik-name
+        - X-authentik-uid
+      trustForwardHeader: true
+  - id: basic-auth
+    name: Basic Auth
+    type: basicAuth
+    config:
+      users:
+        - admin:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
+  - id: digest-auth
+    name: Digest Auth
+    type: digestAuth
+    config:
+      users:
+        - test:traefik:a2688e031edb4be6a3797f3882655c05
+  - id: jwt-auth
+    name: JWT Authentication
+    type: forwardAuth
+    config:
+      address: "http://jwt-auth:8080/verify"
+      authResponseHeaders:
+        - X-JWT-Sub
+        - X-JWT-Name
+        - X-JWT-Email
+      trustForwardHeader: true
+  - id: ip-whitelist
+    name: IP Whitelist
+    type: ipWhiteList
+    config:
+      sourceRange:
+        - 127.0.0.1/32
+        - 192.168.1.0/24
+        - 10.0.0.0/8
+  - id: ip-allowlist
+    name: IP Allow List
+    type: ipAllowList
+    config:
+      sourceRange:
+        - 127.0.0.1/32
+        - 192.168.1.0/24
+        - 10.0.0.0/8
+  - id: rate-limit
+    name: Rate Limit
+    type: rateLimit
+    config:
+      average: 100
+      burst: 50
+  - id: headers-standard
+    name: Standard Security Headers
+    type: headers
+    config:
+      accessControlAllowMethods:
+        - GET
+        - OPTIONS
+        - PUT
+      browserXssFilter: true
+      contentTypeNosniff: true
+      customFrameOptionsValue: SAMEORIGIN
+      customResponseHeaders:
+        Server: ""
+        X-Forwarded-Proto: https
+        X-Robots-Tag: none,noarchive,nosnippet,notranslate,noimageindex
+      forceSTSHeader: true
+      hostsProxyHeaders:
+        - X-Forwarded-Host
+      permissionsPolicy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
+      referrerPolicy: same-origin
+      sslProxyHeaders:
+        X-Forwarded-Proto: https
+      stsIncludeSubdomains: true
+      stsPreload: true
+      stsSeconds: 63072000
+  - id: in-flight-req
+    name: In-Flight Request Limiter
+    type: inFlightReq
+    config:
+      amount: 10
+      sourceCriterion:
+        ipStrategy:
+          depth: 2
+          excludedIPs:
+            - 127.0.0.1/32
+  - id: pass-tls-cert
+    name: Pass TLS Client Certificate
+    type: passTLSClientCert
+    config:
+      pem: true
+  - id: add-prefix
+    name: Add Prefix
+    type: addPrefix
+    config:
+      prefix: "/api"
+  - id: strip-prefix
+    name: Strip Prefix
+    type: stripPrefix
+    config:
+      forceSlash: true
+      prefixes:
+        - /api
+        - /v1
+  - id: strip-prefix-regex
+    name: Strip Prefix Regex
+    type: stripPrefixRegex
+    config:
+      regex:
+        - /foo/[a-z0-9]+/[0-9]+/
+  - id: replace-path
+    name: Replace Path
+    type: replacePath
+    config:
+      path: "/api"
+  - id: replace-path-regex
+    name: Replace Path Regex
+    type: replacePathRegex
+    config:
+      regex: "^/foo/(.*)"
+      replacement: "/bar/$1"
+  - id: redirect-regex
+    name: Redirect Regex
+    type: redirectRegex
+    config:
+      permanent: true
+      regex: "^http://localhost/(.*)"
+      replacement: "https://example.com/${1}"
+  - id: redirect-scheme
+    name: Redirect to HTTPS
+    type: redirectScheme
+    config:
+      permanent: true
+      port: 443
+      scheme: "https"
+  - id: compress
+    name: Compress Response
+    type: compress
+    config:
+      encodings:
+        - gzip
+        - br
+      excludedContentTypes:
+        - text/event-stream
+      includedContentTypes:
+        - text/html
+        - text/plain
+        - application/json
+      minResponseBodyBytes: 1024
+  - id: buffering
+    name: Request/Response Buffering
+    type: buffering
+    config:
+      maxRequestBodyBytes: 5000000
+      maxResponseBodyBytes: 5000000
+      memRequestBodyBytes: 2000000
+      memResponseBodyBytes: 2000000
+      retryExpression: IsNetworkError() && Attempts() < 2
+  - id: content-type
+    name: Content Type Auto-Detector
+    type: contentType
+    config: {}
+  - id: circuit-breaker
+    name: Circuit Breaker
+    type: circuitBreaker
+    config:
+      checkPeriod: 10s
+      expression: "NetworkErrorRatio() > 0.20 || ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+      fallbackDuration: 30s
+      recoveryDuration: 60s
+      responseCode: 503
+  - id: retry
+    name: Retry Failed Requests
+    type: retry
+    config:
+      attempts: 3
+      initialInterval: 100ms
+  - id: error-pages
+    name: Custom Error Pages
+    type: errors
+    config:
+      query: /{status}.html
+      service: error-handler-service
+      status:
+        - 500-599
+  - id: grpc-web
+    name: gRPC Web
+    type: grpcWeb
+    config:
+      allowOrigins:
+        - '*'
+  - id: security-chain
+    name: Security Chain
+    type: chain
+    config:
+      middlewares:
+        - rate-limit
+        - ip-whitelist
+  - id: crowdsec
+    name: Crowdsec
+    type: plugin
+    config:
+      crowdsec:
+        clientTrustedIPs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+        crowdsecAppsecBodyLimit: 10485760
+        crowdsecAppsecEnabled: true
+        crowdsecAppsecFailureBlock: true
+        crowdsecAppsecHost: crowdsec:7422
+        crowdsecAppsecUnreachableBlock: true
+        crowdsecLapiHost: crowdsec:8080
+        crowdsecLapiKey: "PUT_YOUR_BOUNCER_KEY_HERE_OR_IT_WILL_NOT_WORK"
+        crowdsecLapiScheme: http
+        crowdsecMode: live
+        defaultDecisionSeconds: 15
+        enabled: true
+        forwardedHeadersTrustedIPs:
+          - 0.0.0.0/0
+        httpTimeoutSeconds: 10
+        logLevel: INFO
+        updateIntervalSeconds: 15
+        updateMaxFailure: 0
+  - id: nextcloud-dav
+    name: Nextcloud WebDAV Redirect
+    type: replacePathRegex
+    config:
+      regex: "^/.well-known/ca(l|rd)dav"
+      replacement: "/remote.php/dav/"
+  - id: custom-headers-example
+    name: Custom Headers Example
+    type: headers
+    config:
+      customRequestHeaders:
+        X-Custom-Request-Header: ""
+        X-Custom-Value: value with spaces
+        X-Script-Name: test
+      customResponseHeaders:
+        Server: ""
+        X-Custom-Response-Header: value

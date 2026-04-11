@@ -1,0 +1,28 @@
+# name: Commento
+# description: Privacy-focused, lightweight commenting platform for websites and blogs (self-hosted).
+# category: comments
+# tags: comments, moderation, privacy, postgres, go
+# website: https://commento.io
+# docs: https://gitlab.com/commento/commento#readme
+# repo: https://gitlab.com/commento/commento
+---
+services:
+  commento:
+    image: registry.gitlab.com/commento/commento:v1.8.0
+    ports:
+      - "8080"
+    environment:
+      - COMMENTO_ORIGIN=${COMMENTO_ORIGIN}
+      - COMMENTO_POSTGRES=${COMMENTO_POSTGRES}
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:11
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

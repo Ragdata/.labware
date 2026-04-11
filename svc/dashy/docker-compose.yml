@@ -1,0 +1,18 @@
+# name: Dashy
+# description: A highly-customizable, self-hosted dashboard and home page for your services.
+# category: dashboard
+# tags: dashboard,portal,homepage,ui
+# website: https://dashy.to
+# docs: https://docs.dashy.to
+# repo: https://github.com/Lissy93/dashy
+---
+services:
+  dashy:
+    image: lissy93/dashy:latest
+    restart: unless-stopped
+    ports:
+      - 8080
+    volumes:
+      - dashy-config:/app/user-data
+volumes:
+  dashy-config: {}

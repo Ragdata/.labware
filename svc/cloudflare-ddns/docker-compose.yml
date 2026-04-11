@@ -1,0 +1,33 @@
+# name: Cloudflare DDNS
+# description: Containerized dynamic DNS updater that synchronizes Cloudflare DNS records with your host IP.
+# category: networking
+# tags: dns, cloudflare, ddns, dynamic-dns, network
+# website: https://github.com/favonia/cloudflare-ddns
+# docs: https://github.com/favonia/cloudflare-ddns#readme
+# repo: https://github.com/favonia/cloudflare-ddns
+---
+services:
+
+    cloudflare-ddns:
+        image: favonia/cloudflare-ddns:latest
+        hostname: cloudflare-ddns
+        container_name: cloudflare-ddns
+        restart: unless-stopped
+        security_opt:
+        - no-new-privileges:true
+        cap_drop:
+        - ALL
+        user: "${UID:-1000}:${GID:-1000}"
+        read_only: true
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+            - DOMAINS=${DOMAINS}
+            - PROXIED=${PROXIED}
+        network_mode: host

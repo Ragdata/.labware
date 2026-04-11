@@ -1,0 +1,22 @@
+# name: ClickHouse
+# description: High-performance columnar database for analytics and OLAP workloads.
+# category: database
+# tags: clickhouse, analytics, columnar, database, oltp, olap
+# website: https://clickhouse.com
+# docs: https://clickhouse.com/docs/en/
+# repo: https://github.com/ClickHouse/ClickHouse
+---
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    restart: unless-stopped
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - clickhouse-logs:/var/log/clickhouse-server
+
+volumes:
+  clickhouse-data:
+  clickhouse-logs:

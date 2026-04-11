@@ -1,0 +1,18 @@
+# name: DumbDrop
+# description: Simple self-hosted file drop service for uploading and sharing files.
+# category: files
+# tags: file-share,uploads,web
+# website: https://hub.docker.com/r/dumbwareio/dumbdrop
+# docs: https://hub.docker.com/r/dumbwareio/dumbdrop
+# repo: https://github.com/dumbwareio/dumbdrop
+---
+services:
+  dumbdrop:
+    image: dumbwareio/dumbdrop:latest
+    restart: unless-stopped
+    ports:
+      - 3000
+    volumes:
+      - dumbdrop-uploads:/app/uploads
+volumes:
+  dumbdrop-uploads: {}

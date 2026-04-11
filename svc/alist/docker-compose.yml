@@ -1,0 +1,35 @@
+# name: AList
+# description: File listing and cloud storage browser with optional aria2 integration for self-hosted file management.
+# category: storage
+# tags: file-server, cloud-storage, listing, aria2, files
+# website: https://github.com/alist-org/alist
+# docs: https://github.com/alist-org/alist#readme
+# repo: https://github.com/alist-org/alist
+---
+services:
+  alist:
+    image: xhofe/alist-aria2:latest
+    # image: xhofe/alist:latest
+    container_name: alist
+    volumes:
+      - alist-data:/opt/alist/data
+    networks:
+      - alist
+    ports:
+      - '5244:5244'
+    environment:
+      - PUID=0
+      - PGID=0
+      - UMASK=022
+      - TZ=Australia/Brisbane
+    restart: unless-stopped
+
+volumes:
+  alist-data:
+    name: alist-data
+    driver: local
+
+networks:
+  alist:
+    name: alist
+    driver: bridge

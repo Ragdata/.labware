@@ -1,0 +1,21 @@
+# name: Cloud Commander
+# description: Web-based file manager and terminal (CloudCmd) for managing files and servers via browser.
+# category: utilities
+# tags: file-manager, cloudcmd, web-ui, terminal
+# website: https://cloudcmd.io
+# docs: https://github.com/coderaiser/cloudcmd#readme
+# repo: https://github.com/coderaiser/cloudcmd
+---
+services:
+  cloudcmd:
+    image: coderaiser/cloudcmd:18.5.1
+    ports:
+      - "80"
+    environment:
+      - CLOUDCMD_ROOT=/mnt/fs
+      - CLOUDCMD_AUTH=true
+      - CLOUDCMD_USERNAME=${USERNAME}
+      - CLOUDCMD_PASSWORD=${PASSWORD}
+    volumes:
+      - /root:/root
+      - /:/mnt/fs

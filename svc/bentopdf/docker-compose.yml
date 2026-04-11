@@ -1,0 +1,14 @@
+# name: BentoPDF
+# description: Headless PDF generation service for converting HTML/pages to PDF via a lightweight rendering backend.
+# category: utilities
+# tags: pdf, conversion, printing, headless, service
+# website: https://github.com/bentopdf
+# docs: https://github.com/bentopdf#readme
+# repo: https://github.com/bentopdf/bentopdf
+---
+services:
+  bentopdf:
+    image: bentopdf/bentopdf:latest
+    restart: unless-stopped
+    expose:
+      - 80

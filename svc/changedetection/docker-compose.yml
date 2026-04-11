@@ -1,0 +1,19 @@
+# name: changedetection.io
+# description: Website change monitoring tool to watch pages for changes and notify you when they occur.
+# category: monitoring
+# tags: monitoring, website, change-detection, alerts
+# website: https://changedetection.io
+# docs: https://github.com/dgtlmoon/changedetection.io#readme
+# repo: https://github.com/dgtlmoon/changedetection.io
+---
+services:
+  changedetection:
+    image: ghcr.io/dgtlmoon/changedetection.io:0.49
+    restart: unless-stopped
+    ports:
+      - 5000
+    volumes:
+      - datastore:/datastore
+
+volumes:
+  datastore:

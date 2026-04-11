@@ -1,0 +1,81 @@
+# name: DomainMOD
+# description: Web-based domain management system for keeping track of domain registrations, contacts and DNS.
+# category: domain-management
+# tags: domain,management,mysql,php,web
+# website: https://domainmod.org
+# docs: https://github.com/domainmod/domainmod#readme
+# repo: https://github.com/domainmod/domainmod
+---
+services:
+    domainmod:
+        image: domainmod/domainmod:latest
+        hostname: domainmod_app
+        container_name: domainmod_app
+        # security options optional - uncomment if required
+        # security_opt:
+        #   - apparmor:unconfined
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+        depends_on:
+            db:
+                condition: service_healthy
+        environment:
+            PUID: 1000
+            PGID: 1000
+            TZ: ${TZ}
+            DOMAINMOD_WEB_ROOT: /
+            DOMAINMOD_DATABASE_HOST: db
+            DOMAINMOD_DATABASE: domainmod
+            DOMAINMOD_USER: domainmod
+            DOMAINMOD_PASSWORD: ${MYSQL_PASSWORD}
+        networks:
+          - domainmod
+        ports:
+            - "${HOST_PORT:-8080}:80"
+        volumes:
+            - domain-app:/var/www/html
+
+    db:
+        image: ghcr.io/linuxserver/mariadb:latest
+        hostname: domainmod_db
+        container_name: domainmod_db
+        # security options optional - uncomment if required
+        # security_opt:
+        #   - apparmor:unconfined
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root --password=${MYSQL_ROOT_PASSWORD}"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+        environment:
+            PUID: 1000
+            PGID: 1000
+            TZ: ${TZ}
+            MYSQL_DATABASE: domainmod
+            MYSQL_USER: domainmod
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        networks:
+          - domainmod
+        ports:
+            - "${DB_PORT:-3306}:3306"
+        volumes:
+            - domain-data:/config
+
+volumes:
+    domain-app:
+        name: domain-app
+        driver: local
+    domain-data:
+        name: domain-data
+        driver: local
+
+networks:
+  domainmod:
+    name: domainmod
+    driver: bridge

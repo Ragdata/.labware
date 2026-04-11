@@ -1,0 +1,20 @@
+# name: Barrage
+# description: Web interface for managing downloads and streaming with optional Deluge integration and auth.
+# category: utilities
+# tags: deluge, downloads, streaming, web-ui, auth
+# website: https://github.com/maulik9898/barrage
+# docs: https://github.com/maulik9898/barrage#readme
+# repo: https://github.com/maulik9898/barrage
+---
+services:
+  barrage:
+    image: maulik9898/barrage:0.3.0
+    restart: unless-stopped
+    ports:
+      - 3000
+    environment:
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=http://${DOMAIN}
+      - DELUGE_URL=${DELUGE_URL}
+      - DELUGE_PASSWORD=${DELUGE_PASSWORD}
+      - BARRAGE_PASSWORD=${BARRAGE_PASSWORD}

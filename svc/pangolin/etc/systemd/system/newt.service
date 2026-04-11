@@ -1,0 +1,23 @@
+[Unit]
+Description=Newt VPN Client Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/newt --id {newt.id} --secret {newt.sectet} --endpoint {newt.endpoint} --health-file /tmp/newt-healthy --docker-socket /var/run/docker.sock
+Restart=always
+RestartSec=10
+
+# Security hardening options
+User=newt
+Group=newt
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ReadWritePaths=/var/lib/newt
+
+[Install]
+WantedBy=multi-user.target

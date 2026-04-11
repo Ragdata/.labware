@@ -1,0 +1,12 @@
+# name: Drawnix
+# description: Simple self-hosted drawing/graphics service (container image: pubuzhixing/drawnix).
+# category: graphics
+# tags: drawing,graphics,self-hosted,web
+# website: https://hub.docker.com/r/pubuzhixing/drawnix
+# docs: https://hub.docker.com/r/pubuzhixing/drawnix
+# repo: https://hub.docker.com/r/pubuzhixing/drawnix
+---
+services:
+  drawnix:
+    image: pubuzhixing/drawnix:latest
+    restart: unless-stopped

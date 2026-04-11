@@ -1,0 +1,34 @@
+# name: Dockhand (Hawser)
+# description: Docker management UI (Hawser configuration) for managing containers backed by Postgres.
+# category: container-management
+# tags: docker,ui,containers,management,postgres
+# website: https://github.com/fnsys/dockhand
+# docs: https://github.com/fnsys/dockhand#readme
+# repo: https://github.com/fnsys/dockhand
+---
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: dockhand
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: dockhand
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  dockhand:
+    image: fnsys/dockhand:latest
+    ports:
+      - 3000:3000
+    environment:
+      DATABASE_URL: postgres://dockhand:changeme@postgres:5432/dockhand
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dockhand_data:/app/data
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  dockhand_data:

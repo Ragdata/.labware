@@ -1,0 +1,17 @@
+# name: cup
+# description: Lightweight container utility exposing a web UI and access to the Docker socket.
+# category: utilities
+# tags: docker, container, management, web-ui
+# website: https://github.com/sergi0g/cup
+# docs: https://github.com/sergi0g/cup#readme
+# repo: https://github.com/sergi0g/cup
+---
+services:
+  cup:
+    image: ghcr.io/sergi0g/cup:latest
+    restart: unless-stopped
+    command: serve
+    ports:
+      - "8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

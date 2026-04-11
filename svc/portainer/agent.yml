@@ -1,0 +1,23 @@
+services:
+
+    agent:
+        image: portainer/agent:latest
+        container_name: remote_agent
+        restart: unless-stopped
+        security_opt:
+            - apparmor:unconfined
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        ports:
+            - "${HOST_PORT_AGENT:-9001}:9001"
+        volumes:
+            - /:/host
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ${DOCKER_DIR:-/var/lib/docker/volumes}:/var/lib/docker/volumes
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro

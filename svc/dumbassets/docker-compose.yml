@@ -1,0 +1,19 @@
+# name: Dumbassets
+# description: Simple asset hosting service for storing and serving static assets.
+# category: assets
+# tags: assets,static,hosting,web
+# website: https://hub.docker.com/r/dumbwareio/dumbassets
+# docs: https://hub.docker.com/r/dumbwareio/dumbassets
+# repo: https://github.com/dumbwareio/dumbassets
+---
+services:
+  dumbassets:
+    image: dumbwareio/dumbassets:latest
+    restart: unless-stopped
+    ports:
+      - 3000
+    volumes:
+      - dumbassets-data:/app/data
+
+volumes:
+  dumbassets-data: {}

@@ -1,0 +1,22 @@
+services:
+
+    newt:
+        image: fosrl/newt:latest
+        hostname: newt
+        container_name: newt
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+            start_interval: 10s
+            start_period: 1m
+        environment:
+            PANGOLIN_ENDPOINT: ${PANGOLIN_ENDPOINT}
+            NEWT_ID: ${NEWT_ID}
+            NEWT_SECRET: ${NEWT_SECRET}
+            DOCKER_SOCKET: /var/run/docker.sock
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /etc/timezone:/etc/timezone:ro

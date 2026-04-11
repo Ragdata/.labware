@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  dms:
+    image: nlippke/seeddms:6.0.23
+    ports:
+      - "8080:80"
+      - "8443:443"
+    environment:
+      - TZ=UTC
+      - 'CRON_SCHEDULER=5 * * * *'
+      - 'CRON_INDEX=0 0 * * *'
+      - 'CRON_BACKUP=0 23 * * *'
+      - SSL_PORT=8443
+      - FORCE_SSL=1
+    mem_limit: 2g
+    volumes:
+      - dms-data:/var/www/seeddms/data
+      - /share/Container/container-data/seeddms/extensions:/var/www/seeddms/seeddms/ext
+      - /share/Container/container-data/seeddms/backup:/var/www/seeddms/backup
+      - /share/Container/container-data/seeddms/import:/var/www/seeddms/import
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "1"
+
+volumes:
+  dms-data:

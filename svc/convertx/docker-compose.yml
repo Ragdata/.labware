@@ -1,0 +1,26 @@
+# name: ConvertX
+# description: Web-based file and media conversion service with JWT auth and configurable ffmpeg options.
+# category: media
+# tags: conversion, ffmpeg, media, file-server, jwt
+# website: https://github.com/c4illin/convertx
+# docs: https://github.com/c4illin/convertx#readme
+# repo: https://github.com/c4illin/convertx
+---
+services:
+  convertx:
+    image: ghcr.io/c4illin/convertx
+    restart: unless-stopped
+    ports:
+      - 3000
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - ACCOUNT_REGISTRATION=${ACCOUNT_REGISTRATION}
+      - HTTP_ALLOWED=${HTTP_ALLOWED}
+      - ALLOW_UNAUTHENTICATED=${ALLOW_UNAUTHENTICATED}
+      - AUTO_DELETE_EVERY_N_HOURS=${AUTO_DELETE_EVERY_N_HOURS}
+      - WEBROOT=${WEBROOT}
+      - FFMPEG_ARGS=${FFMPEG_ARGS}
+      - HIDE_HISTORY=${HIDE_HISTORY}
+      - LANGUAGE=${LANGUAGE}
+    volumes:
+      - ../files/data:/app/data

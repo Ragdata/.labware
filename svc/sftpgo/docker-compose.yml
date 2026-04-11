@@ -1,0 +1,30 @@
+services:
+
+    sftpgo:
+        image: drakkan/sftpgo:latest
+        hostname: sftpgo
+        container_name: sftpgo
+        security_opt:
+            - apparmor:unconfined
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "touch /tmp/health.txt"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+        environment:
+            SFTPGO_COMMON_CONFIG_FILE: /etc/sftpgo/sftpgo.json # Specify config file path
+        ports:
+            - "${HOST_PORT_SFTP}:22" # SFTP port
+            - "${HOST_PORT_WEB}:8080" # Web admin interface
+        volumes:
+            - sftpgo-config:/etc/sftpgo # Configuration directory
+            - sftpgo-data:/var/lib/sftpgo # Data directory
+
+volumes:
+    sftpgo-config:
+        name: sftpgo-config
+        driver: local
+    sftpgo-data:
+        name: sftpgo-data
+        driver: local

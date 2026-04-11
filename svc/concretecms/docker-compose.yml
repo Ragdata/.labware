@@ -1,0 +1,42 @@
+# name: Concrete CMS
+# description: PHP-based content management system for building websites and applications (formerly Concrete5).
+# category: cms
+# tags: cms, php, concretecms, mariadb, web
+# website: https://www.concretecms.org
+# docs: https://documentation.concretecms.org
+# repo: https://github.com/concretecms/concrete5
+---
+services:
+  concretecms:
+    image: ghcr.io/concrete5-community/docker5:latest
+    ports:
+      - "${HOST_PORT}:80"
+    depends_on:
+      - database
+    environment:
+      # These variables are used by the image's startup script to check the DB link
+      DB_SERVER: database
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+    volumes:
+      # Use bind mounts for development to see real-time code changes
+      # Replace /path/to/my/concretecms/ with the local path to your project files
+      - ${ROOTDIR}/application/files:/var/www/localhost/htdocs/application/files
+      - ${ROOTDIR}/application/config:/var/www/localhost/htdocs/application/config
+      - ${ROOTDIR}/packages:/var/www/localhost/htdocs/packages
+      - ${ROOTDIR}/application/blocks:/var/www/localhost/htdocs/application/blocks
+
+  database:
+    image: mariadb:latest
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      # Use a named volume for persistent database data
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

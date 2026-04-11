@@ -1,0 +1,20 @@
+# name: Beszel
+# description: Web UI/dashboard for managing and monitoring services (container-focused monitoring and utilities).
+# category: monitoring
+# tags: monitoring, dashboard, docker, containers, ui
+# website: https://github.com/henrygd/beszel
+# docs: https://github.com/henrygd/beszel#readme
+# repo: https://github.com/henrygd/beszel
+---
+services:
+  beszel:
+    image: henrygd/beszel:0.10.2
+    restart: unless-stopped
+    ports:
+      - 8090
+    volumes:
+      - beszel_data:/beszel_data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  beszel_data: {}

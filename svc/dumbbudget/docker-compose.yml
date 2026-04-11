@@ -1,0 +1,19 @@
+# name: DumbBudget
+# description: Simple personal budgeting and expense tracking web app (self-hosted).
+# category: finance
+# tags: budget,finance,expenses,web
+# website: https://hub.docker.com/r/dumbwareio/dumbbudget
+# docs: https://hub.docker.com/r/dumbwareio/dumbbudget
+# repo: https://github.com/dumbwareio/dumbbudget
+---
+services:
+  dumbbudget:
+    image: dumbwareio/dumbbudget:latest
+    restart: unless-stopped
+    ports:
+      - 3000
+    volumes:
+      - dumbbudget-data:/app/data
+
+volumes:
+  dumbbudget-data: {}

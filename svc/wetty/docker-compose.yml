@@ -1,0 +1,38 @@
+version: "2.3"
+
+services:
+
+  wetty:
+    image: mydigitalwalk/wetty:latest
+    # image: butlerx/wetty
+    restart: always
+    mem_limit: 300M
+    container_name: wetty
+#    tty: true
+    env_file:
+      - .env
+    environment:
+      SSHHOST: 'wetty-ssh'
+      SSHPORT: 22
+      NODE_ENV: 'production'
+    volumes:
+      - wetty-data:/home/node
+      - /etc/localtime:/etc/localtime:ro
+
+  wetty-ssh:
+    image: mydigitalwalk/wetty-ssh:latest
+    # this is needed so wetty can connect to it
+    container_name: 'wetty-ssh'
+    restart: always
+    mem_limit: 200M
+    env_file:
+      - env-wetty-ssh
+    volumes:
+      - wetty_ssh-data:/data
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  wetty-data:
+    name: wetty-data
+  wetty_ssh-data:
+    name: wetty_ssh-data

@@ -1,0 +1,20 @@
+# name: Actual Budget (server)
+# description: Self-hosted backend for Actual Budget — personal budgeting and finance management.
+# category: finance
+# tags: budgeting, finance, personal-finance, self-hosted
+# website: https://actualbudget.org
+# docs: https://actualbudget.org/docs
+# repo: https://github.com/actualbudget/actual-server
+---
+services:
+  actualbudget:
+    image: docker.io/actualbudget/actual-server:latest
+    environment:
+      # See all options at https://actualbudget.org/docs/config
+      - ACTUAL_PORT=5006
+    volumes:
+      - actual-data:/data
+    restart: unless-stopped
+
+volumes:
+  actual-data:

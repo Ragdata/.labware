@@ -1,0 +1,41 @@
+services:
+  vert:
+    image: ghcr.io/vert-sh/vert:latest
+    container_name: vert
+    environment:
+      PUB_HOSTNAME: ${PUB_HOSTNAME}
+      PUB_VERT_URL: ${PUB_VERT_URL}
+      PUB_VERTD_URL: ${PUB_VERTD_URL}
+      PUB_PORT: 80
+      PUB_ENV: production
+    restart: unless-stopped
+    ports:
+      - ${PORT}:80
+
+  vertd:
+    image: ghcr.io/vert-sh/vertd:latest
+    container_name: vertd
+    environment:
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - WEBHOOK_PINGS=${WEBHOOK_PINGS}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - PUBLIC_URL=${PUB_VERTD_URL}
+    ports:
+      - "${PORT_D:-24153}:24153"
+
+    # For AMD/Intel GPUs, uncomment the "devices" section - then remove
+    # or comment out the "deploy" section and the "runtime" string used
+    # for NVIDIA GPUs.
+    #
+    # devices:
+    #   - /dev/dri
+    #
+    # For NVIDIA cards, keep the following section:
+    # runtime: nvidia
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [ gpu ]

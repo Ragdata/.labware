@@ -1,0 +1,24 @@
+# name: Atlassian Confluence
+# description: Team collaboration wiki and documentation server for creating, organizing and sharing content.
+# category: collaboration
+# tags: confluence, wiki, documentation, atlassian
+# website: https://www.atlassian.com/software/confluence
+# docs: https://confluence.atlassian.com/doc
+# repo: https://hub.docker.com/r/atlassian/confluence-server
+---
+services:
+  confluence:
+    image: atlassian/confluence-server:8.6-ubuntu-jdk17
+    ports:
+      - "8090"
+    volumes:
+      - confluence-data:/var/atlassian/application-data/confluence
+    environment:
+      - JVM_MINIMUM_MEMORY=${JVM_MIN_MEM}
+      - JVM_MAXIMUM_MEMORY=${JVM_MAX_MEM}
+      - CATALINA_CONNECTOR_PROXYNAME=${DOMAIN}
+      - CATALINA_CONNECTOR_SCHEME=http
+      - CATALINA_CONNECTOR_SECURE=true
+
+volumes:
+  confluence-data:
