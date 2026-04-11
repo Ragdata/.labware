@@ -1,0 +1,16 @@
+todo.txt
+.vscode
+.archive
+.backlog
+.backburn
+
+.idea
+!.idea/icon.svg
+*.iml
+
+**/.env
+**/.env.*
+!**/.env.dist
+
+config.yml
+!.github/.bots/config.yml
