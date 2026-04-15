@@ -16,7 +16,7 @@ set -e
 # LOCAL VARIABLES
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-source ./vendor/progressbar
+source "$SCRIPT_DIR"/vendor/progressbar
 ####################################################################
 # VARIABLES
 ####################################################################
