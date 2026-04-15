@@ -30,6 +30,12 @@
 
 </div>
 
+> [!important]
+> **Quick Install:**
+> ```bash
+> sudo curl -fsSL https://raw.githubusercontent.com/Ragdata/installer/refs/heads/master/labware.sh | bash
+> ```
+
 ## [App Directory](#top) ✨
 
 
