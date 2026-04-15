@@ -12,6 +12,10 @@
 # PRE-FLIGHT
 ####################################################################
 set -e
+
+# LOCAL VARIABLES
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+
 source ./vendor/progressbar
 ####################################################################
 # VARIABLES
@@ -49,9 +53,6 @@ export TotalSteps=$((${#tools[@]}+3))
 
 # OPERATING VARIABLES
 export DEBIAN_FRONTEND=noninteractive
-
-# LOCAL VARIABLES
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 ####################################################################
 # FUNCTIONS
 ####################################################################
