@@ -33,7 +33,7 @@
 > [!important]
 > **Quick Install:**
 > ```bash
-> sudo curl -fsSL https://raw.githubusercontent.com/Ragdata/installer/refs/heads/master/labware.sh | bash
+> sudo curl -fsSLH "Cache-Control: no-cache" https://raw.githubusercontent.com/Ragdata/installer/refs/heads/master/labware.sh | bash
 > ```
 
 ## [App Directory](#top) ✨
