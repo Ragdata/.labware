@@ -84,15 +84,15 @@ update_server() {
 
 	bar::start
 
-	bar::status_changed $((StepsDone)) "$TotalSteps"
+	bar::status_changed $((${StepsDone})) "$TotalSteps"
 
 	print::head "Updating System ..."
 	apt update -qq
-	bar::status_changed $((StepsDone+1)) "$TotalSteps"
+	bar::status_changed $((${StepsDone}+1)) "$TotalSteps"
 
 	print::head "Upgrading System ..."
 	apt full-upgrade -y -qq
-	bar::status_changed $((StepsDone+1)) "$TotalSteps"
+	bar::status_changed $((${StepsDone}+1)) "$TotalSteps"
 
 	print::head "Installing Build Tools ..."
 	for tool in "${tools[@]}"; do
@@ -102,12 +102,12 @@ update_server() {
 			print::success "Successfully installed '$tool'"
 		fi
 		StepsDone=$((${StepsDone:-2}+1))
-		bar::status_changed "$StepsDone" "$TotalSteps"
+		bar::status_changed "${StepsDone}" "$TotalSteps"
 	done
 
 	print::head "Cleaning up ..."
 	apt autoremove -y -qq && apt clean -qq
-	bar::status_changed $((StepsDone+1)) "$TotalSteps"
+	bar::status_changed $((${StepsDone}+1)) "$TotalSteps"
 
 	bar::stop
 }
