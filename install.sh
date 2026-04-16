@@ -198,10 +198,10 @@ fi
 
 clear
 
-bar::start
-
-bar::status_changed $((StepsDone)) $((TotalSteps))
+#bar::start
+#
+#bar::status_changed $((StepsDone)) $((TotalSteps))
 
 print::success "TEST"
 
-bar::stop
+#bar::stop
