@@ -166,14 +166,14 @@ for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/*; do
 	fi
 done
 if ! install -m 644 "$HOME"/.bashrc "$HOME"/.backup/.bashrc.OLD; then
-	print::warn "Failed to backup '$file'"
+	print::warn "Failed to backup '.bashrc'"
 else
-	print::success "Backed up '$file'"
+	print::success "Backed up '.bashrc'"
 fi
-if ! install -m 644 "$HOME"/.profile "$HOME"/.backup/.profile; then
-	print::warn "Failed to backup '$file'"
+if ! install -m 644 "$HOME"/.profile "$HOME"/.backup/.profile.OLD; then
+	print::warn "Failed to backup '.profile'"
 else
-	print::success "Backed up '$file'"
+	print::success "Backed up '.profile'"
 fi
 if install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc "$HOME"/.bashrc; then
 	print::default "  - .bashrc"

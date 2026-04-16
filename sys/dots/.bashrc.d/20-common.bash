@@ -12,28 +12,28 @@
 #
 # FG COLORS
 #
-term::color::reset()	{ printf -- '%s0m' "$TERM_CSI"; }
+term::color::reset()		{ printf -- '%s0m' "$TERM_CSI"; }
 # ------------------------------------------------------------------
-term::black()					{ printf -- '%s30m' "$TERM_CSI"; }
-term::red()						{ printf -- '%s31m' "$TERM_CSI"; }
-term::green()					{ printf -- '%s32m' "$TERM_CSI"; }
-term::gold()					{ printf -- '%s33m' "$TERM_CSI"; }
-term::blue()					{ printf -- '%s34m' "$TERM_CSI"; }
+term::black()				{ printf -- '%s30m' "$TERM_CSI"; }
+term::red()					{ printf -- '%s31m' "$TERM_CSI"; }
+term::green()				{ printf -- '%s32m' "$TERM_CSI"; }
+term::gold()				{ printf -- '%s33m' "$TERM_CSI"; }
+term::blue()				{ printf -- '%s34m' "$TERM_CSI"; }
 term::magenta()				{ printf -- '%s35m' "$TERM_CSI"; }
-term::cyan()					{ printf -- '%s36m' "$TERM_CSI"; }
+term::cyan()				{ printf -- '%s36m' "$TERM_CSI"; }
 term::lt_grey()				{ printf -- '%s37m' "$TERM_CSI"; }
 # ------------------------------------------------------------------
-term::grey()					{ printf -- '%s90m' "$TERM_CSI"; }
-term::pink()					{ printf -- '%s91m' "$TERM_CSI"; }
+term::grey()				{ printf -- '%s90m' "$TERM_CSI"; }
+term::pink()				{ printf -- '%s91m' "$TERM_CSI"; }
 term::lt_green()			{ printf -- '%s92m' "$TERM_CSI"; }
 term::yellow()				{ printf -- '%s93m' "$TERM_CSI"; }
 term::lt_blue()				{ printf -- '%s94m' "$TERM_CSI"; }
 term::purple()				{ printf -- '%s95m' "$TERM_CSI"; }
 term::lt_cyan()				{ printf -- '%s96m' "$TERM_CSI"; }
-term::white()					{ printf -- '%s97m' "$TERM_CSI"; }
+term::white()				{ printf -- '%s97m' "$TERM_CSI"; }
 # ------------------------------------------------------------------
-term::color()					{ printf -- '%s38;5;%sm' "$TERM_CSI" "$1"; }
-term::rbg()						{ printf -- '%s38;2;%s;%s;%sm' "$TERM_CSI" "$1" "$2" "$3"; }
+term::color()				{ printf -- '%s38;5;%sm' "$TERM_CSI" "$1"; }
+term::rbg()					{ printf -- '%s38;2;%s;%s;%sm' "$TERM_CSI" "$1" "$2" "$3"; }
 #
 # BG COLORS
 #
@@ -44,17 +44,17 @@ term::bg::red()				{ printf -- '%s41m' "$TERM_CSI"; }
 term::bg::green()			{ printf -- '%s42m' "$TERM_CSI"; }
 term::bg::gold()			{ printf -- '%s43m' "$TERM_CSI"; }
 term::bg::blue()			{ printf -- '%s44m' "$TERM_CSI"; }
-term::bg::magenta()		{ printf -- '%s45m' "$TERM_CSI"; }
+term::bg::magenta()			{ printf -- '%s45m' "$TERM_CSI"; }
 term::bg::cyan()			{ printf -- '%s46m' "$TERM_CSI"; }
-term::bg::lt_grey()		{ printf -- '%s47m' "$TERM_CSI"; }
+term::bg::lt_grey()			{ printf -- '%s47m' "$TERM_CSI"; }
 # ------------------------------------------------------------------
 term::bg::grey()			{ printf -- '%s100m' "$TERM_CSI"; }
 term::bg::pink()			{ printf -- '%s101m' "$TERM_CSI"; }
-term::bg::lt_green()	{ printf -- '%s102m' "$TERM_CSI"; }
-term::bg::yellow()		{ printf -- '%s103m' "$TERM_CSI"; }
-term::bg::lt_blue()		{ printf -- '%s104m' "$TERM_CSI"; }
-term::bg::purple()		{ printf -- '%s105m' "$TERM_CSI"; }
-term::bg::lt_cyan()		{ printf -- '%s106m' "$TERM_CSI"; }
+term::bg::lt_green()		{ printf -- '%s102m' "$TERM_CSI"; }
+term::bg::yellow()			{ printf -- '%s103m' "$TERM_CSI"; }
+term::bg::lt_blue()			{ printf -- '%s104m' "$TERM_CSI"; }
+term::bg::purple()			{ printf -- '%s105m' "$TERM_CSI"; }
+term::bg::lt_cyan()			{ printf -- '%s106m' "$TERM_CSI"; }
 term::bg::white()			{ printf -- '%s107m' "$TERM_CSI"; }
 # ------------------------------------------------------------------
 term::bg::color()			{ printf -- '%s48;5;%sm' "$TERM_CSI" "$1"; }
@@ -62,27 +62,27 @@ term::bg::rbg()				{ printf -- '%s48;2;%s;%s;%sm' "$TERM_CSI" "$1" "$2" "$3"; }
 #
 # TEXT EFFECTS
 #
-term::blink()					{ printf -- '%s5m' "$TERM_CSI"; }
-term::blink::rapid()	{ printf -- '%s6m' "$TERM_CSI"; }
+term::blink()				{ printf -- '%s5m' "$TERM_CSI"; }
+term::blink::rapid()		{ printf -- '%s6m' "$TERM_CSI"; }
 term::no::blink()			{ printf -- '%s25m' "$TERM_CSI"; }
-term::bold()					{ printf -- '%s1m' "$TERM_CSI"; }
-term::dim()						{ printf -- '%s2m' "$TERM_CSI"; }
+term::bold()				{ printf -- '%s1m' "$TERM_CSI"; }
+term::dim()					{ printf -- '%s2m' "$TERM_CSI"; }
 term::italic()				{ printf -- '%s3m' "$TERM_CSI"; }
 term::normal()				{ printf -- '%s22m' "$TERM_CSI"; }
 term::inverse()				{ printf -- '%s7m' "$TERM_CSI"; }
-term::no::inverse()		{ printf -- '%s27m' "$TERM_CSI"; }
+term::no::inverse()			{ printf -- '%s27m' "$TERM_CSI"; }
 term::overline()			{ printf -- '%s53m' "$TERM_CSI"; }
-term::no::overline()	{ printf -- '%s55m' "$TERM_CSI"; }
+term::no::overline()		{ printf -- '%s55m' "$TERM_CSI"; }
 term::underline()			{ printf -- '%s4m' "$TERM_CSI"; }
 term::underline::double()	{ printf -- '%s21m' "$TERM_CSI"; }
-term::no::underline()	{ printf -- '%s24m' "$TERM_CSI"; }
+term::no::underline()		{ printf -- '%s24m' "$TERM_CSI"; }
 term::underover()			{ printf -- '%s4;53m' "$TERM_CSI"; }
-term::no::underover()	{ printf -- '%s24;55m' "$TERM_CSI"; }
+term::no::underover()		{ printf -- '%s24;55m' "$TERM_CSI"; }
 term::invisible()			{ printf -- '%s8m' "$TERM_CSI"; }
 term::visible()				{ printf -- '%s28m' "$TERM_CSI"; }
-term::plain()					{ printf -- '%s23m' "$TERM_CSI"; }
+term::plain()				{ printf -- '%s23m' "$TERM_CSI"; }
 term::strike()				{ printf -- '%s9m' "$TERM_CSI"; }
-term::no::strike()		{ printf -- '%s29m' "$TERM_CSI"; }
+term::no::strike()			{ printf -- '%s29m' "$TERM_CSI"; }
 ####################################################################
 # FUNCTION ALIASES
 ####################################################################
