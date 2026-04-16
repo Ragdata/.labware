@@ -111,9 +111,11 @@ print::head "Cleaning Up ..."
 apt autoremove -y -qq && apt clean -qq
 
 print::head "Creating Installation Directories ..."
-mkdir -p "$HOME"/.backup "$HOME"/.labware
+mkdir -p "$HOME"/.backup "$HOME"/.labware "$HOME"/.bashrc.d
 cd "$HOME"/.labware
 mkdir -p lib/aliases lib/completions lib/functions log reg
+cd -- && cd "$HOME"/.bashrc.d
+mkdir -p prompts
 cd --
 
 print::head "Installing Alias Files ..."
