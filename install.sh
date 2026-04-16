@@ -118,7 +118,7 @@ cd --
 
 print::head "Installing Alias Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
-	if install -m 644 "$SCRIPT_DIR"/sys/lib/aliases/"$file" "$HOME"/.labware/lib/aliases/"$file"; then
+	if install -m 644 "$file" "$HOME"/.labware/lib/aliases/"$(basename "$file")"; then
 		print::default "  - $file"
 	else
 		print::warn "Failed to install '$file'"
@@ -127,7 +127,7 @@ done
 
 print::head "Installing Completion Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
-	if install -m 644 "$SCRIPT_DIR"/sys/lib/completions/"$file" "$HOME"/.labware/lib/completions/"$file"; then
+	if install -m 644 "$file" "$HOME"/.labware/lib/completions/"$(basename "$file")"; then
 		print::default "  - $file"
 	else
 		print::warn "Failed to install '$file'"
@@ -136,7 +136,7 @@ done
 
 print::head "Installing Function Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
-	if install -m 644 "$SCRIPT_DIR"/sys/lib/functions/"$file" "$HOME"/.labware/lib/functions/"$file"; then
+	if install -m 644 "$file" "$HOME"/.labware/lib/functions/"$(basename "$file")"; then
 		print::default "  - $file"
 	else
 		print::warn "Failed to install '$file'"
@@ -148,7 +148,7 @@ mkdir -p "$HOME"/.bashrc.d/prompts
 print::default "  - .bashrc.d"
 for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/*; do
 	if [ ! -d "$file" ]; then
-		if install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc.d/"$file"; then
+		if install -m 644 "$file" "$SCRIPT_DIR"/sys/dots/.bashrc.d/"$(basename "$file")"; then
 			print::default "    - $file"
 		else
 			print::warn "Failed to install '$file'"
@@ -157,7 +157,7 @@ for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/*; do
 done
 print::default "    - prompts"
 for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/*; do
-	if install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/"$file" "$HOME"/.labware/.bashrc.d/prompts/"$file"; then
+	if install -m 644 "$file" "$HOME"/.labware/.bashrc.d/prompts/"$(basename "$file")"; then
 		print::default "      - $file"
 	else
 		print::warn "Failed to install '$file'"
