@@ -198,7 +198,10 @@ fi
 
 clear
 
-#update_server $TotalSteps
-#install_files
+bar::start
+
+bar::status_changed $((StepsDone)) $((TotalSteps))
 
 print::success "TEST"
+
+bar::stop
