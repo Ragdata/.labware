@@ -113,7 +113,7 @@ apt autoremove -y -qq && apt clean -qq
 print::head "Creating Installation Directories ..."
 mkdir -p "$HOME"/.backup "$HOME"/.labware
 cd "$HOME"/.labware
-mkdir -p lib/alliases lib/completions lib/functions log reg
+mkdir -p lib/aliases lib/completions lib/functions log reg
 cd --
 
 print::head "Installing Alias Files ..."
@@ -148,7 +148,7 @@ mkdir -p "$HOME"/.bashrc.d/prompts
 print::default "  - .bashrc.d"
 for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/*; do
 	if [ ! -d "$file" ]; then
-		if install -m 644 "$file" "$SCRIPT_DIR"/sys/dots/.bashrc.d/"$(basename "$file")"; then
+		if install -m 644 "$file" "$HOME"/.bashrc.d/"$(basename "$file")"; then
 			print::default "    - $file"
 		else
 			print::warn "Failed to install '$file'"
@@ -165,9 +165,13 @@ for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/*; do
 done
 if ! install -m 644 "$HOME"/.bashrc "$HOME"/.backup/.bashrc.OLD; then
 	print::warn "Failed to backup '$file'"
+else
+	print::success "Backed up '$file'"
 fi
 if ! install -m 644 "$HOME"/.profile "$HOME"/.backup/.profile; then
 	print::warn "Failed to backup '$file'"
+else
+	print::success "Backed up '$file'"
 fi
 if install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc "$HOME"/.bashrc; then
 	print::default "  - .bashrc"
