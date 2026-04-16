@@ -198,6 +198,7 @@ fi
 
 clear
 
-update_server $TotalSteps
-install_files
+#update_server $TotalSteps
+#install_files
 
+print::success "TEST"
