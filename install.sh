@@ -159,7 +159,7 @@ for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/*; do
 done
 print::default "    - prompts"
 for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/*; do
-	if install -m 644 "$file" "$HOME"/.labware/.bashrc.d/prompts/"$(basename "$file")"; then
+	if install -m 644 "$file" "$HOME"/.bashrc.d/prompts/"$(basename "$file")"; then
 		print::default "      - $file"
 	else
 		print::warn "Failed to install '$file'"
