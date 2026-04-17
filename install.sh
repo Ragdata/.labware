@@ -98,7 +98,7 @@ bar::start
 #bar::status_changed $((${StepsDone})) $TotalSteps
 print::head "Updating System ..."
 apt update -qq
-#bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((${StepsDone}+1)) $TotalSteps
 
 print::head "Upgrading System ..."
 apt full-upgrade -y -qq
