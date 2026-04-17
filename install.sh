@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2004
 ####################################################################
 # install.sh
 ####################################################################
@@ -16,7 +17,7 @@ set -e
 # LOCAL VARIABLES
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-# . vendor/progressbar
+. vendor/progressbar
 ####################################################################
 # VARIABLES
 ####################################################################
@@ -92,11 +93,16 @@ fi
 
 clear
 
+bar::start
+
+bar::status_changed $((${StepsDone})) $TotalSteps
 print::head "Updating System ..."
 apt update -qq
+bar::status_changed $((${StepsDone}+1)) $TotalSteps
 
 print::head "Upgrading System ..."
 apt full-upgrade -y -qq
+bar::status_changed $((${StepsDone}+1)) $TotalSteps
 
 print::head "Installing Build Tools ...."
 for tool in "${tools[@]}"; do
@@ -105,10 +111,14 @@ for tool in "${tools[@]}"; do
 	else
 		print::success "Successfully installed '$tool'"
 	fi
+	bar::status_changed $((${StepsDone}+1)) $TotalSteps
 done
 
 print::head "Cleaning Up ..."
 apt autoremove -y -qq && apt clean -qq
+bar::status_changed $((${StepsDone}+1)) $TotalSteps
+
+bar::stop
 
 print::head "Creating Installation Directories ..."
 mkdir -p "$HOME"/.backup "$HOME"/.labware "$HOME"/.bashrc.d
@@ -170,7 +180,7 @@ if ! install -m 644 "$HOME"/.bashrc "$HOME"/.backup/.bashrc.OLD; then
 else
 	print::success "Backed up '.bashrc'"
 fi
-if ! install -m 644 "$HOME"/.profile "$HOME"/.backup/.profile.OLD; then
+if ! install -m 644 "$HOME"/.profile "$HOME"/.backup/.profile.OLD ; then
 	print::warn "Failed to backup '.profile'"
 else
 	print::success "Backed up '.profile'"
