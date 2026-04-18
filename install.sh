@@ -127,36 +127,34 @@ mkdir -p lib/aliases lib/completions lib/functions log reg
 cd -- && cd "$HOME"/.bashrc.d || exit 1
 mkdir -p prompts
 cd -- || exit 1
+print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Alias Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
 	if ! install -m 644 "$file" "$HOME"/.labware/lib/aliases/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
-	else
-		print::success "Done!"
 	fi
 done
+print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Completion Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
 	if ! install -m 644 "$file" "$HOME"/.labware/lib/completions/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
-	else
-		print::success "Done!"
 	fi
 done
+print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Function Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
 	if ! install -m 644 "$file" "$HOME"/.labware/lib/functions/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
-	else
-		print::success "Done!"
 	fi
 done
+print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing DOT Files ..."
