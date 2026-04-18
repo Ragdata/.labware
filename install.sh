@@ -96,6 +96,8 @@ clear
 
 bar::start
 
+bar::status_changed $((StepsDone)) $TotalSteps
+
 print::head "Updating System ..."
 apt update -qq
 bar::status_changed $((StepsDone++)) $TotalSteps
