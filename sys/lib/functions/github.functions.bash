@@ -26,6 +26,7 @@ clone()
 		git clone git@github.com:$*.git
 	else
 		git clone https://github.com
+	fi
 }
 # ------------------------------------------------------------------
 # getLatestReleaseInfo
