@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2004
 # shellcheck disable=SC2034
+# shellcheck disable=SC2016
+# shellcheck disable=SC1090
 ####################################################################
 # install.sh
 ####################################################################
@@ -47,6 +49,14 @@ tools=("make"
 	"libxmlsec1-dev"
 	"libffi-dev"
 	"liblzma-dev")
+
+dirs=(".backup"
+	".bashrc.d/prompts"
+	".labware/lib/aliases"
+	".labware/lib/completions"
+	".labware/lib/functions"
+	".labware/log"
+	".labware/reg")
 
 # OPERATING VARIABLES
 DEBIAN_FRONTEND=noninteractive
@@ -121,12 +131,9 @@ apt autoremove -y -qq && apt clean -qq
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Creating Installation Directories ..."
-mkdir -p "$HOME"/.backup "$HOME"/.labware "$HOME"/.bashrc.d
-cd "$HOME"/.labware || exit 1
-mkdir -p lib/aliases lib/completions lib/functions log reg
-cd -- && cd "$HOME"/.bashrc.d || exit 1
-mkdir -p prompts
-cd -- || exit 1
+for dir in "${dirs[@]}"; do
+	mkdir -p "$HOME/$dir"
+done
 print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
@@ -184,6 +191,70 @@ if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.profile "$HOME"/.profile; then
 	error::exit "Failed to install '.profile'"
 else
 	print::success "Done!"
+fi
+bar::status_changed $((StepsDone++)) $TotalSteps
+
+if [ ! -d "$HOME/.pyenv" ]; then
+	print::head "Installing PYENV ..."
+	if curl -fsSL https://pyenv.run | bash; then
+		{
+			echo
+			echo '# Pyenv Configuration';
+			echo 'export PYENV_ROOT="$HOME/.pyenv"';
+			echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
+			echo 'eval "$(pyenv init - bash)"';
+			echo '# eval "$(pyenv virtualenv-init -)"';
+		} >> ~/.bashrc
+		{
+			echo
+			echo '# Pyenv Configuration';
+			echo 'export PYENV_ROOT="$HOME/.pyenv"';
+			echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
+			echo 'eval "$(pyenv init - bash)"';
+			echo '# eval "$(pyenv virtualenv-init -)"';
+		} >> ~/.profile
+	else
+		error::exit "Failed to install PYENV"
+	fi
+	print::success "DONE!"
+	bar::status_changed $((StepsDone++)) $TotalSteps
+
+	print::head "Reloading Shell ..."
+	if ! source ~/.bashrc; then
+		error::exit "Failed to reload shell"
+	fi
+	print::success "DONE!"
+	bar::status_changed $((StepsDone++)) $TotalSteps
+
+	print::head "Installing Python ..."
+	if ! pyenv 3.14:latest; then
+		error::exit "Failed to install Python"
+	fi
+	print::success "DONE!"
+	bar::status_changed $((StepsDone++)) $TotalSteps
+
+	print::head "Set global flags ..."
+	if ! pyenv global 3.14; then
+		error::exit "Failed to set global flag"
+	fi
+
+	print::head "Setting Up Virtual Environment ..."
+	if [ ! -d "$HOME/.pyenv/versions/labenv" ]; then
+		if ! pyenv virtualenv labenv; then
+			error::exit "Failed to setup virtual environment"
+		fi
+		bar::status_changed $((StepsDone++)) $TotalSteps
+	fi
+fi
+
+pyenv activate labenv
+
+if "$DEV"; then
+	pip install -e . -q
+	lab install --debug
+else
+	pip install . -q
+	lab install
 fi
 bar::status_changed $((StepsDone++)) $TotalSteps
 
