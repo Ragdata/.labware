@@ -21,7 +21,7 @@ export SYSDIR="${BASEDIR}/sys"
 export CFGDIR="${SYSDIR}/cfg"
 export DOTSDIR="${SYSDIR}/dots"
 export ETCDIR="${SYSDIR}/etc"
-export LIBDIR="${SYSDIR}/lib"
+export LIBDIR="${BASEDIR}/lib"
 export LOGDIR="${SYSDIR}/log"
 
 export REGISTRY="${SYSDIR}/reg"
