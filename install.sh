@@ -54,7 +54,7 @@ DEBIAN_FRONTEND=noninteractive
 # PROGRESS BAR
 REMAIN=" "
 StepsDone=0
-TotalSteps=$((${#tools[@]}+3))
+TotalSteps=$((${#tools[@]}+8))
 ####################################################################
 # FUNCTIONS
 ####################################################################
@@ -98,11 +98,11 @@ bar::start
 
 print::head "Updating System ..."
 apt update -qq
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Upgrading System ..."
 apt full-upgrade -y -qq
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Build Tools ...."
 for tool in "${tools[@]}"; do
@@ -111,12 +111,12 @@ for tool in "${tools[@]}"; do
 	else
 		print::success "Successfully installed '$tool'"
 	fi
-	bar::status_changed $((${StepsDone}+1)) $TotalSteps
+	bar::status_changed $((StepsDone++)) $TotalSteps
 done
 
 print::head "Cleaning Up ..."
 apt autoremove -y -qq && apt clean -qq
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Creating Installation Directories ..."
 mkdir -p "$HOME"/.backup "$HOME"/.labware "$HOME"/.bashrc.d
@@ -125,7 +125,7 @@ mkdir -p lib/aliases lib/completions lib/functions log reg
 cd -- && cd "$HOME"/.bashrc.d || exit 1
 mkdir -p prompts
 cd -- || exit 1
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Alias Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
@@ -133,7 +133,7 @@ for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
 		print::warn "Failed to install '$file'"
 	fi
 done
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Completion Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
@@ -141,7 +141,7 @@ for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
 		print::warn "Failed to install '$file'"
 	fi
 done
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Function Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
@@ -149,7 +149,7 @@ for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
 		print::warn "Failed to install '$file'"
 	fi
 done
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing DOT Files ..."
 mkdir -p "$HOME"/.bashrc.d/prompts
@@ -177,6 +177,6 @@ fi
 if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.profile "$HOME"/.profile; then
 	error::exit "Failed to install '.profile'"
 fi
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+bar::status_changed $((StepsDone++)) $TotalSteps
 
 bar::stop
