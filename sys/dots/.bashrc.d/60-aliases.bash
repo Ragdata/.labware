@@ -36,7 +36,7 @@ if [ -f "$REGISTRY/comp/aliases.enabled" ]; then
 else
 	for file in "$ALIASES"/*; do
 		# shellcheck source=sys/lib/aliases
-		source "$ALIASES/$file"
+		source "$file"
 	done
 fi
 # ------------------------------------------------------------------

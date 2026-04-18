@@ -30,7 +30,7 @@ if [ -f "$REGISTRY/comp/functions.enabled" ]; then
 else
 	for file in "$FUNCTIONS"/*; do
 		# shellcheck source=sys/lib/functions
-		source "$FUNCTIONS/$file"
+		source "$file"
 	done
 fi
 # ------------------------------------------------------------------

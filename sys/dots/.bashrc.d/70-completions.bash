@@ -29,7 +29,7 @@ if [ -f "$REGISTRY/comp/completions.enabled" ]; then
 else
 	for file in "$COMPLETIONS"/*; do
 		# shellcheck source=sys/lib/completions
-		source "$COMPLETIONS/$file"
+		source "$file"
 	done
 fi
 # ------------------------------------------------------------------
