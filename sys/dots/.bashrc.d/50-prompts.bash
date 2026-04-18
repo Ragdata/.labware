@@ -12,4 +12,5 @@
 script="$HOME/.bashrc.d/prompts/${DOTFILES_PROMPT,,}.bash"
 file=$(checkOverride "$script")
 
+# shellcheck disable=SC1090
 source "$file"
