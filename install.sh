@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2004
+# shellcheck disable=SC2034
 ####################################################################
 # install.sh
 ####################################################################
@@ -17,16 +18,16 @@ set -e
 # LOCAL VARIABLES
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-. vendor/progressbar
+#. vendor/progressbar
 ####################################################################
 # VARIABLES
 ####################################################################
 # Color codes for output
-export RED='\033[0;31m'
-export GREEN='\033[0;32m'
-export YELLOW='\033[0;33m'
-export BLUE='\033[0;34m'
-export NC='\033[0m' # No Color
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
 # TOOLS
 tools=("make"
@@ -47,13 +48,17 @@ tools=("make"
 	"libffi-dev"
 	"liblzma-dev")
 
-# PROGRESSBAR
-export REMAIN=" "
-export StepsDone=0
-export TotalSteps=$((${#tools[@]}+3))
-
 # OPERATING VARIABLES
-export DEBIAN_FRONTEND=noninteractive
+DEBIAN_FRONTEND=noninteractive
+
+# PROGRESS BAR
+set -- "$(stty size)"
+HEIGHT=$1
+WIDTH=$2
+PROGRESS_STICKY=yes
+PROGRESS_WIDTH=$WIDTH
+PROGRESS_NUMBER_OF_STEPS=$((${#tools[@]}+8))
+source vendor/progress.sh
 ####################################################################
 # FUNCTIONS
 ####################################################################
@@ -93,15 +98,13 @@ fi
 
 clear
 
-bar::start
-
 print::head "Updating System ..."
 apt update -qq
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+progress_step
 
 print::head "Upgrading System ..."
 apt full-upgrade -y -qq
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
+progress_step
 
 print::head "Installing Build Tools ...."
 for tool in "${tools[@]}"; do
@@ -110,14 +113,12 @@ for tool in "${tools[@]}"; do
 	else
 		print::success "Successfully installed '$tool'"
 	fi
-	bar::status_changed $((${StepsDone}+1)) $TotalSteps
+	progress_step
 done
 
 print::head "Cleaning Up ..."
 apt autoremove -y -qq && apt clean -qq
-bar::status_changed $((${StepsDone}+1)) $TotalSteps
-
-bar::stop
+progress_step
 
 print::head "Creating Installation Directories ..."
 mkdir -p "$HOME"/.backup "$HOME"/.labware "$HOME"/.bashrc.d
@@ -126,72 +127,57 @@ mkdir -p lib/aliases lib/completions lib/functions log reg
 cd -- && cd "$HOME"/.bashrc.d
 mkdir -p prompts
 cd --
+progress_step
 
 print::head "Installing Alias Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
-	if install -m 644 "$file" "$HOME"/.labware/lib/aliases/"$(basename "$file")"; then
-		print::default "  - $file"
-	else
+	if ! install -m 644 "$file" "$HOME"/.labware/lib/aliases/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
 	fi
 done
+progress_step
 
 print::head "Installing Completion Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
-	if install -m 644 "$file" "$HOME"/.labware/lib/completions/"$(basename "$file")"; then
-		print::default "  - $file"
-	else
+	if ! install -m 644 "$file" "$HOME"/.labware/lib/completions/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
 	fi
 done
+progress_step
 
 print::head "Installing Function Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
-	if install -m 644 "$file" "$HOME"/.labware/lib/functions/"$(basename "$file")"; then
-		print::default "  - $file"
-	else
+	if ! install -m 644 "$file" "$HOME"/.labware/lib/functions/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
 	fi
 done
+progress_step
 
 print::head "Installing DOT Files ..."
 mkdir -p "$HOME"/.bashrc.d/prompts
-print::default "  - .bashrc.d"
 for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/*; do
 	if [ ! -d "$file" ]; then
-		if install -m 644 "$file" "$HOME"/.bashrc.d/"$(basename "$file")"; then
-			print::default "    - $file"
-		else
+		if ! install -m 644 "$file" "$HOME"/.bashrc.d/"$(basename "$file")"; then
 			print::warn "Failed to install '$file'"
 		fi
 	fi
 done
-print::default "    - prompts"
 for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/*; do
-	if install -m 644 "$file" "$HOME"/.bashrc.d/prompts/"$(basename "$file")"; then
-		print::default "      - $file"
-	else
+	if ! install -m 644 "$file" "$HOME"/.bashrc.d/prompts/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
 	fi
 done
 if ! install -m 644 "$HOME"/.bashrc "$HOME"/.backup/.bashrc.OLD; then
 	print::warn "Failed to backup '.bashrc'"
-else
-	print::success "Backed up '.bashrc'"
 fi
 if ! install -m 644 "$HOME"/.profile "$HOME"/.backup/.profile.OLD ; then
 	print::warn "Failed to backup '.profile'"
-else
-	print::success "Backed up '.profile'"
 fi
-if install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc "$HOME"/.bashrc; then
-	print::default "  - .bashrc"
-else
+if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc "$HOME"/.bashrc; then
 	error::exit "Failed to install '.bashrc'"
 fi
-if install -m 644 "$SCRIPT_DIR"/sys/dots/.profile "$HOME"/.profile; then
-	print::default "  - .profile"
-else
+if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.profile "$HOME"/.profile; then
 	error::exit "Failed to install '.profile'"
 fi
+progress_step
 
