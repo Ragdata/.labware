@@ -133,6 +133,8 @@ print::head "Installing Alias Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
 	if ! install -m 644 "$file" "$HOME"/.labware/lib/aliases/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
+	else
+		print::success "Done!"
 	fi
 done
 bar::status_changed $((StepsDone++)) $TotalSteps
@@ -141,6 +143,8 @@ print::head "Installing Completion Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
 	if ! install -m 644 "$file" "$HOME"/.labware/lib/completions/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
+	else
+		print::success "Done!"
 	fi
 done
 bar::status_changed $((StepsDone++)) $TotalSteps
@@ -149,6 +153,8 @@ print::head "Installing Function Files ..."
 for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
 	if ! install -m 644 "$file" "$HOME"/.labware/lib/functions/"$(basename "$file")"; then
 		print::warn "Failed to install '$file'"
+	else
+		print::success "Done!"
 	fi
 done
 bar::status_changed $((StepsDone++)) $TotalSteps
@@ -178,6 +184,8 @@ if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.bashrc "$HOME"/.bashrc; then
 fi
 if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.profile "$HOME"/.profile; then
 	error::exit "Failed to install '.profile'"
+else
+	print::success "Done!"
 fi
 bar::status_changed $((StepsDone++)) $TotalSteps
 
