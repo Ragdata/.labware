@@ -194,6 +194,8 @@ else
 fi
 bar::status_changed $((StepsDone++)) $TotalSteps
 
+bar::stop
+
 if [ ! -d "$HOME/.pyenv" ]; then
 	print::head "Installing PYENV ..."
 	if curl -fsSL https://pyenv.run | bash; then
@@ -217,21 +219,18 @@ if [ ! -d "$HOME/.pyenv" ]; then
 		error::exit "Failed to install PYENV"
 	fi
 	print::success "DONE!"
-	bar::status_changed $((StepsDone++)) $TotalSteps
 
 	print::head "Reloading Shell ..."
 	if ! source ~/.bashrc; then
 		error::exit "Failed to reload shell"
 	fi
 	print::success "DONE!"
-	bar::status_changed $((StepsDone++)) $TotalSteps
 
 	print::head "Installing Python ..."
 	if ! pyenv 3.14:latest; then
 		error::exit "Failed to install Python"
 	fi
 	print::success "DONE!"
-	bar::status_changed $((StepsDone++)) $TotalSteps
 
 	print::head "Set global flags ..."
 	if ! pyenv global 3.14; then
@@ -243,7 +242,6 @@ if [ ! -d "$HOME/.pyenv" ]; then
 		if ! pyenv virtualenv labenv; then
 			error::exit "Failed to setup virtual environment"
 		fi
-		bar::status_changed $((StepsDone++)) $TotalSteps
 	fi
 fi
 
@@ -256,6 +254,3 @@ else
 	pip install . -q
 	lab install
 fi
-bar::status_changed $((StepsDone++)) $TotalSteps
-
-bar::stop
