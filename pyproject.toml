@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "labware"
+description = "Python modules for homelabs"
+dynamic = ["version"]
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+authors = [{ name = "Ragdata", email = "ragdata@ragdata.dev" }]
+keywords =["homelab", "self-hosting", "server-admin", "cli", "python"]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"Programming Language :: Python :: 3.14",
+	"Programming Language :: Python :: Implementation :: CPython",
+	"Programming Language :: Python :: Implementation :: PyPy",
+	"Topic :: Software Development :: Modules",
+	"Topic :: Utilities",
+	"Typing :: Typed"
+]
+dependencies = [
+	"typer",
+	"sqlitedict",
+	"jinja2"
+]
+
+[project.urls]
+Repository = "https://github.com/Ragdata/.labware"
+Issues = "https://github.com/Ragdata/.labware/issues"
+
+[project.optional-dependencies]
+all = [
+	"typer",
+	"sqlitedict",
+	"jinja2"
+]
+dev = []
+docs = []
+
+[project.scripts]
+lab = "labware.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include =["labware*"]
+namespaces = false
+
+[tool.setuptools.dynamic]
+version = {attr = "labware.__version__"}
