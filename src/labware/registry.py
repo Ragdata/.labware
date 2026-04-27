@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import Any, Optional, Iterator, Dict
 from sqlitedict import SqliteDict
 
-
 from .logger import logger
 from .config import config
 
@@ -88,6 +87,23 @@ class Registry:
 	def __setitem__(self, key: str, value: Any) -> None:
 		"""Support dict-like assignment: registry[key] = value"""
 		self.set(key, value)
+
+	def _get_store(self) -> SqliteDict:
+		"""
+		Lazily initialize and return the SqliteDict store.
+
+		Returns:
+			SqliteDict: The underlying storage dictionary.
+		"""
+		if self._store is None:
+			try:
+				self._store = SqliteDict(str(self.db_path), tablename=self.table)
+				logger.debug(f"Opened registry database at {self.db_path}")
+			except Exception as e:
+				logger.error(f"Failed to initialize registry: {e}")
+				raise
+		# noinspection PyTypeChecker
+		return self._store
 
 	def commit(self) -> None:
 		"""Commit pending changes to disk."""
@@ -170,23 +186,6 @@ class Registry:
 		except Exception as e:
 			logger.error(f"Failed to check registry key '{key}': {e}")
 			raise
-
-	def _get_store(self) -> SqliteDict:
-		"""
-		Lazily initialize and return the SqliteDict store.
-
-		Returns:
-			SqliteDict: The underlying storage dictionary.
-		"""
-		if self._store is None:
-			try:
-				self._store = SqliteDict(str(self.db_path), tablename=self.table)
-				logger.debug(f"Opened registry database at {self.db_path}")
-			except Exception as e:
-				logger.error(f"Failed to initialize registry: {e}")
-				raise
-		# noinspection PyTypeChecker
-		return self._store
 
 	def get(self, key: str, default: Any = None) -> Any:
 		"""
