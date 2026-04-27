@@ -32,10 +32,12 @@ def version(output: bool = True):
 #-------------------------------------------------------------------
 # MODULE OBJECTS
 #-------------------------------------------------------------------
-register = Path.home() / ".labware/reg/registry"
-regisdir = register.parent
+# register = Path.home() / ".labware/reg/registry"
+# regisdir = register.parent
+#
+# if not register.exists():
+# 	regisdir.mkdir(parents=True, exist_ok=True, mode=0o755)
 
-if not register.exists():
-	regisdir.mkdir(parents=True, exist_ok=True)
-
-registry = 
+# registry = Registry()
+#
+# x_registry = registry
