@@ -25,7 +25,9 @@ classifiers = [
 dependencies = [
 	"typer",
 	"sqlitedict",
-	"jinja2"
+	"jinja2",
+	"passlib",
+	"bcrypt"
 ]
 
 [project.urls]
@@ -36,7 +38,9 @@ Issues = "https://github.com/Ragdata/.labware/issues"
 all = [
 	"typer",
 	"sqlitedict",
-	"jinja2"
+	"jinja2",
+	"passlib",
+	"bcrypt"
 ]
 dev = []
 docs = []

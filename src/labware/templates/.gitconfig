@@ -1,0 +1,28 @@
+[user]
+	name = {{ user_name }}
+	email = {{ user_email }}
+	signingkey = {{ signing_key }}
+[commit]
+	gpgsign = true
+[alias]
+	st = status
+	co = checkout
+	cm = commit -v
+	amend = commit --amend
+	reword = commit --amend
+	undo = reset --soft HEAD^
+	df = diff --color-words
+	mg = merge --no-ff
+
+	hist = log --pretty=format:'%Cred%h%Creset %ad | %Cgreen%s%d%Creset [%an]' --graph --date=short
+[init]
+	defaultBranch = master
+[pull]
+	rebase = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[core]
+	autocrlf = input

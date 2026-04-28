@@ -1,0 +1,27 @@
+Include /etc/ssh/sshd_config.d/*.conf
+
+Port 22
+
+# Authentication
+
+LoginGraceTime 300
+PermitRootLogin prohibit-password
+MaxAuthTries 3
+
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+KbdInteractiveAuthentication no
+
+UsePAM yes
+
+X11Forwarding no
+PrintMotd no
+
+AcceptEnv LANG LC_*
+
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+Protocol 2
+
+AllowUsers root {{ NEW_USER }}
