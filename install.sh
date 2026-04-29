@@ -64,7 +64,7 @@ DEBIAN_FRONTEND=noninteractive
 # PROGRESS BAR
 REMAIN=" "
 StepsDone=0
-TotalSteps=$((${#tools[@]}+8))
+TotalSteps=$((${#tools[@]}+9))
 ####################################################################
 # FUNCTIONS
 ####################################################################
@@ -184,6 +184,11 @@ if ! install -m 644 "$SCRIPT_DIR"/sys/dots/.profile "$HOME"/.profile; then
 else
 	print::success "Done!"
 fi
+bar::status_changed $((StepsDone++)) $TotalSteps
+
+print::head "Installing Hardening Config Files"
+install::files "$SCRIPT_DIR"/sys/etc "$HOME"/.labware/etc
+print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 bar::stop
