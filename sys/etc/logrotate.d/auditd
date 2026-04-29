@@ -1,0 +1,13 @@
+/var/log/audit/*.log {
+	daily
+	rotate 7
+	compress
+	delaycompress
+	missingok
+	notifempty
+	create 0600 root root
+	sharedscripts
+	postrotate
+		/usr/bin/systemctl kill -s USR1 auditd.service >/dev/null 2>&1 || true
+	endscript
+}

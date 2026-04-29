@@ -1,0 +1,14 @@
+[Unit]
+Description=AIDE File Integrity Check
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/aide --check
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aide
+User=root
+Nice=19
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
