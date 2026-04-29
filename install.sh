@@ -89,6 +89,21 @@ error::exit() {
 	print::error "$1"
 	exit 1
 }
+
+install::files() {
+    local src="$1" dst="$2"
+
+    for item in "$src"/*; do
+        if [ -d "$item" ]; then
+            mkdir -p "$dst/$(basename "$item")"
+            install::files "$item" "$dst/$(basename "$item")"
+        else
+            if ! install -m 644 "$item" "$dst/$(basename "$item")"; then
+                print::warn "Failed to install '$item'"
+            fi
+        fi
+    done
+}
 ####################################################################
 # PROCESS
 ####################################################################
@@ -138,46 +153,23 @@ print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Alias Files ..."
-for file in "$SCRIPT_DIR"/sys/lib/aliases/*; do
-	if ! install -m 644 "$file" "$HOME"/.labware/lib/aliases/"$(basename "$file")"; then
-		print::warn "Failed to install '$file'"
-	fi
-done
+install::files "$SCRIPT_DIR"/sys/lib/aliases "$HOME"/.labware/lib/aliases
 print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Completion Files ..."
-for file in "$SCRIPT_DIR"/sys/lib/completions/*; do
-	if ! install -m 644 "$file" "$HOME"/.labware/lib/completions/"$(basename "$file")"; then
-		print::warn "Failed to install '$file'"
-	fi
-done
+install::files "$SCRIPT_DIR"/sys/lib/completions "$HOME"/.labware/lib/completions
 print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing Function Files ..."
-for file in "$SCRIPT_DIR"/sys/lib/functions/*; do
-	if ! install -m 644 "$file" "$HOME"/.labware/lib/functions/"$(basename "$file")"; then
-		print::warn "Failed to install '$file'"
-	fi
-done
+install::files "$SCRIPT_DIR"/sys/lib/functions "$HOME"/.labware/lib/functions
 print::success "DONE!"
 bar::status_changed $((StepsDone++)) $TotalSteps
 
 print::head "Installing DOT Files ..."
 mkdir -p "$HOME"/.bashrc.d/prompts
-for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/*; do
-	if [ ! -d "$file" ]; then
-		if ! install -m 644 "$file" "$HOME"/.bashrc.d/"$(basename "$file")"; then
-			print::warn "Failed to install '$file'"
-		fi
-	fi
-done
-for file in "$SCRIPT_DIR"/sys/dots/.bashrc.d/prompts/*; do
-	if ! install -m 644 "$file" "$HOME"/.bashrc.d/prompts/"$(basename "$file")"; then
-		print::warn "Failed to install '$file'"
-	fi
-done
+install::files "$SCRIPT_DIR"/sys/dots/.bashrc.d "$HOME"/.bashrc.d
 if ! install -m 644 "$HOME"/.bashrc "$HOME"/.backup/.bashrc.OLD; then
 	print::warn "Failed to backup '.bashrc'"
 fi
