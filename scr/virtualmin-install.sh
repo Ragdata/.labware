@@ -14,7 +14,7 @@ if [ "$(id -u)" -ne 0 ]; then
 	exit 1
 fi
 
-apt update && apt full-upgrade -y
+# apt update && apt full-upgrade -y
 
 sh -c "$(curl -fsSL https://software.virtualmin.com/gpl/scripts/virtualmin-install.sh)" -- --bundle LEMP
 
