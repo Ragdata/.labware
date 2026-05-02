@@ -218,31 +218,39 @@ if [ ! -d "$HOME/.pyenv" ]; then
 	print::success "DONE!"
 
 	print::head "Reloading Shell ..."
-	if ! source ~/.bashrc; then
-		error::exit "Failed to reload shell"
+	# Source pyenv configuration directly instead of relying on bashrc
+	export PYENV_ROOT="$HOME/.pyenv"
+	export PATH="$PYENV_ROOT/bin:$PATH"
+	eval "$(pyenv init - bash)"
+	print::success "Pyenv environment loaded!"
+
+	# Verify pyenv is available
+	if ! command -v pyenv &> /dev/null; then
+		error::exit "Pyenv command not found after reload"
 	fi
-	print::success "DONE!"
 
 	print::head "Installing Python ..."
-	if ! pyenv 3.14:latest; then
+	# Use full path to pyenv to avoid PATH issues
+	PYENV_CMD="$HOME/.pyenv/bin/pyenv"
+	if ! "$PYENV_CMD" install 3.14:latest; then
 		error::exit "Failed to install Python"
 	fi
 	print::success "DONE!"
 
 	print::head "Set global flags ..."
-	if ! pyenv global 3.14; then
+	if ! "$PYENV_CMD" global 3.14; then
 		error::exit "Failed to set global flag"
 	fi
 
 	print::head "Setting Up Virtual Environment ..."
 	if [ ! -d "$HOME/.pyenv/versions/labenv" ]; then
-		if ! pyenv virtualenv labenv; then
+		if ! "$PYENV_CMD" virtualenv labenv; then
 			error::exit "Failed to setup virtual environment"
 		fi
 	fi
 fi
 
-pyenv activate labenv
+"$PYENV_CMD" activate labenv
 
 if "$DEV"; then
 	pip install -e . -q
