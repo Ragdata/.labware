@@ -61,6 +61,15 @@ dirs=(".backup"
 # OPERATING VARIABLES
 DEBIAN_FRONTEND=noninteractive
 
+# Detect the actual user (not root when running with sudo)
+if [ "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    ACTUAL_USER="$SUDO_USER"
+    ACTUAL_HOME=$(eval echo "~$SUDO_USER")
+else
+    ACTUAL_USER="$USER"
+    ACTUAL_HOME="$HOME"
+fi
+
 # PROGRESS BAR
 REMAIN=" "
 StepsDone=0
@@ -193,11 +202,11 @@ bar::status_changed $((StepsDone++)) $TotalSteps
 
 bar::stop
 
-PYENV_CMD="$HOME/.pyenv/bin/pyenv"
+PYENV_CMD="$ACTUAL_HOME/.pyenv/bin/pyenv"
 
-if [ ! -d "$HOME/.pyenv" ]; then
+if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
 	print::head "Installing PYENV ..."
-	if curl -fsSL https://pyenv.run | bash; then
+	if sudo -u "$ACTUAL_USER" bash -c 'curl -fsSL https://pyenv.run | bash'; then
 		{
 			echo
 			echo '# Pyenv Configuration';
@@ -205,7 +214,7 @@ if [ ! -d "$HOME/.pyenv" ]; then
 			echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
 			echo 'eval "$(pyenv init - bash)"';
 			echo '# eval "$(pyenv virtualenv-init -)"';
-		} >> ~/.bashrc
+		} >> "$ACTUAL_HOME/.bashrc"
 		{
 			echo
 			echo '# Pyenv Configuration';
@@ -213,7 +222,7 @@ if [ ! -d "$HOME/.pyenv" ]; then
 			echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
 			echo 'eval "$(pyenv init - bash)"';
 			echo '# eval "$(pyenv virtualenv-init -)"';
-		} >> ~/.profile
+		} >> "$ACTUAL_HOME/.profile"
 	else
 		error::exit "Failed to install PYENV"
 	fi
@@ -221,7 +230,7 @@ if [ ! -d "$HOME/.pyenv" ]; then
 
 	print::head "Reloading Shell ..."
 	# Source pyenv configuration directly instead of relying on bashrc
-	export PYENV_ROOT="$HOME/.pyenv"
+	export PYENV_ROOT="$ACTUAL_HOME/.pyenv"
 	export PATH="$PYENV_ROOT/bin:$PATH"
 	eval "$(pyenv init - bash)"
 	print::success "Pyenv environment loaded!"
@@ -233,19 +242,19 @@ if [ ! -d "$HOME/.pyenv" ]; then
 
 	print::head "Installing Python ..."
 	# Use full path to pyenv to avoid PATH issues
-	if ! "$PYENV_CMD" install 3.14:latest; then
+	if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" install 3.14:latest; then
 		error::exit "Failed to install Python"
 	fi
 	print::success "DONE!"
 
 	print::head "Set global flags ..."
-	if ! "$PYENV_CMD" global 3.14; then
+	if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" global 3.14; then
 		error::exit "Failed to set global flag"
 	fi
 
 	print::head "Setting Up Virtual Environment ..."
-	if [ ! -d "$HOME/.pyenv/versions/labenv" ]; then
-		if ! "$PYENV_CMD" virtualenv labenv; then
+	if [ ! -d "$ACTUAL_HOME/.pyenv/versions/labenv" ]; then
+		if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" virtualenv labenv; then
 			error::exit "Failed to setup virtual environment"
 		fi
 	fi
@@ -254,7 +263,7 @@ fi
 # Activate pyenv virtual environment for script execution
 print::head "Activating Virtual Environment ..."
 # Source the virtual environment activation script directly
-source "$HOME/.pyenv/versions/labenv/bin/activate"
+source "$ACTUAL_HOME/.pyenv/versions/labenv/bin/activate"
 print::success "Virtual environment activated!"
 
 # Verify pip and python are available
