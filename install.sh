@@ -251,9 +251,24 @@ if [ ! -d "$HOME/.pyenv" ]; then
 	fi
 fi
 
-"$PYENV_CMD" activate labenv
+# Activate pyenv virtual environment for script execution
+print::head "Activating Virtual Environment ..."
+# Source the virtual environment activation script directly
+source "$HOME/.pyenv/versions/labenv/bin/activate"
+print::success "Virtual environment activated!"
 
-if "$DEV"; then
+# Verify pip and python are available
+if ! command -v pip &> /dev/null; then
+    error::exit "pip command not found in virtual environment"
+fi
+if ! command -v python &> /dev/null; then
+    error::exit "python command not found in virtual environment"
+fi
+
+# Check if DEV environment variable is set (default to false if not set)
+DEV=${DEV:-false}
+
+if [ "$DEV" = "true" ]; then
 	pip install -e . -q
 	lab install --debug
 else
