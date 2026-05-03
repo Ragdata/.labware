@@ -22,6 +22,45 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
 . vendor/progressbar
 ####################################################################
+# FUNCTIONS
+####################################################################
+print::message() {
+	local color="${2:-$GREEN}"
+	echo -e "${color}${1}${NC}"
+}
+
+print::error() { print::message "[ERROR]: ${1}" "$RED"; }
+
+print::warn() { print::message "[WARNING]: ${1}" "$YELLOW"; }
+
+print::info() { print::message "[INFO: ${1}" "$BLUE"; }
+
+print::success() { print::message "[SUCCESS]: ${1}" "$GREEN"; }
+
+print::head() { print::message "${1}" "$YELLOW"; }
+
+print::default() { print::message "${1}"; }
+
+error::exit() {
+	print::error "$1"
+	exit 1
+}
+
+install::files() {
+    local src="$1" dst="$2"
+
+    for item in "$src"/*; do
+        if [ -d "$item" ]; then
+            mkdir -p "$dst/$(basename "$item")"
+            install::files "$item" "$dst/$(basename "$item")"
+        else
+            if ! install -m 644 "$item" "$dst/$(basename "$item")"; then
+                print::warn "Failed to install '$item'"
+            fi
+        fi
+    done
+}
+####################################################################
 # VARIABLES
 ####################################################################
 # Color codes for output
@@ -62,57 +101,33 @@ dirs=(".backup"
 DEBIAN_FRONTEND=noninteractive
 
 # Detect the actual user (not root when running with sudo)
-if [ "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
     ACTUAL_USER="$SUDO_USER"
     ACTUAL_HOME=$(eval echo "~$SUDO_USER")
-else
+    print::info "Detected sudo user: $ACTUAL_USER (home: $ACTUAL_HOME)"
+elif [ "$USER" != "root" ]; then
     ACTUAL_USER="$USER"
     ACTUAL_HOME="$HOME"
+    print::info "Running as regular user: $ACTUAL_USER (home: $ACTUAL_HOME)"
+else
+    # Fallback: try to find the user who owns the script directory
+    SCRIPT_OWNER=$(stat -c '%U' "$SCRIPT_DIR")
+    if [ "$SCRIPT_OWNER" != "root" ]; then
+        ACTUAL_USER="$SCRIPT_OWNER"
+        ACTUAL_HOME=$(eval echo "~$SCRIPT_OWNER")
+        print::info "Detected script owner: $ACTUAL_USER (home: $ACTUAL_HOME)"
+    else
+        error::exit "Cannot determine actual user. Please run with sudo from a regular user account."
+    fi
 fi
+
+# Debug: Show detected user info
+print::info "Running as: USER=$USER, SUDO_USER=$SUDO_USER, ACTUAL_USER=$ACTUAL_USER, ACTUAL_HOME=$ACTUAL_HOME"
 
 # PROGRESS BAR
 REMAIN=" "
 StepsDone=0
 TotalSteps=$((${#tools[@]}+9))
-####################################################################
-# FUNCTIONS
-####################################################################
-print::message() {
-	local color="${2:-$GREEN}"
-	echo -e "${color}${1}${NC}"
-}
-
-print::error() { print::message "[ERROR]: ${1}" "$RED"; }
-
-print::warn() { print::message "[WARNING]: ${1}" "$YELLOW"; }
-
-print::info() { print::message "[INFO: ${1}" "$BLUE"; }
-
-print::success() { print::message "[SUCCESS]: ${1}" "$GREEN"; }
-
-print::head() { print::message "${1}" "$YELLOW"; }
-
-print::default() { print::message "${1}"; }
-
-error::exit() {
-	print::error "$1"
-	exit 1
-}
-
-install::files() {
-    local src="$1" dst="$2"
-
-    for item in "$src"/*; do
-        if [ -d "$item" ]; then
-            mkdir -p "$dst/$(basename "$item")"
-            install::files "$item" "$dst/$(basename "$item")"
-        else
-            if ! install -m 644 "$item" "$dst/$(basename "$item")"; then
-                print::warn "Failed to install '$item'"
-            fi
-        fi
-    done
-}
 ####################################################################
 # PROCESS
 ####################################################################
@@ -262,8 +277,23 @@ fi
 
 # Activate pyenv virtual environment for script execution
 print::head "Activating Virtual Environment ..."
-# Source the virtual environment activation script directly
-source "$ACTUAL_HOME/.pyenv/versions/labenv/bin/activate"
+# Debug: Show what we're trying to source
+print::info "Attempting to source: $ACTUAL_HOME/.pyenv/versions/labenv/bin/activate"
+# Check if the activation script exists
+if [ ! -f "$ACTUAL_HOME/.pyenv/versions/labenv/bin/activate" ]; then
+    print::error "Virtual environment activation script not found at: $ACTUAL_HOME/.pyenv/versions/labenv/bin/activate"
+    print::info "Checking known locations..."
+    # Fallback: try known locations
+    if [ -f "/home/ragdata/.pyenv/versions/labenv/bin/activate" ]; then
+        print::info "Found at /home/ragdata/.pyenv/versions/labenv/bin/activate - using fallback"
+        source "/home/ragdata/.pyenv/versions/labenv/bin/activate"
+    else
+        error::exit "Cannot find virtual environment activation script"
+    fi
+else
+    # Source the virtual environment activation script directly
+    source "$ACTUAL_HOME/.pyenv/versions/labenv/bin/activate"
+fi
 print::success "Virtual environment activated!"
 
 # Verify pip and python are available
