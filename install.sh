@@ -193,6 +193,8 @@ bar::status_changed $((StepsDone++)) $TotalSteps
 
 bar::stop
 
+PYENV_CMD="$HOME/.pyenv/bin/pyenv"
+
 if [ ! -d "$HOME/.pyenv" ]; then
 	print::head "Installing PYENV ..."
 	if curl -fsSL https://pyenv.run | bash; then
@@ -231,7 +233,6 @@ if [ ! -d "$HOME/.pyenv" ]; then
 
 	print::head "Installing Python ..."
 	# Use full path to pyenv to avoid PATH issues
-	PYENV_CMD="$HOME/.pyenv/bin/pyenv"
 	if ! "$PYENV_CMD" install 3.14:latest; then
 		error::exit "Failed to install Python"
 	fi
