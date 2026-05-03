@@ -100,25 +100,47 @@ dirs=(".backup"
 # OPERATING VARIABLES
 DEBIAN_FRONTEND=noninteractive
 
-# Detect the actual user (not root when running with sudo)
+# Detect the actual user for pyenv operations
+# This script is designed to run as root, but pyenv should be for the regular user
 if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    # Run with sudo from regular user
     ACTUAL_USER="$SUDO_USER"
     ACTUAL_HOME=$(eval echo "~$SUDO_USER")
     print::info "Detected sudo user: $ACTUAL_USER (home: $ACTUAL_HOME)"
-elif [ "$USER" != "root" ]; then
+elif [ "$USER" = "root" ]; then
+    # Running as root - find the appropriate user for pyenv
+    # Check if there's a SUDO_USER set from a previous sudo
+    if [ -n "$SUDO_USER" ]; then
+        ACTUAL_USER="$SUDO_USER"
+        ACTUAL_HOME=$(eval echo "~$SUDO_USER")
+        print::info "Using previous sudo user: $ACTUAL_USER (home: $ACTUAL_HOME)"
+    else
+        # No sudo user - check script owner or common users
+        SCRIPT_OWNER=$(stat -c '%U' "$SCRIPT_DIR")
+        if [ "$SCRIPT_OWNER" != "root" ]; then
+            ACTUAL_USER="$SCRIPT_OWNER"
+            ACTUAL_HOME=$(eval echo "~$SCRIPT_OWNER")
+            print::info "Using script owner: $ACTUAL_USER (home: $ACTUAL_HOME)"
+        else
+            # Fallback: look for existing pyenv installation
+            for potential_user in "ragdata" "$(whoami 2>/dev/null | head -1)" "$(logname 2>/dev/null)"; do
+                if [ -d "/home/$potential_user/.pyenv" ]; then
+                    ACTUAL_USER="$potential_user"
+                    ACTUAL_HOME="/home/$potential_user"
+                    print::info "Found existing pyenv for user: $ACTUAL_USER (home: $ACTUAL_HOME)"
+                    break
+                fi
+            done
+            if [ -z "$ACTUAL_USER" ]; then
+                error::exit "Cannot determine user for pyenv operations. Please run with sudo from a regular user account."
+            fi
+        fi
+    fi
+else
+    # Running as regular user
     ACTUAL_USER="$USER"
     ACTUAL_HOME="$HOME"
     print::info "Running as regular user: $ACTUAL_USER (home: $ACTUAL_HOME)"
-else
-    # Fallback: try to find the user who owns the script directory
-    SCRIPT_OWNER=$(stat -c '%U' "$SCRIPT_DIR")
-    if [ "$SCRIPT_OWNER" != "root" ]; then
-        ACTUAL_USER="$SCRIPT_OWNER"
-        ACTUAL_HOME=$(eval echo "~$SCRIPT_OWNER")
-        print::info "Detected script owner: $ACTUAL_USER (home: $ACTUAL_HOME)"
-    else
-        error::exit "Cannot determine actual user. Please run with sudo from a regular user account."
-    fi
 fi
 
 # Debug: Show detected user info
