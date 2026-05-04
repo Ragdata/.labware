@@ -33,7 +33,7 @@ print::error() { print::message "[ERROR]: ${1}" "$RED"; }
 
 print::warn() { print::message "[WARNING]: ${1}" "$YELLOW"; }
 
-print::info() { print::message "[INFO: ${1}" "$BLUE"; }
+print::info() { print::message "[INFO]: ${1}" "$BLUE"; }
 
 print::success() { print::message "[SUCCESS]: ${1}" "$GREEN"; }
 
@@ -289,12 +289,13 @@ if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
 		error::exit "Failed to set global flag"
 	fi
 
-	print::head "Setting Up Virtual Environment ..."
-	if [ ! -d "$ACTUAL_HOME/.pyenv/versions/labenv" ]; then
-		if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" virtualenv labenv; then
-			error::exit "Failed to setup virtual environment"
-		fi
-	fi
+fi
+
+print::head "Setting Up Virtual Environment ..."
+if [ ! -d "$ACTUAL_HOME/.pyenv/versions/labenv" ]; then
+    if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" virtualenv labenv; then
+        error::exit "Failed to setup virtual environment"
+    fi
 fi
 
 # Activate pyenv virtual environment for script execution
