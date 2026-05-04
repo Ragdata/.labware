@@ -243,7 +243,7 @@ PYENV_CMD="$ACTUAL_HOME/.pyenv/bin/pyenv"
 
 if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
 	print::head "Installing PYENV ..."
-	if sudo -u "$ACTUAL_USER" bash -c 'curl -fsSL https://pyenv.run | bash'; then
+	if bash -c 'curl -fsSL https://pyenv.run | bash'; then
 		{
 			echo
 			echo '# Pyenv Configuration';
@@ -279,13 +279,13 @@ if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
 
 	print::head "Installing Python ..."
 	# Use full path to pyenv to avoid PATH issues
-	if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" install 3.14:latest; then
+	if ! "$PYENV_CMD" install 3.14:latest; then
 		error::exit "Failed to install Python"
 	fi
 	print::success "DONE!"
 
 	print::head "Set global flags ..."
-	if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" global 3.14; then
+	if ! "$PYENV_CMD" global 3.14; then
 		error::exit "Failed to set global flag"
 	fi
 
@@ -293,7 +293,7 @@ fi
 
 print::head "Setting Up Virtual Environment ..."
 if [ ! -d "$ACTUAL_HOME/.pyenv/versions/labenv" ]; then
-    if ! sudo -u "$ACTUAL_USER" "$PYENV_CMD" virtualenv labenv; then
+    if ! "$PYENV_CMD" virtualenv labenv; then
         error::exit "Failed to setup virtual environment"
     fi
 fi
