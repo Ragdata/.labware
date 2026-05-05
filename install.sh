@@ -243,7 +243,7 @@ PYENV_CMD="$ACTUAL_HOME/.pyenv/bin/pyenv"
 
 if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
 	print::head "Installing PYENV ..."
-	if bash -c 'curl -fsSL https://pyenv.run | bash'; then
+	if HOME="$ACTUAL_HOME" bash -c 'curl -fsSL https://pyenv.run | bash'; then
 		{
 			echo
 			echo '# Pyenv Configuration';
@@ -260,36 +260,44 @@ if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
 			echo 'eval "$(pyenv init - bash)"';
 			echo '# eval "$(pyenv virtualenv-init -)"';
 		} >> "$ACTUAL_HOME/.profile"
+		print::success "PYENV installed!"
 	else
 		error::exit "Failed to install PYENV"
 	fi
-	print::success "DONE!"
+else
+	print::head "PYENV Already Installed"
+	print::info "Using existing PYENV at $ACTUAL_HOME/.pyenv"
+fi
 
-	print::head "Reloading Shell ..."
-	# Source pyenv configuration directly instead of relying on bashrc
-	export PYENV_ROOT="$ACTUAL_HOME/.pyenv"
-	export PATH="$PYENV_ROOT/bin:$PATH"
-	eval "$(pyenv init - bash)"
-	print::success "Pyenv environment loaded!"
+print::head "Reloading Shell ..."
+# Source pyenv configuration directly instead of relying on bashrc
+export PYENV_ROOT="$ACTUAL_HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+print::success "Pyenv environment loaded!"
 
-	# Verify pyenv is available
-	if ! command -v pyenv &> /dev/null; then
-		error::exit "Pyenv command not found after reload"
-	fi
+# Verify pyenv is available
+if ! command -v pyenv &> /dev/null; then
+	error::exit "Pyenv command not found after reload"
+fi
 
-	print::head "Installing Python ..."
+print::head "Installing Python ..."
+# Check if Python 3.14 is already installed
+if [ ! -d "$ACTUAL_HOME/.pyenv/versions/3.14.4" ] && [ ! -d "$ACTUAL_HOME/.pyenv/versions/3.14" ]; then
 	# Use full path to pyenv to avoid PATH issues
 	if ! "$PYENV_CMD" install 3.14:latest; then
 		error::exit "Failed to install Python"
 	fi
-	print::success "DONE!"
-
-	print::head "Set global flags ..."
-	if ! "$PYENV_CMD" global 3.14; then
-		error::exit "Failed to set global flag"
-	fi
-
+	print::success "Python 3.14 installed!"
+else
+	print::info "Python 3.14 already installed"
 fi
+
+print::head "Set global flags ..."
+if ! "$PYENV_CMD" global 3.14; then
+	error::exit "Failed to set global flag"
+fi
+
 
 print::head "Setting Up Virtual Environment ..."
 if [ ! -d "$ACTUAL_HOME/.pyenv/versions/labenv" ]; then
