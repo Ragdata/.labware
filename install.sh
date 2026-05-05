@@ -241,32 +241,46 @@ bar::stop
 
 PYENV_CMD="$ACTUAL_HOME/.pyenv/bin/pyenv"
 
-if [ ! -d "$ACTUAL_HOME/.pyenv" ]; then
+print::head "Checking PYENV Installation ..."
+if [ -d "$ACTUAL_HOME/.pyenv" ]; then
+	print::head "PYENV Already Installed"
+	print::info "Using existing PYENV at $ACTUAL_HOME/.pyenv"
+else
 	print::head "Installing PYENV ..."
-	if HOME="$ACTUAL_HOME" bash -c 'curl -fsSL https://pyenv.run | bash'; then
-		{
-			echo
-			echo '# Pyenv Configuration';
-			echo 'export PYENV_ROOT="$HOME/.pyenv"';
-			echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
-			echo 'eval "$(pyenv init - bash)"';
-			echo '# eval "$(pyenv virtualenv-init -)"';
-		} >> "$ACTUAL_HOME/.bashrc"
-		{
-			echo
-			echo '# Pyenv Configuration';
-			echo 'export PYENV_ROOT="$HOME/.pyenv"';
-			echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
-			echo 'eval "$(pyenv init - bash)"';
-			echo '# eval "$(pyenv virtualenv-init -)"';
-		} >> "$ACTUAL_HOME/.profile"
+	print::info "Installing pyenv for user $ACTUAL_USER at $ACTUAL_HOME/.pyenv"
+
+	# Use sudo to run as the actual user, not root
+	if sudo -u "$ACTUAL_USER" bash -c 'curl -fsSL https://pyenv.run | bash'; then
+		# Add pyenv configuration to bashrc
+		if ! grep -q "Pyenv Configuration" "$ACTUAL_HOME/.bashrc"; then
+			{
+				echo
+				echo '# Pyenv Configuration';
+				echo 'export PYENV_ROOT="$HOME/.pyenv"';
+				echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
+				echo 'eval "$(pyenv init - bash)"';
+				echo '# eval "$(pyenv virtualenv-init -)"';
+			} >> "$ACTUAL_HOME/.bashrc"
+		fi
+
+		# Add pyenv configuration to profile
+		if ! grep -q "Pyenv Configuration" "$ACTUAL_HOME/.profile"; then
+			{
+				echo
+				echo '# Pyenv Configuration';
+				echo 'export PYENV_ROOT="$HOME/.pyenv"';
+				echo '[[ -d $PYENV_ROOT/bin ]] && export PATH=$PYENV_ROOT/bin:$PATH';
+				echo 'eval "$(pyenv init - bash)"';
+				echo '# eval "$(pyenv virtualenv-init -)"';
+			} >> "$ACTUAL_HOME/.profile"
+		fi
+
+		# Fix permissions if needed
+		chown -R "$ACTUAL_USER:$ACTUAL_USER" "$ACTUAL_HOME/.pyenv"
 		print::success "PYENV installed!"
 	else
 		error::exit "Failed to install PYENV"
 	fi
-else
-	print::head "PYENV Already Installed"
-	print::info "Using existing PYENV at $ACTUAL_HOME/.pyenv"
 fi
 
 print::head "Reloading Shell ..."
