@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+####################################################################
+# 1.update
+####################################################################
+# Author:       Ragdata
+# Date:         06/05/2026
+# License:      MIT License
+# Repository:	https://github.com/Ragdata/.dotfiles
+# Copyright:    Copyright © 2026 Redeyed Technologies
+####################################################################
+# PRE-FLIGHT
+####################################################################
+# set -x
+source ./.functions
+####################################################################
+# PROCESS
+####################################################################
+if ! sudo -n true; then
+    error::exit "This script requires sudo privileges"
+fi
+if ! grep -q "Ubuntu 24" /etc/os-release 2> /dev/null; then
+    error::exit "This script is intended for Ubuntu 24.04. Please run it on the correct OS."
+fi
+
