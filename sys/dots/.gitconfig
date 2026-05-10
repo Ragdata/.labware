@@ -1,0 +1,20 @@
+[user]
+    name = Ragdata
+    email = ragdata@users.noreply.github.com
+    signingkey = 7B37B8A69B30915A
+[commit]
+    gpgsign = true
+[alias]
+    st = status
+    co = checkout
+    cm = commit -v
+    amend = commit --amend
+    reword = commit --amend
+    undo = reset --soft HEAD^
+    df = diff --color-words
+    mg = merge --no-ff
+    hist = log --pretty=format:'%Cred%h%Creset %ad | %Cgreen%s%d%Creset [%an]' --graph --date=short
+[init]
+	defaultBranch = master
+[pull]
+	rebase = false
