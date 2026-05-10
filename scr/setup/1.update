@@ -12,7 +12,7 @@
 # PRE-FLIGHT
 ####################################################################
 # set -x
-BASEDIR="$(cd -P "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")" >/dev/null 2>&1 && pwd)"
+BASEDIR="$(cd -P "$(dirname "$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")")" >/dev/null 2>&1 && pwd)"
 echo "$BASEDIR"
 exit 0
 source ./.functions
