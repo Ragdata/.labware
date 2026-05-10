@@ -13,7 +13,8 @@
 ####################################################################
 # set -x
 BASEDIR="$(cd -P "$(dirname "$(dirname "$(dirname "${BASH_SOURCE[0]}")")")" >/dev/null 2>&1 && pwd)"
-
+echo "$BASEDIR"
+exit 0
 source ./.functions
 
 source "$BASEDIR"/vendor/progressbar
