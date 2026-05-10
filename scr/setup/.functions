@@ -24,7 +24,6 @@ export NC='\033[0m' # No Color
 # Paths
 # shellcheck disable=SC2164
 # shellcheck disable=SC2155
-export BASEDIR="$(cd -P "$(dirname "$(dirname "$(dirname "${BASH_SOURCE[0]}")")")" >/dev/null 2>&1 && pwd)"
 ####################################################################
 # FUNCTIONS
 ####################################################################
