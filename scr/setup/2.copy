@@ -43,6 +43,7 @@ fi
 print::head "Installing Dotfiles ..."
 for item in "$BASEDIR"/sys/dots/*; do
     if [ -d "$item" ]; then
+        print::default "Install files in $HOME${item#"${item%/*}"}"
         install::files "$item" "$HOME${item#"${item%/*}"}"
     elif [ -f "$item" ]; then
         if install -m 644 "$item" "$HOME/$(basename "$item")"; then
