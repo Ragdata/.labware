@@ -56,6 +56,6 @@ done
 print::head "Installing Configs ..."
 for item in "$BASEDIR"/sys/etc/*; do
    if [ -d "$item" ]; then
-       install::files "$item" "$HOME${item#"${item%/*}"}"
+       install::files "$item" "$HOME/.labware/etc${item#"${item%/*}"}"
    fi
 done
