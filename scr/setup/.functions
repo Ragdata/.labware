@@ -58,7 +58,9 @@ install::files() {
             mkdir -p "$dst/$(basename "$item")"
             install::files "$item" "$dst/$(basename "$item")"
         else
-            if ! install -m 644 "$item" "$dst/$(basename "$item")"; then
+            if install -m 644 "$item" "$dst/$(basename "$item")"; then
+                print::success "Installed '$dst/$(basename "$item")'"
+            else
                 print::warn "Failed to install '$item'"
             fi
         fi

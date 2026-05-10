@@ -44,7 +44,9 @@ for item in "$BASEDIR"/sys/dots/*; do
     if [ -d "$item" ]; then
         install::files "$item" "$HOME${item#"${item%/*}"}"
     else
-        if ! install -m 644 "$item" "$HOME/$(basename "$item")"; then
+        if install -m 644 "$item" "$HOME/$(basename "$item")"; then
+            print::success "Installed '$HOME/$(basename "$item")'"
+        else
             print::warn "Failed to backup '$HOME/$(basename "$item")'"
         fi
     fi
