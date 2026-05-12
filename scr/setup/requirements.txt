@@ -1,0 +1,6 @@
+typer
+sqlitedict
+jinja2
+passlib
+bcrypt
+

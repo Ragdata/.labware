@@ -10,11 +10,10 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import shutil, sys, os, subprocess
+import shutil, sys, os, subprocess, getpass, pwd, grp
 
 sys.path.append('.')
 
-from typing import List
 from datetime import datetime
 
 from logger import *
@@ -23,24 +22,21 @@ from logger import *
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
-def backup(filepath: Path = Path("."), backupdir: Path = Path(".")) -> bool:
+def backup(filepath: Path, backupdir: Path):
     """Backup a file to the specified directory"""
-    if not filepath.exists():
-        raise FileNotFoundError(f"{filepath} does not exist")
-    if not backupdir.exists():
-        backupdir.mkdir(parents=True, exist_ok=True, mode=0o755)
-
-    suffix = '.'.join(filepath.suffixes)
-    now = datetime.now()
-    backupfile = backupdir / f"{filepath.name}.{suffix}_{now.strftime('%Y%m%d-%H%M%S')}.bak"
-
     try:
-        if shutil.copy2(filepath, backupfile):
-            return True
+        if not filepath.exists():
+            raise FileNotFoundError(f"{filepath} does not exist")
+        if not backupdir.exists():
+            backupdir.mkdir(parents=True, exist_ok=True, mode=0o755)
+
+        suffix = '.'.join(filepath.suffixes)
+        now = datetime.now()
+        backupfile = backupdir / f"{filepath.name}.{suffix}_{now.strftime('%Y%m%d-%H%M%S')}.bak"
+
+        shutil.copy2(filepath, backupfile)
     except Exception as e:
         raise RuntimeError(f"Failed to backup file {filepath}: {e}")
-
-    return False
 
 def checkPython() -> None:
     if sys.version_info < (3, 12):
@@ -61,8 +57,70 @@ def checkUbuntu() -> None:
     else:
         printSuccess("Ubuntu 24.04 confirmed")
 
-def copy(src: Path, dst: Path, bkp: bool = False, mode: str = '0o644', owner: str = None) -> bool:
+def chmod(tgt: Path, mode: int = 0o644) -> None:
+    """Smart / Recursive chmod"""
+    if tgt.exists():
+        os.chmod(tgt, mode)
+        if tgt.is_dir():
+            for root, dirs, files in os.walk(tgt):
+                for d in dirs:
+                    os.chmod(os.path.join(root, d), 0o755)
+                for f in files:
+                    os.chmod(os.path.join(root, f), 0o644)
+
+def chown(tgt: Path, user: str, group: str) -> None:
+    """Smart / Recursive chown"""
+    if tgt.exists():
+        uid = pwd.getpwnam(user).pw_uid
+        gid = grp.getgrnam(group).gr_gid
+        os.chown(tgt, uid, gid)
+        if tgt.is_dir():
+            for root, dirs, files in os.walk(tgt):
+                for name in dirs + files:
+                    os.chown(os.path.join(root, name), uid, gid)
+
+def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = None, group: str = None) -> None:
     pass
+    # try:
+    #     if usr is None:
+    #         usr = getpass.getuser()
+    #     if not userExists(usr):
+    #         raise RuntimeError(f"User {usr} does not exist")
+    #     usrInfo = pwd.getpwnam(usr)
+    #     uid = usrInfo.pw_uid
+    #     gid = usrInfo.pw_gid
+    #     if not src.exists():
+    #         raise FileNotFoundError(f"{src} does not exist")
+    #     if not dst.exists():
+    #         dst.mkdir(parents=True, exist_ok=True, mode=0o755)
+    #     if src.is_file(follow_symlinks=True):
+    #         if dst.is_file() and bkp:
+    #             backup(src, dst.parent)
+    #         shutil.copy2(src, dst)
+    #         os.chown(dst, uid, gid)
+    #         os.chmod(dst, mode)
+    #         printDot(f"Copied {src.name}")
+    #         logger.debug(f"Copied {src.name}")
+    #     elif src.is_dir():
+    #         for item in os.scandir(src):
+    #             src = Path(item.path)
+    #             dst = dst / item.name
+    #             try:
+    #                 if item.is_file():
+    #                     shutil.copy2(src, dst)
+    #                     os.chown(dst, uid, gid)
+    #                     os.chmod(dst, mode)
+    #                     printDot(f"Copied {item.name}")
+    #                     logger.debug(f"Copied {item.name}")
+    #                 elif item.is_dir():
+    #                     shutil.copytree(src, dst)
+    #
+    #             except Exception as e:
+    #                 outlog.logWarning(f"Failed to copy '{item.name}': {e}")
+    #     else:
+    #         raise FileNotFoundError(f"Unknown File Type for '{src}'")
+    # except Exception as e:
+    #     raise e
 
 def getList(filepath: Path) -> list:
     if not filepath.exists:
@@ -97,7 +155,7 @@ def installPIP(packages: list):
                 continue
             result = run(f"pip show {pkg}", check=False, capture=True)
             if result.returncode != 0:
-                run(f"pip install {pkg} --break-system-packages")
+                run(f"pip install --user {pkg} --break-system-packages")
                 printDot(f"Installed python package: {pkg}")
                 logger.info(f"Installed python package: {pkg}")
             else:
@@ -118,3 +176,10 @@ def run(command: str, check: bool = True, capture: bool = False, input_txt = Non
         if check:
             sys.exit(1)
         raise e
+
+def userExists(uname) -> bool:
+    try:
+        pwd.getpwnam(uname)
+        return True
+    except KeyError:
+        return False
