@@ -22,7 +22,6 @@ from rich.console import Console, ConsoleOptions, RenderableType
 from typing import Optional, Union
 
 from config import *
-from logger import outlog
 
 
 _theme = Theme({
@@ -328,12 +327,4 @@ def rule(*args) -> None:
 	Draw a line with optional title
 	"""
     console.rule(*args)
-
-def errorExit(msg: str, code: int = 1, exc: Exception | None = None) -> None:
-    """ Log an error message and exit the program """
-    outlog.logError(msg)
-    if exc is not None:
-        raise exc
-    else:
-        sys.exit(code)
 

@@ -332,3 +332,11 @@ def getFormatter(name: str = LOG_FORMAT) -> logging.Formatter:
 logger = getFileLogger("labware", LOG_LEVEL, LOG_FORMAT)
 
 outlog = Outlog(logger)
+
+def errorExit(msg: str, code: int = 1, exc: Exception | None = None) -> None:
+    """ Log an error message and exit the program """
+    outlog.logError(msg)
+    if exc is not None:
+        raise exc
+    else:
+        sys.exit(code)
