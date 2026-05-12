@@ -12,16 +12,17 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import sys
 
+sys.path.append('.')
+
 from rich.text import Text
 from rich.theme import Theme
 from rich.measure import Measurement
 from rich.console import Console, ConsoleOptions, RenderableType
 
 from typing import Optional, Union
-from pathlib import Path
 
-from .config import config
-from .logger import outlog
+from config import *
+from logger import outlog
 
 
 _theme = Theme({

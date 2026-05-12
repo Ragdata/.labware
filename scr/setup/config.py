@@ -10,15 +10,17 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
+import sys
+
+sys.path.append('.')
+
 from configparser import ConfigParser
 from pathlib import Path
 
 config = ConfigParser()
-config.read(str(Path(__file__).parent / "config" / ".default.cfg"))
+config.read('./config/.default.cfg')
 
-user_dir = Path.home()
-user_cfg = user_dir / ".labware.cfg"
-if user_cfg.exists():
-	config.read(str(user_cfg))
-
-x_config = config
+userDir = Path.home()
+userCfg = userDir / ".labware.cfg"
+if userCfg.exists():
+	config.read(str(userCfg))

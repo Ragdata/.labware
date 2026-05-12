@@ -10,17 +10,16 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import logging
+import logging, sys
+
+sys.path.append('.')
 
 from pathlib import Path
 from typing import TextIO, Any
 
 from logging.handlers import RotatingFileHandler
 
-from labware import __pkg_name__
-
-from .config import x_config as config
-from .console import *
+from output import *
 
 LOG_LEVEL: int   = config.getint("logging", "level")
 LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
@@ -330,8 +329,6 @@ def getFormatter(name: str = LOG_FORMAT) -> logging.Formatter:
 #-------------------------------------------------------------------
 # MODULE OBJECTS
 #-------------------------------------------------------------------
-logger = getFileLogger(__pkg_name__, LOG_LEVEL, LOG_FORMAT)
+logger = getFileLogger("labware", LOG_LEVEL, LOG_FORMAT)
 
 outlog = Outlog(logger)
-
-x_logger = logger
