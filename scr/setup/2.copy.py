@@ -47,8 +47,16 @@ if __name__ == "__main__":
         printHead("Backup DotFiles ...")
         if not backup(Path.home() / '.bashrc'):
             printWarning("Failed to backup '.bashrc'")
+        else:
+            printSuccess("Backup '.bashrc")
         if not backup(Path.home() / '.profile'):
             printWarning("Failed to backup '.profile'")
+        else:
+            printSuccess("Backup '.profile")
+        if not backup(Path.home() / '.gitconfig'):
+            printWarning("Failed to backup '.gitconfig'")
+        else:
+            printSuccess("Backup '.gitconfig")
         # Install DotFiles
         printHead("Installing DotFiles ...")
         copyFiles(REPODOT, Path.home())
