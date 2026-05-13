@@ -30,9 +30,9 @@ def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
         if not backupdir.exists():
             backupdir.mkdir(parents=True, exist_ok=True, mode=0o755)
 
-        suffix = '.'.join(filepath.suffixes)
+        # suffix = '.'.join(filepath.suffixes)
         now = datetime.now()
-        backupfile = backupdir / f"{filepath.name}.{suffix}_{now.strftime('%Y%m%d-%H%M%S')}.bak"
+        backupfile = backupdir / f"{filepath.name}.{now.strftime('%Y%m%d-%H%M.%S')}"
 
         if shutil.copy2(filepath, backupfile):
             return True
