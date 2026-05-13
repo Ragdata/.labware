@@ -52,4 +52,4 @@ echo -e "${YELLOW}Installing UV ...${NC}"
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 echo -e "${YELLOW}Installing Python Libraries ...${NC}"
-pip install --user -r requirements.txt
+pip install -r requirements.txt --user

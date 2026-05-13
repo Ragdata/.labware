@@ -66,7 +66,7 @@ def chmod(tgt: Path, mode: int = 0o644) -> None:
                 for d in dirs:
                     os.chmod(os.path.join(root, d), 0o755)
                 for f in files:
-                    os.chmod(os.path.join(root, f), 0o644)
+                    os.chmod(os.path.join(root, f), mode)
 
 def chown(tgt: Path, user: str, group: str) -> None:
     """Smart / Recursive chown"""
@@ -80,47 +80,52 @@ def chown(tgt: Path, user: str, group: str) -> None:
                     os.chown(os.path.join(root, name), uid, gid)
 
 def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = None, group: str = None) -> None:
-    pass
-    # try:
-    #     if usr is None:
-    #         usr = getpass.getuser()
-    #     if not userExists(usr):
-    #         raise RuntimeError(f"User {usr} does not exist")
-    #     usrInfo = pwd.getpwnam(usr)
-    #     uid = usrInfo.pw_uid
-    #     gid = usrInfo.pw_gid
-    #     if not src.exists():
-    #         raise FileNotFoundError(f"{src} does not exist")
-    #     if not dst.exists():
-    #         dst.mkdir(parents=True, exist_ok=True, mode=0o755)
-    #     if src.is_file(follow_symlinks=True):
-    #         if dst.is_file() and bkp:
-    #             backup(src, dst.parent)
-    #         shutil.copy2(src, dst)
-    #         os.chown(dst, uid, gid)
-    #         os.chmod(dst, mode)
-    #         printDot(f"Copied {src.name}")
-    #         logger.debug(f"Copied {src.name}")
-    #     elif src.is_dir():
-    #         for item in os.scandir(src):
-    #             src = Path(item.path)
-    #             dst = dst / item.name
-    #             try:
-    #                 if item.is_file():
-    #                     shutil.copy2(src, dst)
-    #                     os.chown(dst, uid, gid)
-    #                     os.chmod(dst, mode)
-    #                     printDot(f"Copied {item.name}")
-    #                     logger.debug(f"Copied {item.name}")
-    #                 elif item.is_dir():
-    #                     shutil.copytree(src, dst)
-    #
-    #             except Exception as e:
-    #                 outlog.logWarning(f"Failed to copy '{item.name}': {e}")
-    #     else:
-    #         raise FileNotFoundError(f"Unknown File Type for '{src}'")
-    # except Exception as e:
-    #     raise e
+    try:
+        if user is None:
+            user = getpass.getuser()
+        if group is None:
+            group = user
+        if not userExists(user):
+            raise RuntimeError(f"User '{user}' does not exist")
+        if not src.exists():
+            raise FileNotFoundError(f"{src} does not exist")
+        if not dst.exists():
+            dst.mkdir(parents=True, mode=0o755)
+        if src.is_file():
+            if dst.is_file() and bkp:
+                backup(src, dst.parent)
+            shutil.copy(src, dst)
+            chown(dst, user, group)
+            chmod(dst, mode)
+            printDot(f"Copied {src.name}")
+            logger.debug(f"Copied {src.name}")
+        elif src.is_dir() and dst.is_dir():
+            for item in os.scandir(src):
+                dest = dst / item.name
+                if item.is_file():
+                    if shutil.copy(item, dest):
+                        chown(dest, user, group)
+                        chmod(dest, mode)
+                        printDot(f"Copied '{item.name}'")
+                        logger.debug(f"Copied '{item.name}'")
+                    else:
+                        printWarning(f"Copy Failed '{item.name}'")
+                        logger.debug(f"Copy Failed '{item.name}'")
+                elif item.is_dir():
+                    if shutil.copytree(item, dest):
+                        chown(dest, user, group)
+                        chmod(dest, mode)
+                        printDot(f"Copied Tree '{item.name}'")
+                        logger.debug(f"Copied Tree '{item.name}'")
+                    else:
+                        printWarning(f"Copy Tree Failed '{item.name}'")
+                        logger.debug(f"Copy Tree Failed '{item.name}'")
+                else:
+                    pass
+        else:
+            raise TypeError(f"Invalid type copying {src} -> {dst}")
+    except Exception as e:
+        raise e
 
 def getList(filepath: Path) -> list:
     if not filepath.exists:
