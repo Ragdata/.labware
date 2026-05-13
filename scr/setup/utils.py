@@ -114,7 +114,7 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
                         printWarning(f"Copy Failed '{item.name}'")
                         logger.debug(f"Copy Failed '{item.name}'")
                 elif item.is_dir():
-                    if shutil.copytree(item, dest):
+                    if shutil.copytree(item, dest, dirs_exist_ok=True):
                         chown(dest, user, group)
                         chmod(dest, mode)
                         printDot(f"Copied Tree '{item.name}'")
