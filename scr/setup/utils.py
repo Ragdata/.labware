@@ -81,11 +81,11 @@ def chown(tgt: Path, user: str, group: str) -> None:
                 for name in dirs + files:
                     os.chown(os.path.join(root, name), uid, gid)
 
-def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = None, group: str = None) -> None:
+def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = "", group: str = "") -> None:
     try:
-        if user is None:
-            user = getpass.getuser()
-        if group is None:
+        if not user:
+            user = os.environ.get('USER')
+        if not group:
             group = user
         if not userExists(user):
             raise RuntimeError(f"User '{user}' does not exist")

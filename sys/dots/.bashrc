@@ -57,9 +57,9 @@ checkOverride()
 # SETUP SHELL
 #-------------------------------------------------------------------
 # First make sure ~/.bash_history has not been truncated
-if [[ $(wc -l ~/.bash_history | awk '{print $1}') -lt 500 ]]; then
-	echo "NOTE: ~/.bash_history appears to have been truncated. Please check your shell configuration."
-fi
+# if [[ $(wc -l ~/.bash_history | awk '{print $1}') -lt 500 ]]; then
+# 	echo "NOTE: ~/.bash_history appears to have been truncated. Please check your shell configuration."
+# fi
 
 # History Settings
 HISTCONTROL=ignoreboth:erasedups
