@@ -20,6 +20,10 @@ from pathlib import Path
 config = ConfigParser()
 config.read('./config/.default.cfg')
 
+config.add_section('paths')
+
+config["paths"]["base"] = str(Path(__file__).resolve().parent.parent.parent)
+
 userDir = Path.home()
 userCfg = userDir / ".labware.cfg"
 if userCfg.exists():

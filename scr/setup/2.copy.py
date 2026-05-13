@@ -16,6 +16,7 @@ sys.path.append('.')
 
 from utils import *
 
+BASEDIR = Path(config.get("paths", "base"))
 #-------------------------------------------------------------------
 # FUNCTIONS
 #-------------------------------------------------------------------
@@ -28,6 +29,8 @@ if __name__ == "__main__":
         checkRoot()
         checkPython()
         checkRoot()
+        run("clear")
+        printDot(f"{BASEDIR}")
     except Exception as e:
         outlog.logError(f"Problem encountered during file copy: {e}")
         raise e
