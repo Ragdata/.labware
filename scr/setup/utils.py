@@ -85,8 +85,6 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
     try:
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name
-        printDot(f"{user}")
-        exit(0)
         if not group:
             group = user
         if not userExists(user):
