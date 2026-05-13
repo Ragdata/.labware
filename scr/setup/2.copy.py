@@ -44,6 +44,7 @@ if __name__ == "__main__":
         printHead("Installing Library Files ...")
         copyFiles(REPOLIB, USERLIB)
         # Backup DotFiles
+        line()
         printHead("Backup DotFiles ...")
         if not backup(Path.home() / '.bashrc'):
             printWarning("Failed to backup '.bashrc'")
@@ -58,9 +59,11 @@ if __name__ == "__main__":
         else:
             printSuccess("Backup '.gitconfig'")
         # Install DotFiles
+        line()
         printHead("Installing DotFiles ...")
         copyFiles(REPODOT, Path.home())
         # Install Configs
+        line()
         printHead("Installing Configs ...")
         copyFiles(REPOETC, USERDIR / 'etc')
     except Exception as e:
