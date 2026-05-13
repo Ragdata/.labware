@@ -85,6 +85,8 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
     try:
         if not user:
             user = os.environ.get('USER')
+        printDot(f"{user}")
+        exit
         if not group:
             group = user
         if not userExists(user):
