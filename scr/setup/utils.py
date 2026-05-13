@@ -84,9 +84,9 @@ def chown(tgt: Path, user: str, group: str) -> None:
 def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = "", group: str = "") -> None:
     try:
         if not user:
-            user = os.environ.get('USER')
+            user = getpass.getuser()
         printDot(f"{user}")
-        exit
+        exit(0)
         if not group:
             group = user
         if not userExists(user):
