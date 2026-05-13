@@ -22,7 +22,7 @@ from logger import *
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
-def backup(filepath: Path, backupdir: Path):
+def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
     """Backup a file to the specified directory"""
     try:
         if not filepath.exists():
@@ -34,9 +34,11 @@ def backup(filepath: Path, backupdir: Path):
         now = datetime.now()
         backupfile = backupdir / f"{filepath.name}.{suffix}_{now.strftime('%Y%m%d-%H%M%S')}.bak"
 
-        shutil.copy2(filepath, backupfile)
+        if shutil.copy2(filepath, backupfile):
+            return True
     except Exception as e:
         raise RuntimeError(f"Failed to backup file {filepath}: {e}")
+    return False
 
 def checkPython() -> None:
     if sys.version_info < (3, 12):

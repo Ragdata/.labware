@@ -16,7 +16,17 @@ sys.path.append('.')
 
 from utils import *
 
+
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
 BASEDIR = Path(config.get("paths", "base"))
+USERDIR = Path.home() / '.labware'
+REPOLIB = BASEDIR / 'sys' / 'lib'
+REPODOT = BASEDIR / 'sys' / 'dots'
+REPOETC = BASEDIR / 'sys' / 'etc'
+USERLIB = USERDIR / 'lib'
+
 #-------------------------------------------------------------------
 # FUNCTIONS
 #-------------------------------------------------------------------
@@ -30,7 +40,21 @@ if __name__ == "__main__":
         checkPython()
         checkRoot()
         run("clear")
-        printDot(f"{BASEDIR}")
+        # Library Files
+        printHead("Installing Library Files ...")
+        copyFiles(REPOLIB, USERLIB)
+        # Backup DotFiles
+        printHead("Backup DotFiles ...")
+        if not backup(Path.home() / '.bashrc'):
+            printWarning("Failed to backup '.bashrc'")
+        if not backup(Path.home() / '.profile'):
+            printWarning("Failed to backup '.profile'")
+        # Install DotFiles
+        printHead("Installing DotFiles ...")
+        copyFiles(REPODOT, Path.home())
+        # Install Configs
+        printHead("Installing Configs ...")
+        copyFiles(REPOETC, USERDIR / 'etc')
     except Exception as e:
         outlog.logError(f"Problem encountered during file copy: {e}")
         raise e
