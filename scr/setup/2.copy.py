@@ -12,9 +12,9 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import sys
 
-sys.path.append('.')
+sys.path.append('modules')
 
-from utils import *
+from modules.utils import *
 
 
 #-------------------------------------------------------------------
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     try:
         checkRoot()
         checkPython()
-        checkRoot()
+        checkUbuntu()
         run("clear")
         # Library Files
         printHead("Installing Library Files ...")

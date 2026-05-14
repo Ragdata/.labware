@@ -18,15 +18,13 @@ from pathlib import Path
 from typing import Any, Optional, Iterator, Dict
 from sqlitedict import SqliteDict
 
-
-# from .logger import logger
-# from .config import config
+from utils import *
 
 
 #-------------------------------------------------------------------
 # Module Variables
 #-------------------------------------------------------------------
-dbDir = Path.home() / config.get("dirs", "reg")
+dbDir = Path.home() / '.labware/reg'
 #-------------------------------------------------------------------
 # Registry Class
 #-------------------------------------------------------------------
