@@ -33,4 +33,4 @@ config["paths"]["base"] = str(BASEDIR)
 userDir = Path.home()
 userCfg = userDir / ".labware.cfg"
 if userCfg.exists():
-	config.read(str(userCfg))
+    config.read(str(userCfg))
