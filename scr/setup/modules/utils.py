@@ -171,11 +171,12 @@ def installPIP(packages: list):
     except Exception as e:
         raise e
 
-def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[str] | subprocess.CompletedProcess[Any] :
+def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :
     """Execute shell command with error handling"""
     try:
         if not capture:
             printDot(f"{command}")
+        logger.info(f"Executing BASH: {command}")
         result = subprocess.run(command, shell=True, check=check, text=True, capture_output=capture, input=input_txt)
         return result
     except subprocess.CalledProcessError as e:
