@@ -322,9 +322,9 @@ def line(count=1) -> None:
     """
     console.line(count)
 
-def rule(*args) -> None:
+def rule(*args, **kwargs) -> None:
     """
 	Draw a line with optional title
 	"""
-    console.rule(*args)
+    console.rule(*args, **kwargs)
 
