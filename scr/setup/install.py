@@ -56,7 +56,7 @@ if __name__ == "__main__":
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             run("clear")
-            rule(f"[yellow]--  Copying files for user '{user}'[/yellow]", style="yellow", align="left")
+            rule(f"[yellow]── Copying files for user '{user}'[/yellow]", style="yellow", align="left")
 
     except Exception as e:
         raise e
