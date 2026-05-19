@@ -327,4 +327,3 @@ def rule(*args, **kwargs) -> None:
 	Draw a line with optional title
 	"""
     console.rule(*args, **kwargs)
-

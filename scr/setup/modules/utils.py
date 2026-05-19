@@ -10,15 +10,22 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import shutil, sys, os, subprocess, getpass, pwd, grp
+import shutil, sys, os, subprocess, pwd, grp
 
 sys.path.append('.')
 
 from datetime import datetime
+from jinja2 import Environment, FileSystemLoader
 
 from logger import *
 
 
+#-------------------------------------------------------------------
+# MODULE VARIABLES
+#-------------------------------------------------------------------
+BASEDIR = Path(config.get("paths", "base"))
+TEMPLATES = str(BASEDIR / "cfg")
+loader = Environment(loader=FileSystemLoader(TEMPLATES))
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
@@ -29,14 +36,15 @@ def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
             raise FileNotFoundError(f"{filepath} does not exist")
         if not backupdir.exists():
             backupdir.mkdir(parents=True, exist_ok=True, mode=0o755)
-
-        # suffix = '.'.join(filepath.suffixes)
+        suffix = '.'.join(filepath.suffixes)
         now = datetime.now()
-        backupfile = backupdir / f"{filepath.name}.{now.strftime('%Y%m%d-%H%M.%S')}"
+        backupfile = backupdir / f"{filepath.name}.{suffix}.{now.strftime('%Y%m%d-%H%M.%S')}"
 
         if shutil.copy2(filepath, backupfile):
             return True
     except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Failed to get list: {reason}")
         raise RuntimeError(f"Failed to backup file {filepath}: {e}")
     return False
 
@@ -81,7 +89,7 @@ def chown(tgt: Path, user: str, group: str) -> None:
                 for name in dirs + files:
                     os.chown(os.path.join(root, name), uid, gid)
 
-def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = "", group: str = "") -> None:
+def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name
@@ -99,8 +107,9 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
             shutil.copy(src, dst)
             chown(dst, user, group)
             chmod(dst, mode)
-            printDot(f"Copied {src.name}")
+            printSuccess(f"Copied {src.name}")
             logger.debug(f"Copied {src.name}")
+            return True
         elif src.is_dir() and dst.is_dir():
             for item in os.scandir(src):
                 dest = dst / item.name
@@ -108,7 +117,7 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
                     if shutil.copy(item, dest):
                         chown(dest, user, group)
                         chmod(dest, mode)
-                        printDot(f"Copied '{item.name}'")
+                        printSuccess(f"Copied '{item.name}'")
                         logger.debug(f"Copied '{item.name}'")
                     else:
                         printWarning(f"Copy Failed '{item.name}'")
@@ -117,26 +126,31 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
                     if shutil.copytree(item, dest, dirs_exist_ok=True):
                         chown(dest, user, group)
                         chmod(dest, mode)
-                        printDot(f"Copied Tree '{item.name}'")
+                        printSuccess(f"Copied Tree '{item.name}'")
                         logger.debug(f"Copied Tree '{item.name}'")
                     else:
                         printWarning(f"Copy Tree Failed '{item.name}'")
                         logger.debug(f"Copy Tree Failed '{item.name}'")
                 else:
-                    pass
+                    raise TypeError(f"Invalid type copying {src} -> {dst}")
+            return True
         else:
             raise TypeError(f"Invalid type copying {src} -> {dst}")
     except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Failed to copy files: {reason}")
         raise e
 
 def getList(filepath: Path) -> list:
-    if not filepath.exists:
-        raise FileNotFoundError(f"{filepath} does not exist")
     try:
+        if not filepath.exists:
+            raise FileNotFoundError(f"{filepath} does not exist")
         with open(str(filepath), 'r') as f:
             lines = [l.strip() for l in f]
             return lines
     except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Failed to get list: {reason}")
         raise e
 
 def installAPT(packages: list):
@@ -147,12 +161,14 @@ def installAPT(packages: list):
             result = run(f"dpkg -s {pkg}", check=False, capture=True)
             if result.returncode != 0:
                 run(f"DEBIAN_FRONTEND=noninteractive apt install -y {pkg}")
-                printDot(f"Installed package: {pkg}")
+                printSuccess(f"Installed package: {pkg}")
                 logger.info(f"Installed package: {pkg}")
             else:
                 printDot(f"Package already installed: {pkg}")
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Install package failed: {reason}")
         raise e
 
 def installPIP(packages: list):
@@ -163,12 +179,32 @@ def installPIP(packages: list):
             result = run(f"pip show {pkg}", check=False, capture=True)
             if result.returncode != 0:
                 run(f"pip install --user {pkg} --break-system-packages")
-                printDot(f"Installed python package: {pkg}")
+                printSuccess(f"Installed python package: {pkg}")
                 logger.info(f"Installed python package: {pkg}")
             else:
                 printDot(f"Package already installed: {pkg}")
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Install failed: {reason}")
+        raise e
+
+def removeAPT(packages: list):
+    try:
+        for pkg in packages:
+            if pkg[0] == "#":
+                continue
+            result = run(f"dpkg -s {pkg}", check=False, capture=True)
+            if result.returncode == 0:
+                run(f"apt autopurge -y {pkg}")
+                printSuccess(f"Removed package: {pkg}")
+                logger.info(f"Removed package: {pkg}")
+            else:
+                printError(f"Package not installed: {pkg}")
+                logger.debug(f"Package not installed: {pkg}")
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Remove package failed: {reason}")
         raise e
 
 def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :
@@ -191,3 +227,56 @@ def userExists(uname) -> bool:
         return True
     except KeyError:
         return False
+
+def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = None, group: str = None) -> bool:
+    try:
+        if not user:
+            user = pwd.getpwuid(os.geteuid()).pw_name
+        if not group:
+            group = user
+        if not userExists(user):
+            raise RuntimeError(f"User {user} does not exist")
+        if not dst.parent.exists():
+            dst.parent.mkdir(parents=True, mode=0o755)
+        if dst.exists():
+            os.remove(dst)
+        with open(str(dst), 'w') as f:
+            f.write(data)
+        chown(dst, user, group)
+        chmod(dst, mode)
+        printSuccess(f"Wrote File: {dst}")
+        logger.debug(f"Wrote File: {dst}")
+        return True
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"File write failed: {reason}")
+        raise e
+
+def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = None, group: str = None) -> bool:
+    try:
+        if not user:
+            user = pwd.getpwuid(os.geteuid()).pw_name
+        if not group:
+            group = user
+        if not userExists(user):
+            raise RuntimeError(f"User {user} does not exist")
+        if not tmpl.exists():
+            raise FileNotFoundError(f"{tmpl} does not exist")
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True, mode=0o755)
+        if dest.exists():
+            os.remove(str(dest))
+        template = loader.get_template(str(tmpl))
+        with open(dest, 'w') as f:
+            print(template.render(data), file=f)
+        chown(dest, user, group)
+        chmod(dest, mode)
+        printSuccess(f"Wrote template file to '{dest}'")
+        logger.debug(f"Wrote template file to '{dest}'")
+        return True
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Template write failed: {reason}")
+        raise e
+
+
