@@ -144,9 +144,9 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
 def getIP() -> str:
     resolvectl = run("resolvectl status >/dev/null 2>&1").returncode
     if resolvectl == 0:
-        ip = run('$(ip route get "$(resolvectl status | grep -E \'DNS (Server:|Servers:)\' | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1)').stdout.strip()
+        ip = run('ip route get "$(resolvectl status | grep -E \'DNS (Server:|Servers:)\' | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1').stdout.strip()
     else:
-        ip = run('$(ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1)').stdout.strip()
+        ip = run('ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1').stdout.strip()
     return ip
 
 def getList(filepath: Path) -> list:
