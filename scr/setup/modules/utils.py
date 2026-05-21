@@ -141,6 +141,14 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
         outlog.logError(f"Failed to copy files: {reason}")
         raise e
 
+def getIP() -> str:
+    resolvectl = run("resolvectl status >/dev/null 2>&1").returncode
+    if resolvectl == 0:
+        ip = run('$(ip route get "$(resolvectl status | grep -E \'DNS (Server:|Servers:)\' | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1)').stdout.strip()
+    else:
+        ip = run('$(ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1)').stdout.strip()
+    return ip
+
 def getList(filepath: Path) -> list:
     try:
         if not filepath.exists:
@@ -228,7 +236,7 @@ def userExists(uname) -> bool:
     except KeyError:
         return False
 
-def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = None, group: str = None) -> bool:
+def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name
@@ -252,7 +260,7 @@ def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = None, group: 
         outlog.logError(f"File write failed: {reason}")
         raise e
 
-def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = None, group: str = None) -> bool:
+def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name

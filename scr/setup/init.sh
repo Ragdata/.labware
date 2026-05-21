@@ -46,7 +46,7 @@ echo -e "${YELLOW}Upgrading System ...${NC}"
 apt full-upgrade -y
 
 echo -e "${YELLOW}Install Essential Tools ...${NC}"
-apt install -y curl wget git gnupg2 python3-full python3-pip
+apt install -y curl wget git gnupg2 net-tools dnsutils iputils-ping procps python3-full python3-pip
 
 echo -e "${YELLOW}Installing UV ...${NC}"
 curl -LsSf https://astral.sh/uv/install.sh | sh

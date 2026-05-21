@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
+import sys, getpass
 
 sys.path.append('modules')
 
@@ -26,10 +26,9 @@ REPODOT = BASEDIR / "sys" / "dots"
 REPOETC = BASEDIR / "sys" / "etc"
 EXECUSR = pwd.getpwuid(os.geteuid()).pw_name
 REALUSR = getpass.getuser()
-#-------------------------------------------------------------------
-# FUNCTIONS
-#-------------------------------------------------------------------
-
+SERVRIP = getIP()
+print(f"{SERVRIP} - {REALUSR}")
+exit(0)
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -80,23 +79,6 @@ if __name__ == "__main__":
                 copyFiles(REPOETC, WAREDIR / "etc", user=user)
             line()
             CONT = getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
-        ############################################################
-        # INSTALL BASIC TOOLS / UNINSTALL UNWANTED TOOLS VIA APT
-        ############################################################
-        run("clear")
-        printHead("Installing Basic Tools ...")
-        basic = BASEDIR / "src" / "setup" / "config" / "apt-basic.cfg"
-        if not basic.exists():
-            raise FileNotFoundError(f"File not found: '{basic}'")
-        pkgs = getList(basic)
-        installAPT(pkgs)
-        line()
-        printHead("Uninstalling Unwanted Tools ...")
-        remove = BASEDIR / "src" / "setup" / "config" / "apt-remove.cfg"
-        if not remove.exists():
-            raise FileNotFoundError(f"File not found: '{remove}'")
-        pkgs = getList(remove)
-        removeAPT(pkgs)
         ############################################################
         # USER CONFIGURATION
         ############################################################
@@ -154,17 +136,40 @@ if __name__ == "__main__":
             #     line()
             #     printDot("INSTALL CUSTOM GIT COMMANDS")
         ############################################################
-        # INSTALL PRIMARY PACKAGES
+        # INSTALL BASIC TOOLS / UNINSTALL UNWANTED TOOLS VIA APT
         ############################################################
-
-
+        run("clear")
+        printHead("Installing Basic Tools ...")
+        basic = BASEDIR / "src" / "setup" / "config" / "apt-basic.cfg"
+        if not basic.exists():
+            raise FileNotFoundError(f"File not found: '{basic}'")
+        pkgs = getList(basic)
+        installAPT(pkgs)
+        line()
+        printHead("Uninstalling Unwanted Tools ...")
+        remove = BASEDIR / "src" / "setup" / "config" / "apt-remove.cfg"
+        if not remove.exists():
+            raise FileNotFoundError(f"File not found: '{remove}'")
+        pkgs = getList(remove)
+        removeAPT(pkgs)
         ############################################################
         # INSTALL SECURITY TOOLS VIA APT
         ############################################################
-
+        line()
+        printHead("Installing Security Tools ...")
+        secure = BASEDIR / "src" / "setup" / "config" / "apt-secure.cfg"
+        if not secure.exists():
+            raise FileNotFoundError(f"File not found: '{secure}'")
+        pkgs = getList(secure)
+        installAPT(pkgs)
+        ############################################################
+        # CONFIGURE SECURITY TOOLS / HARDEN
+        ############################################################
 
         ############################################################
-        # CONFIGURE SECURITY TOOLS
+        # INSTALL PRIMARY PACKAGES
         ############################################################
     except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Installer failed: {reason}")
         raise e
