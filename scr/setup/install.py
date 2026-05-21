@@ -27,8 +27,6 @@ REPOETC = BASEDIR / "sys" / "etc"
 EXECUSR = pwd.getpwuid(os.geteuid()).pw_name
 REALUSR = getpass.getuser()
 SERVRIP = getIP()
-print(f"{SERVRIP} - {REALUSR}")
-exit(0)
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
