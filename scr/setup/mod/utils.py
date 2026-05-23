@@ -39,7 +39,6 @@ def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
         suffix = '.'.join(filepath.suffixes)
         now = datetime.now()
         backupfile = backupdir / f"{filepath.name}.{suffix}.{now.strftime('%Y%m%d-%H%M.%S')}"
-
         if shutil.copy2(filepath, backupfile):
             return True
     except Exception as e:
@@ -144,9 +143,9 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: 
 def getIP() -> str:
     resolvectl = run("resolvectl status >/dev/null 2>&1").returncode
     if resolvectl == 0:
-        ip = run('ip route get "$(resolvectl status | grep -E \'DNS (Server:|Servers:)\' | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout
+        ip = run('ip route get "$(resolvectl status | grep -E \'DNS (Server:|Servers:)\' | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout.strip()
     else:
-        ip = run('ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout
+        ip = run('ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout.strip()
     return ip
 
 def getList(filepath: Path) -> list:
@@ -160,6 +159,10 @@ def getList(filepath: Path) -> list:
         reason = str(e)
         outlog.logError(f"Failed to get list: {reason}")
         raise e
+
+def getUserIP() -> str:
+    ip = run("who | awk '{print $NF}' | tr -d '()' | grep -E '^[0-9]' | head -n1").stdout.strip()
+    return ip
 
 def installAPT(packages: list):
     try:
@@ -196,6 +199,13 @@ def installPIP(packages: list):
         reason = str(e)
         outlog.logError(f"Install failed: {reason}")
         raise e
+
+def isLXC() -> bool:
+    found = run("grep -qE 'container=lxc|container=lxd' /proc/1/environ")
+    if found.returncode != 0:
+        return True
+    else:
+        return False
 
 def removeAPT(packages: list):
     try:

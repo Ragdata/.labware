@@ -18,7 +18,7 @@ from configparser import ConfigParser
 from pathlib import Path
 
 BASEDIR = Path(__file__).resolve().parent.parent.parent.parent
-DEFAULT = BASEDIR / "scr" / "setup" / "config" / ".default.cfg"
+DEFAULT = BASEDIR / "scr" / "setup" / "cfg" / ".default.cfg"
 
 if not DEFAULT.exists():
     raise FileNotFoundError(f"Config file not found: '{DEFAULT}'")

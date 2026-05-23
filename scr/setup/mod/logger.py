@@ -233,15 +233,18 @@ class Outlog(object):
         """
         self.logMessage(msg, level=logging.WARNING, style="warning", **kwargs)
 
-    def logError(self, msg: str, **kwargs) -> None:
+    def logError(self, msg: str, xit: int = 0, **kwargs) -> None:
         """
         Log an ERROR message.
 
         Args:
         	msg (str): The message to log.
+        	xit (int): Hard
         	**kwargs: Arbitrary keyword arguments.
         """
         self.logMessage(msg, level=logging.ERROR, style="error", **kwargs)
+        if xit != 0:
+            exit(xit)
 
     def logSuccess(self, msg: str, **kwargs) -> None:
         """

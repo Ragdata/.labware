@@ -10,11 +10,12 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, getpass
+import sys, getpass, runpy
 
-sys.path.append('modules')
+sys.path.append('mod')
 
-from modules.utils import *
+from mod.utils import *
+from mod.regex import isIPv4
 
 
 #-------------------------------------------------------------------
@@ -27,6 +28,11 @@ REPOETC = BASEDIR / "sys" / "etc"
 EXECUSR = pwd.getpwuid(os.geteuid()).pw_name
 REALUSR = getpass.getuser()
 SERVRIP = getIP()
+USERSIP = getUserIP()
+#-------------------------------------------------------------------
+# LOCAL FUNCTIONS
+#-------------------------------------------------------------------
+LXC = 1 if isLXC() else 0
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -71,10 +77,10 @@ if __name__ == "__main__":
             line()
             printHead("Installing Dotfiles ...")
             copyFiles(REPODOT, USERDIR, user=user)
-            if user == EXECUSR:
-                line()
-                printHead("Installing Configs ...")
-                copyFiles(REPOETC, WAREDIR / "etc", user=user)
+            # if user == EXECUSR:
+            #     line()
+            #     printHead("Installing Configs ...")
+            #     copyFiles(REPOETC, WAREDIR / "etc", user=user)
             line()
             CONT = getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
         ############################################################
@@ -138,14 +144,14 @@ if __name__ == "__main__":
         ############################################################
         run("clear")
         printHead("Installing Basic Tools ...")
-        basic = BASEDIR / "src" / "setup" / "config" / "apt-basic.cfg"
+        basic = BASEDIR / "src" / "setup" / "cfg" / "apt-basic.cfg"
         if not basic.exists():
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
         installAPT(pkgs)
         line()
         printHead("Uninstalling Unwanted Tools ...")
-        remove = BASEDIR / "src" / "setup" / "config" / "apt-remove.cfg"
+        remove = BASEDIR / "src" / "setup" / "cfg" / "apt-remove.cfg"
         if not remove.exists():
             raise FileNotFoundError(f"File not found: '{remove}'")
         pkgs = getList(remove)
@@ -155,18 +161,33 @@ if __name__ == "__main__":
         ############################################################
         line()
         printHead("Installing Security Tools ...")
-        secure = BASEDIR / "src" / "setup" / "config" / "apt-secure.cfg"
+        secure = BASEDIR / "src" / "setup" / "cfg" / "apt-secure.cfg"
         if not secure.exists():
             raise FileNotFoundError(f"File not found: '{secure}'")
         pkgs = getList(secure)
         installAPT(pkgs)
         ############################################################
+        # INSTALL PRIMARY PACKAGES
+        ############################################################
+        line()
+        printHead("Installing Primary Packages ...")
+        webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
+        if webmin != 'n':
+            runpy.run_path("pkg/webmin.py")
+        else:
+            virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
+            if virtualmin != 'n':
+                runpy.run_path("pkg/virtualmin.py")
+        docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
+        if docker != 'n':
+            runpy.run_path("pkg/docker.py")
+        lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
+        if lazydocker != 'n':
+            runpy.run_path("pkg/lazydocker.py")
+        ############################################################
         # CONFIGURE SECURITY TOOLS / HARDEN
         ############################################################
 
-        ############################################################
-        # INSTALL PRIMARY PACKAGES
-        ############################################################
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Installer failed: {reason}")
