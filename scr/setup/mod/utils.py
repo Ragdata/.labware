@@ -10,12 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import shutil, sys, os, subprocess, pwd, grp
+import sys, os, subprocess, pwd
 
 sys.path.append('.')
-
-from datetime import datetime
-from jinja2 import Environment, FileSystemLoader
 
 from logger import *
 
@@ -24,29 +21,9 @@ from logger import *
 # MODULE VARIABLES
 #-------------------------------------------------------------------
 BASEDIR = Path(config.get("paths", "base"))
-TEMPLATES = str(BASEDIR / "cfg")
-loader = Environment(loader=FileSystemLoader(TEMPLATES))
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
-def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
-    """Backup a file to the specified directory"""
-    try:
-        if not filepath.exists():
-            raise FileNotFoundError(f"{filepath} does not exist")
-        if not backupdir.exists():
-            backupdir.mkdir(parents=True, exist_ok=True, mode=0o755)
-        suffix = '.'.join(filepath.suffixes)
-        now = datetime.now()
-        backupfile = backupdir / f"{filepath.name}.{suffix}.{now.strftime('%Y%m%d-%H%M.%S')}"
-        if shutil.copy2(filepath, backupfile):
-            return True
-    except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to get list: {reason}")
-        raise RuntimeError(f"Failed to backup file {filepath}: {e}")
-    return False
-
 def checkPython() -> None:
     if sys.version_info < (3, 12):
         errorExit(f"Requires Python 3.12 or later")
@@ -66,80 +43,6 @@ def checkUbuntu() -> None:
     else:
         printSuccess("Ubuntu 24.04 confirmed")
 
-def chmod(tgt: Path, mode: int = 0o644) -> None:
-    """Smart / Recursive chmod"""
-    if tgt.exists():
-        os.chmod(tgt, mode)
-        if tgt.is_dir():
-            for root, dirs, files in os.walk(tgt):
-                for d in dirs:
-                    os.chmod(os.path.join(root, d), 0o755)
-                for f in files:
-                    os.chmod(os.path.join(root, f), mode)
-
-def chown(tgt: Path, user: str, group: str) -> None:
-    """Smart / Recursive chown"""
-    if tgt.exists():
-        uid = pwd.getpwnam(user).pw_uid
-        gid = grp.getgrnam(group).gr_gid
-        os.chown(tgt, uid, gid)
-        if tgt.is_dir():
-            for root, dirs, files in os.walk(tgt):
-                for name in dirs + files:
-                    os.chown(os.path.join(root, name), uid, gid)
-
-def copyFiles(src: Path, dst: Path, bkp: bool = False, mode: int = 0o644, user: str = "", group: str = "") -> bool:
-    try:
-        if not user:
-            user = pwd.getpwuid(os.geteuid()).pw_name
-        if not group:
-            group = user
-        if not userExists(user):
-            raise RuntimeError(f"User '{user}' does not exist")
-        if not src.exists():
-            raise FileNotFoundError(f"{src} does not exist")
-        if not dst.exists():
-            dst.mkdir(parents=True, mode=0o755)
-        if src.is_file():
-            if dst.is_file() and bkp:
-                backup(src, dst.parent)
-            shutil.copy(src, dst)
-            chown(dst, user, group)
-            chmod(dst, mode)
-            printSuccess(f"Copied {src.name}")
-            logger.debug(f"Copied {src.name}")
-            return True
-        elif src.is_dir() and dst.is_dir():
-            for item in os.scandir(src):
-                dest = dst / item.name
-                if item.is_file():
-                    if shutil.copy(item, dest):
-                        chown(dest, user, group)
-                        chmod(dest, mode)
-                        printSuccess(f"Copied '{item.name}'")
-                        logger.debug(f"Copied '{item.name}'")
-                    else:
-                        printWarning(f"Copy Failed '{item.name}'")
-                        logger.debug(f"Copy Failed '{item.name}'")
-                elif item.is_dir():
-                    if shutil.copytree(item, dest, dirs_exist_ok=True):
-                        chown(dest, user, group)
-                        chmod(dest, mode)
-                        printSuccess(f"Copied Tree '{item.name}'")
-                        logger.debug(f"Copied Tree '{item.name}'")
-                    else:
-                        printWarning(f"Copy Tree Failed '{item.name}'")
-                        logger.debug(f"Copy Tree Failed '{item.name}'")
-                else:
-                    raise TypeError(f"Invalid type copying {src} -> {dst}")
-            return True
-        else:
-            raise TypeError(f"Invalid type copying {src} -> {dst}")
-    except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to copy files: {reason}")
-        raise e
-
 def getIP() -> str:
     resolvectl = run("resolvectl status >/dev/null 2>&1").returncode
     if resolvectl == 0:
@@ -147,18 +50,6 @@ def getIP() -> str:
     else:
         ip = run('ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout.strip()
     return ip
-
-def getList(filepath: Path) -> list:
-    try:
-        if not filepath.exists:
-            raise FileNotFoundError(f"{filepath} does not exist")
-        with open(str(filepath), 'r') as f:
-            lines = [l.strip() for l in f]
-            return lines
-    except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to get list: {reason}")
-        raise e
 
 def getUserIP() -> str:
     ip = run("who | awk '{print $NF}' | tr -d '()' | grep -E '^[0-9]' | head -n1").stdout.strip()
@@ -243,56 +134,3 @@ def userExists(uname) -> bool:
         return True
     except KeyError:
         return False
-
-def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: str = "") -> bool:
-    try:
-        if not user:
-            user = pwd.getpwuid(os.geteuid()).pw_name
-        if not group:
-            group = user
-        if not userExists(user):
-            raise RuntimeError(f"User {user} does not exist")
-        if not dst.parent.exists():
-            dst.parent.mkdir(parents=True, mode=0o755)
-        if dst.exists():
-            os.remove(dst)
-        with open(str(dst), 'w') as f:
-            f.write(data)
-        chown(dst, user, group)
-        chmod(dst, mode)
-        printSuccess(f"Wrote File: {dst}")
-        logger.debug(f"Wrote File: {dst}")
-        return True
-    except Exception as e:
-        reason = str(e)
-        outlog.logError(f"File write failed: {reason}")
-        raise e
-
-def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = "", group: str = "") -> bool:
-    try:
-        if not user:
-            user = pwd.getpwuid(os.geteuid()).pw_name
-        if not group:
-            group = user
-        if not userExists(user):
-            raise RuntimeError(f"User {user} does not exist")
-        if not tmpl.exists():
-            raise FileNotFoundError(f"{tmpl} does not exist")
-        if not dest.parent.exists():
-            dest.parent.mkdir(parents=True, mode=0o755)
-        if dest.exists():
-            os.remove(str(dest))
-        template = loader.get_template(str(tmpl))
-        with open(dest, 'w') as f:
-            print(template.render(data), file=f)
-        chown(dest, user, group)
-        chmod(dest, mode)
-        printSuccess(f"Wrote template file to '{dest}'")
-        logger.debug(f"Wrote template file to '{dest}'")
-        return True
-    except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Template write failed: {reason}")
-        raise e
-
-

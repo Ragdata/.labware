@@ -239,7 +239,7 @@ class Outlog(object):
 
         Args:
         	msg (str): The message to log.
-        	xit (int): Hard
+        	xit (int): The return code
         	**kwargs: Arbitrary keyword arguments.
         """
         self.logMessage(msg, level=logging.ERROR, style="error", **kwargs)

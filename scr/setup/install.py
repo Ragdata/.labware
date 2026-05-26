@@ -14,8 +14,7 @@ import sys, getpass, runpy
 
 sys.path.append('mod')
 
-from mod.utils import *
-from mod.regex import isIPv4
+from mod.filesys import *
 
 
 #-------------------------------------------------------------------
@@ -149,13 +148,6 @@ if __name__ == "__main__":
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
         installAPT(pkgs)
-        line()
-        printHead("Uninstalling Unwanted Tools ...")
-        remove = BASEDIR / "src" / "setup" / "cfg" / "apt-remove.cfg"
-        if not remove.exists():
-            raise FileNotFoundError(f"File not found: '{remove}'")
-        pkgs = getList(remove)
-        removeAPT(pkgs)
         ############################################################
         # INSTALL SECURITY TOOLS VIA APT
         ############################################################
@@ -184,10 +176,6 @@ if __name__ == "__main__":
         lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
         if lazydocker != 'n':
             runpy.run_path("pkg/lazydocker.py")
-        ############################################################
-        # CONFIGURE SECURITY TOOLS / HARDEN
-        ############################################################
-
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Installer failed: {reason}")
