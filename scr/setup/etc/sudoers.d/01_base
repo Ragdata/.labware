@@ -1,0 +1,4 @@
+Defaults logfile=/var/log/sudo.log
+Defaults log_input,log_output
+Defaults use_pty
+Defaults env_reset, timestamp_timeout=15
