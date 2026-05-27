@@ -26,8 +26,8 @@ Protocol 2
 #HostKey /etc/ssh/ssh_host_ed25519_key
 
 # Ciphers and keying
-Ciphers -3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,chacha20-poly1305@openssh.com
-#RekeyLimit default none
+Ciphers -3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes256-ctr
+RekeyLimit 512M 1h
 
 # Logging
 #SyslogFacility AUTH
@@ -35,9 +35,9 @@ LogLevel VERBOSE
 
 # Authentication:
 
-LoginGraceTime 60
+LoginGraceTime 30
 PermitRootLogin no
-#StrictModes yes
+StrictModes yes
 MaxAuthTries 3
 MaxSessions 3
 
@@ -55,7 +55,7 @@ AuthorizedKeysFile     .ssh/authorized_keys
 HostbasedAuthentication no
 # Change to yes if you don't trust ~/.ssh/known_hosts for
 # HostbasedAuthentication
-#IgnoreUserKnownHosts no
+IgnoreUserKnownHosts yes
 # Don't read the user's ~/.rhosts and ~/.shosts files
 IgnoreRhosts yes
 
@@ -68,7 +68,7 @@ PermitEmptyPasswords no
 KbdInteractiveAuthentication no
 
 # Kerberos options
-#KerberosAuthentication no
+KerberosAuthentication no
 #KerberosOrLocalPasswd yes
 #KerberosTicketCleanup yes
 #KerberosGetAFSToken no
@@ -98,21 +98,21 @@ X11Forwarding no
 #X11UseLocalhost yes
 #PermitTTY yes
 PrintMotd no
-#PrintLastLog yes
+PrintLastLog yes
 TCPKeepAlive no
 PermitUserEnvironment no
-#Compression delayed
+Compression no
 ClientAliveInterval 15
 ClientAliveCountMax 3
-#UseDNS no
+UseDNS no
 #PidFile /run/sshd.pid
 MaxStartups 10:30:60
 #PermitTunnel no
 #ChrootDirectory none
 #VersionAddendum none
 DisableForwarding yes
-KexAlgorithms -diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1
-MACs -hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com
+KexAlgorithms -diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+MACs -hmac-md5,hmac-md5-96,hmac-ripemd160,hmac-sha1-96,umac-64@openssh.com,hmac-md5-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
 
 # no default banner path
 Banner /etc/issue.net
@@ -139,3 +139,4 @@ Match Address {{ internal_address }}
 {% if labusers %}
 AllowUsers {{ labusers }}
 {% endif %}
+AllowGroups sudo
