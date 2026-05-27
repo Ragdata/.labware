@@ -7,8 +7,12 @@
 # Buffer Size
 -b 8192
 
+# Report Errors
+-c
+
 # Failure Mode
--f 1
+# -f 1
+-f 2
 
 # Monitor authentication files
 -w /etc/passwd -p wa -k identity

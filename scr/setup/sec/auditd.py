@@ -17,25 +17,22 @@ sys.path.append("../mod")
 from mod.filesys import *
 
 #-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
+#-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         pkgs = ["auditd", "audispd-plugins"]
         installAPT(pkgs)
+        copyRepoFile(SETUPDIR / "etc/audit/auditd.rules", "/etc/audit/rules.d/hardening.rules", True)
+        files = ["/etc/audit/rules/50-scope.rules", "/etc/audit/rules/50-processes.rules", "/etc/audit/auditd.conf"]
+        copyRepoFiles(SETUPDIR, files, True)
         run("systemctl --now enable auditd")
-        filepath = "/etc/audit/rules/50-scope.rules"
-        template = BASEDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        filepath = "/etc/audit/rules/50-processes.rules"
-        template = BASEDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        filepath = "/etc/audit/auditd.conf"
-        template = BASEDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
+        run("systemctl restart auditd")
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Failed to Harden AuditD: {reason}")
