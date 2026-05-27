@@ -22,6 +22,8 @@ from mod.filesys import *
 #-------------------------------------------------------------------
 BASEDIR  = Path(config.get("paths", "base"))
 SETUPDIR = BASEDIR / "scr/setup"
+SERVRIP  = getIP()
+USERSIP  = getUserIP()
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -76,6 +78,8 @@ if __name__ == "__main__":
         files = ["/etc/issue.net", "/etc/issue", "/etc/motd"]
         copyRepoFiles(SETUPDIR, files, True)
         run("chmod -x /etc/update-motd.d/*")
+        run("systemctl stop motd-news.timer")
+        run("systemctl mask motd-news.timer")
         # ----------------------------------------------------------
         # Section 1.8 - Detect Mounted Critical Paths
         # ----------------------------------------------------------
@@ -120,8 +124,15 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 2.5 - Secure 'cron' and 'at'")
-        run("chown root:root /etc/crontab /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly /etc/cron.d")
-        run("chmod og-rwx /etc/crontab /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly /etc/cron.d")
+        files = ["/etc/cron.allow", "/etc/at.allow"]
+        copyRepoFiles(SETUPDIR, files, True)
+        run("chown root:root /etc/cron*")
+        run("chmod og-rwx /etc/cron*")
+        run("chown root:root /etc/at*")
+        run("chmod og-rwx /etc/at*")
+        run("systemctl mask atd.service")
+        run("systemctl stop atd.service")
+        run("systemctl daemon-reload")
         # ----------------------------------------------------------
         # Section 3 - Network Stack Hardening
         # ----------------------------------------------------------
@@ -162,7 +173,7 @@ if __name__ == "__main__":
         labusers = getData("[cyan]Restrict SSH logins to the following users[/cyan] (ENTER for none): ")
         address  = getData("[cyan]Internal IP granted root access[/cyan] (ENTER for none): ")
         data = {"labusers": labusers, "internal_address": address}
-        if not writeTemplate(template, filedest, data):
+        if not writeTemplate(template, filedest, data, 0o600, "root", "root"):
             outlog.logError(f"Could not write template to {filedest}", 1)
         filepath = "/etc/security/access.conf"
         template = SETUPDIR / filepath
@@ -188,11 +199,13 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 5.4 - Password Policy")
-        files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc"]
+        files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc", "/usr/share/dict/passwords"]
         copyRepoFiles(SETUPDIR, files, True)
         run(f"useradd -D -f 30")
         run(f"chmod +x /etc/profile.d/timeout.sh")
         run("passwd -l root")
+        run(f"grep -v '^$' {SETUPDIR}usr/share/dict/passwords | strings > /usr/share/dict/passwords_text")
+        run("update-cracklib")
         # Set default root umask in .profile
         dotfile = Path.home() / ".bash_profile"
         if not dotfile.exists():
@@ -278,6 +291,15 @@ if __name__ == "__main__":
         printHead("EXTRAS")
         # Enable 'sysstat'
         copyRepoFile(SETUPDIR, "/etc/default/sysstat", True)
+        run("systemctl enable sysstat")
+        # Install 'psad'
+        runpy.run_path("sec/psad.py")
+        # Install 'usbguard'
+        runpy.run_path("sec/usbguard.py")
+        # Install 'rkhunter'
+        runpy.run_path("sec/rkhunter.py")
+        # Install 'aide'
+        runpy.run_path("sec/aide.py")
     except Exception as e:
         reason = str(e)
         outlog.logError(f"System hardening failed: {reason}")

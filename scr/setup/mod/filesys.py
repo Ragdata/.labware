@@ -233,7 +233,7 @@ def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: st
         outlog.logError(f"File write failed: {reason}")
         raise e
 
-def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = "", group: str = "") -> bool:
+def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = "", group: str = "", bkp: bool = True, bkpdir: Path = Path.home() / ".backup") -> bool:
     try:
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name
@@ -248,6 +248,8 @@ def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: s
         if dest.exists():
             os.remove(str(dest))
         template = loader.get_template(str(tmpl))
+        if dest.exists() and bkp:
+            backup(dest, bkpdir)
         with open(dest, 'w') as f:
             print(template.render(data), file=f)
         chown(dest, user, group)
