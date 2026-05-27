@@ -1,0 +1,11 @@
+;suppress inspection "DuplicateKeyInSection" for whole file
+Acquire : :http::AllowRedirect "false";
+APT::Get::AllowUnauthenticated "false";
+APT::Periodic::AutocleanInterval "7";
+APT::Install-Recommends "false";
+APT::Get::AutomaticRemove "true";
+APT::Install-Suggests "false";
+Acquire::AllowDowngradeToInsecureRepositories "false";
+Acquire::AllowInsecureRepositories "false";
+APT::Sandbox::Seccomp "1";
+

@@ -136,6 +136,6 @@ Match Address {{ internal_address }}
     PasswordAuthentication yes
     AllowUsers root {{ labuser }}
 {% endif %}
-{% if labuser %}
-AllowUsers {{ labuser }}
+{% if labusers %}
+AllowUsers {{ labusers }}
 {% endif %}
