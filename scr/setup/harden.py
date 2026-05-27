@@ -66,21 +66,15 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 1.5 - Unattended Upgrades")
-        filepath = "/etc/apt/apt.conf.d/50unattended-upgrades"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
+        files = ["/etc/apt/apt.conf.d/50unattended-upgrades", "/etc/apt/apt.conf.d/98-hardening"]
+        copyRepoFiles(SETUPDIR, files, True)
         # ----------------------------------------------------------
         # Section 1.6 - Legal Banners
         # ----------------------------------------------------------
         line()
         printHead("Section 1.6 - Legal Banners")
-        files = ["issue.net", "issue", "motd"]
-        for file in files:
-            filepath = f"/etc/{file}"
-            template = SETUPDIR / filepath
-            filedest = Path(filepath)
-            copyFiles(template, filedest, True)
+        files = ["/etc/issue.net", "/etc/issue", "/etc/motd"]
+        copyRepoFiles(SETUPDIR, files, True)
         run("chmod -x /etc/update-motd.d/*")
         # ----------------------------------------------------------
         # Section 1.8 - Detect Mounted Critical Paths
@@ -118,10 +112,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 2.4 - NTP")
-        filepath = "/etc/systemd/timesyncd.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
+        copyRepoFile(SETUPDIR, "/etc/systemd/timesync.conf", True)
         run("systemctl restart systemd-timesyncd")
         run("systemctl enable systemd-timesyncd")
         # ----------------------------------------------------------
@@ -136,22 +127,14 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 3 - Network Stack Hardening")
-        filepath = "/etc/sysctl.d/60-ipv6.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        run(f"sysctl -p {filepath}")
-        filepath = "/etc/modprobe.d/disable.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
+        files = ["/etc/sysctl.d/60-ipv6.conf", "/etc/sysctl.d/60-net.conf", "/etc/modprobe.d/disable.conf", "/etc/systemd/logind.conf", "/etc/hosts.allow", "/etc/hosts.deny"]
+        copyRepoFiles(SETUPDIR, files, True)
+        run(f"sysctl -p /etc/sysctl.d/60-ipv6.conf")
+        run(f"sysctl -p /etc/sysctl.d/60-net.conf")
+        run("systemctl restart systemd-sysctl")
         modules = ["dccp", "tipc", "rds", "sctp"]
         for mod in modules:
             run(f"modprobe -r {mod} 2>/dev/null")
-        filepath = "/etc/sysctl.d/60-net.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        run(f"sysctl -p {filepath}")
         # ----------------------------------------------------------
         # Section 4 - FirewallD with Sane Defaults
         # ----------------------------------------------------------
@@ -160,7 +143,7 @@ if __name__ == "__main__":
         run("apt install -y firewalld")
         run("systemctl enable firewalld")
         run("systemctl start firewalld")
-        ports = getList(BASEDIR / "scr" / "setup" / "cfg" / "app-firewalld.conf")
+        ports = getList(BASEDIR / "scr/setup/cfg/app-firewalld.conf")
         for port in ports:
             if port[0].isdigit():
                 command = f"firewall-cmd --permanent --zone=public --add-port={port}/tcp"
@@ -178,21 +161,26 @@ if __name__ == "__main__":
         filedest = Path(filepath)
         labusers = getData("[cyan]Restrict SSH logins to the following users[/cyan] (ENTER for none): ")
         address  = getData("[cyan]Internal IP granted root access[/cyan] (ENTER for none): ")
-        data = {"labuser": labusers, "internal_address": address}
+        data = {"labusers": labusers, "internal_address": address}
+        if not writeTemplate(template, filedest, data):
+            outlog.logError(f"Could not write template to {filedest}", 1)
+        filepath = "/etc/security/access.conf"
+        template = SETUPDIR / filepath
+        filedest = Path(filepath)
         if not writeTemplate(template, filedest, data):
             outlog.logError(f"Could not write template to {filedest}", 1)
         run("systemctl enable ssh")
         run("systemctl restart ssh")
+        run("systemctl mask debug-shell.service")
+        run("systemctl stop debug-shell.service")
+        run("systemctl daemon-reload")
         # ----------------------------------------------------------
         # Section 5.2 - Secure SUDO
         # ----------------------------------------------------------
         line()
         printHead("Section 5.2 - Secure SUDO")
-        filepath = "/etc/sudoers.d/01_base"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        chmod(filedest, 0o440)
+        copyRepoFile(SETUPDIR, "/etc/sudoers.d/01_base", True, mode=0o440)
+        copyRepoFile(SETUPDIR, "/etc/pam.d/su", True)
         if run(f"visudo -c -f {filedest}").returncode != 0:
             outlog.logError(f"SUDO config failed validation", 1)
         # ----------------------------------------------------------
@@ -200,26 +188,11 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 5.4 - Password Policy")
-        # Set login parameters
-        filepath = "/etc/login.defs"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        # Set inactive account lock to 30 days
+        files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc"]
+        copyRepoFiles(SETUPDIR, files, True)
         run(f"useradd -D -f 30")
-        # Set shell timeout to 30 secs
-        filepath = "/etc/profile.d/timeout.sh"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        run(f"chmod +x {filedest}")
-        # Lock root account
+        run(f"chmod +x /etc/profile.d/timeout.sh")
         run("passwd -l root")
-        # Set bash defaults
-        filepath = "/etc/bash.bashrc"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
         # Set default root umask in .profile
         dotfile = Path.home() / ".bash_profile"
         if not dotfile.exists():
@@ -273,14 +246,8 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 6.3 - Log Rotation & JournalD")
-        filepath = "/etc/logrotate.d/sudo"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
-        filepath = "/etc/systemd/journald.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
+        files = ["/etc/logrotate.conf", "/etc/logrotate.d/sudo", "/etc/systemd/journald.conf"]
+        copyRepoFiles(SETUPDIR, files, True)
         run("systemctl restart systemd-journald")
         # ----------------------------------------------------------
         # Section 6.4 - Enable 'acct' & Process Tracking
@@ -293,22 +260,24 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Section 6.5 - Secure Password Files")
-        chmod(Path("/etc/passwd"), 0o644)
-        chown(Path("/etc/passwd"), "root", "root")
-        chmod(Path("/etc/shadow"), 0o000)
-        chown(Path("/etc/shadow"), "root", "shadow")
-        chmod(Path("/etc/group"), 0o644)
-        chown(Path("/etc/group"), "root", "root")
-        chmod(Path("/etc/gshadow"), 0o000)
-        chown(Path("/etc/gshadow"), "root", "shadow")
-        chmod(Path("/etc/passwd-"), 0o600)
-        chown(Path("/etc/passwd-"), "root", "root")
-        chmod(Path("/etc/shadow-"), 0o600)
-        chown(Path("/etc/shadow-"), "root", "shadow")
-        chmod(Path("/etc/group-"), 0o600)
-        chown(Path("/etc/group-"), "root", "root")
-        chmod(Path("/etc/gshadow-"), 0o600)
-        chown(Path("/etc/gshadow-"), "root", "shadow")
+        data = {
+            "/etc/passwd":   [0o644, "root", "root"],
+            "/etc/shadow":   [0o000, "root", "shadow"],
+            "/etc/group":    [0o644, "root", "root"],
+            "/etc/gshadow":  [0o000, "root", "shadow"],
+            "/etc/passwd-":  [0o600, "root", "root"],
+            "/etc/shadow-":  [0o600, "root", "shadow"],
+            "/etc/group-":   [0o600, "root", "root"],
+            "/etc/gshadow-": [0o600, "root", "shadow"]
+        }
+        perms(data)
+        # ----------------------------------------------------------
+        # EXTRAS
+        # ----------------------------------------------------------
+        line()
+        printHead("EXTRAS")
+        # Enable 'sysstat'
+        copyRepoFile(SETUPDIR, "/etc/default/sysstat", True)
     except Exception as e:
         reason = str(e)
         outlog.logError(f"System hardening failed: {reason}")

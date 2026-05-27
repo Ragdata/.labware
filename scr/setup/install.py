@@ -21,9 +21,9 @@ from mod.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 BASEDIR = Path(config.get("paths", "base"))
-REPOLIB = BASEDIR / "sys" / "lib"
-REPODOT = BASEDIR / "sys" / "dots"
-REPOETC = BASEDIR / "sys" / "etc"
+REPOLIB = BASEDIR / "sys/lib"
+REPODOT = BASEDIR / "sys/dots"
+REPOETC = BASEDIR / "sys/etc"
 EXECUSR = pwd.getpwuid(os.geteuid()).pw_name
 REALUSR = getpass.getuser()
 SERVRIP = getIP()
@@ -114,13 +114,13 @@ if __name__ == "__main__":
             printDot("GNUPG CONFIG")
             gpgcfg = getData(f"[cyan]Default Key for {user}[/cyan] (ENTER to bypass): ")
             if not gpgcfg == False:
-                tmpl = BASEDIR / "cfg" / "gnupg" / "gpg.conf"
-                dest = USERDIR / ".gnupg" / "gpg.conf"
+                tmpl = BASEDIR / "cfg/gnupg/gpg.conf"
+                dest = USERDIR / ".gnupg/gpg.conf"
                 data = {"signing_key": gpgcfg}
                 if not writeTemplate(tmpl, dest, data, user=user):
                     printWarning(f"Could not write GNUPG2 config for user '{user}'")
-                file = BASEDIR / "cfg" / "gnupg" / "gpg-agent.conf"
-                dest = USERDIR / ".gnupg" / "gpg-agent.conf"
+                file = BASEDIR / "cfg/gnupg/gpg-agent.conf"
+                dest = USERDIR / ".gnupg/gpg-agent.conf"
                 if not copyFiles(file, dest, user=user):
                     printWarning(f"Could not copy gpg-agent.conf to {dest}")
             # GITCONFIG
@@ -130,7 +130,7 @@ if __name__ == "__main__":
             if not git_user == False:
                 git_email = getData(f"[cyan]Enter git email for {user}[/cyan]: ")
                 git_key = getData(f"[cyan]Enter signing key for {user}[/cyan]: ")
-                tmpl = BASEDIR / "cfg" / "git" / ".gitconfig"
+                tmpl = BASEDIR / "cfg/git/.gitconfig"
                 dest = USERDIR / ".gitconfig"
                 data = {"user_name": git_user, "user_email": git_email, "signing_key": git_key}
                 if not writeTemplate(tmpl, dest, data, user=user):
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         ############################################################
         run("clear")
         printHead("Installing Basic Tools ...")
-        basic = BASEDIR / "src" / "setup" / "cfg" / "apt-basic.cfg"
+        basic = BASEDIR / "src/setup/cfg/apt-basic.cfg"
         if not basic.exists():
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
@@ -153,7 +153,7 @@ if __name__ == "__main__":
         ############################################################
         line()
         printHead("Installing Security Tools ...")
-        secure = BASEDIR / "src" / "setup" / "cfg" / "apt-secure.cfg"
+        secure = BASEDIR / "src/setup/cfg/apt-secure.cfg"
         if not secure.exists():
             raise FileNotFoundError(f"File not found: '{secure}'")
         pkgs = getList(secure)
