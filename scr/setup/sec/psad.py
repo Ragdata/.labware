@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""
+====================================================================
+Package: labware
+====================================================================
+Author:			Ragdata
+Date:			12/05/2026
+License:		MIT License
+Repository:		https://github.com/Ragdata/.labware
+Copyright:		Copyright © 2026 Redeyed Technologies
+====================================================================
+"""
+import sys
+
+sys.path.append("../mod")
+
+from mod.filesys import *
+
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
+SERVERIP = getIP()
+#-------------------------------------------------------------------
+# PROCESS
+#-------------------------------------------------------------------
+if __name__ == "__main__":
+    try:
+        pkgs = ["psad"]
+        installAPT(pkgs)
+        filepath = "/etc/psad/auto_dl"
+        template = SETUPDIR / filepath
+        filedest = Path(filepath)
+        data = {"server_ip": SERVERIP}
+        if not writeTemplate(template, filedest, data):
+            outlog.logError(f"Could not write template to {filedest}", 1)
+        while True:
+            email_address = getData("[cyan]Enter admin email address[/cyan] (required): ")
+            if email_address:
+                break
+        filepath = "/etc/psad/psad.conf"
+        template = SETUPDIR / filepath
+        filedest = Path(filepath)
+        data = {"email_address": email_address}
+        if not writeTemplate(template, filedest, data):
+            outlog.logError(f"Could not write template to {filedest}", 1)
+        run("iptables -A INPUT -j LOG")
+        run("iptables -A FORWARD -j LOG")
+        run("netfilter-persistent save")
+        run("systemctl enable psad.service")
+        run("systemctl restart psad")
+        run("psad --sig-update")
+        run("psad -H")
+        run("psad --fw-analyze")
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Failed to install ACCT: {reason}")
+        raise e
