@@ -69,7 +69,7 @@ def chown(tgt: Path, user: str, group: str) -> None:
                 for name in dirs + files:
                     os.chown(os.path.join(root, name), uid, gid)
 
-def copyFiles(src: Path, dst: Path, bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool:
+def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool | None:
     try:
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name
@@ -77,47 +77,102 @@ def copyFiles(src: Path, dst: Path, bkp: bool = False, bkpdir: Path = Path.home(
             group = user
         if not userExists(user):
             raise RuntimeError(f"User '{user}' does not exist")
-        if not src.exists():
+        if isinstance(src, Path) and not src.exists():
             raise FileNotFoundError(f"{src} does not exist")
         if not dst.exists():
             dst.mkdir(parents=True, mode=0o755)
-        if src.is_file():
-            if dst.is_file() and bkp:
-                backup(src, bkpdir)
-            shutil.copy(src, dst)
-            chown(dst, user, group)
-            chmod(dst, mode)
-            printSuccess(f"Copied {src.name}")
-            logger.debug(f"Copied {src.name}")
-            return True
-        elif src.is_dir() and dst.is_dir():
-            for item in os.scandir(src):
-                dest = dst / item.name
-                if item.is_file():
-                    if dest.is_file() and bkp:
-                        backup(Path(item), bkpdir)
-                    if shutil.copy(item, dest):
-                        chown(dest, user, group)
-                        chmod(dest, mode)
-                        printSuccess(f"Copied '{item.name}'")
-                        logger.debug(f"Copied '{item.name}'")
-                    else:
-                        printWarning(f"Copy Failed '{item.name}'")
-                        logger.debug(f"Copy Failed '{item.name}'")
-                elif item.is_dir():
-                    if shutil.copytree(item, dest, dirs_exist_ok=True):
-                        chown(dest, user, group)
-                        chmod(dest, mode)
-                        printSuccess(f"Copied Tree '{item.name}'")
-                        logger.debug(f"Copied Tree '{item.name}'")
-                    else:
-                        printWarning(f"Copy Tree Failed '{item.name}'")
-                        logger.debug(f"Copy Tree Failed '{item.name}'")
-                else:
-                    raise TypeError(f"Invalid type copying {src} -> {dst}")
-            return True
+        if isinstance(src, list):
+            for path in src:
+                dstpath = dst / path.name
+                if not path.exists():
+                    raise FileNotFoundError(f"{path} does not exist")
+                if path.is_file() and bkp:
+                    backup(path, bkpdir)
+                shutil.copy(path, dstpath)
+                chown(dst, user, group)
+                chmod(dst, mode)
+                printSuccess(f"Copied {path.name}")
+                logger.debug(f"Copied {path.name}")
+                return True
         else:
-            raise TypeError(f"Invalid type copying {src} -> {dst}")
+            if src.is_file():
+                if dst.is_file() and bkp:
+                    backup(src, bkpdir)
+                shutil.copy(src, dst)
+                chown(dst, user, group)
+                chmod(dst, mode)
+                printSuccess(f"Copied {src.name}")
+                logger.debug(f"Copied {src.name}")
+                return True
+            elif src.is_dir() and dst.is_dir():
+                for item in os.scandir(src):
+                    dest = dst / item.name
+                    if item.is_file():
+                        if dest.is_file() and bkp:
+                            backup(Path(item), bkpdir)
+                        if shutil.copy(item, dest):
+                            chown(dest, user, group)
+                            chmod(dest, mode)
+                            printSuccess(f"Copied '{item.name}'")
+                            logger.debug(f"Copied '{item.name}'")
+                        else:
+                            printWarning(f"Copy Failed '{item.name}'")
+                            logger.debug(f"Copy Failed '{item.name}'")
+                    elif item.is_dir():
+                        if shutil.copytree(item, dest, dirs_exist_ok=True):
+                            chown(dest, user, group)
+                            chmod(dest, mode)
+                            printSuccess(f"Copied Tree '{item.name}'")
+                            logger.debug(f"Copied Tree '{item.name}'")
+                        else:
+                            printWarning(f"Copy Tree Failed '{item.name}'")
+                            logger.debug(f"Copy Tree Failed '{item.name}'")
+                    else:
+                        raise TypeError(f"Invalid type copying {src} -> {dst}")
+                return True
+            else:
+                return False
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Failed to copy files: {reason}")
+        raise e
+
+def copyRepoFile(repo: Path, stub: str, bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool:
+    try:
+        tmpl = repo / stub
+        dest = Path(stub)
+        if not user:
+            user = pwd.getpwuid(os.geteuid()).pw_name
+        if not group:
+            group = user
+        if not userExists(user):
+            raise RuntimeError(f"User '{user}' does not exist")
+        if not repo.exists():
+            raise FileNotFoundError(f"{repo} does not exist")
+        if not tmpl.exists():
+            raise FileNotFoundError(f"{tmpl} does not exist")
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True, mode=0o755)
+        if dest.exists() and bkp:
+            backup(dest, bkpdir)
+        shutil.copy(tmpl, dest)
+        chown(dest, user, group)
+        chmod(dest, mode)
+        printSuccess(f"Copied {dest.name}")
+        logger.debug(f"Copied {dest.name}")
+        return True
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Failed to copy files: {reason}")
+        raise e
+
+def copyRepoFiles(repo: Path, data: list[str], bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool:
+    try:
+        for filepath in data:
+            if not copyRepoFile(repo, filepath, bkp, bkpdir, mode, user, group):
+                outlog.logError(f"Failed to copy files: {filepath}")
+                return False
+        return True
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Failed to copy files: {reason}")
@@ -148,6 +203,11 @@ def getList(filepath: Path) -> list:
         reason = str(e)
         outlog.logError(f"Failed to get list: {reason}")
         raise e
+
+def perms(src: dict[str, list]) -> None:
+    for path, data in src.items():
+        chmod(Path(path), data[0])
+        chown(Path(path), data[1], data[2])
 
 def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:
