@@ -21,7 +21,7 @@ from mod.filesys import *
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        pkgs = ["auditd" "audispd-plugins"]
+        pkgs = ["auditd", "audispd-plugins"]
         installAPT(pkgs)
         run("systemctl --now enable auditd")
         filepath = "/etc/audit/rules/50-scope.rules"
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         template = BASEDIR / filepath
         filedest = Path(filepath)
         copyFiles(template, filedest, True)
-        filepath = "/etc/auditd.conf"
+        filepath = "/etc/audit/auditd.conf"
         template = BASEDIR / filepath
         filedest = Path(filepath)
         copyFiles(template, filedest, True)

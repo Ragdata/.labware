@@ -26,5 +26,5 @@ if __name__ == "__main__":
         run("systemctl enable acct")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to Harden Kernel: {reason}")
+        outlog.logError(f"Failed to install ACCT: {reason}")
         raise e

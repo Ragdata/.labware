@@ -21,7 +21,7 @@ from mod.utils import *
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        pkgs = ["apparmor" "apparmor-utils" "apparmor-profiles" "apparmor-profiles-extra"]
+        pkgs = ["apparmor", "apparmor-utils", "apparmor-profiles", "apparmor-profiles-extra", "libpam-apparmor"]
         installAPT(pkgs)
         with os.scandir("/etc/apparmor.d") as entries:
             for entry in entries:
