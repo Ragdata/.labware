@@ -26,12 +26,11 @@ SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        filepath = "/etc/security/limits.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
-        copyFiles(template, filedest, True)
+        copyRepoFile(SETUPDIR, "/etc/security/limits.conf", True)
         run("echo 'fs.suid_dumpable = 0' > /etc/sysctl.d/60-coredump.conf")
         run("sysctl -p /etc/sysctl.d/60-coredump.conf")
+        copyRepoFile(SETUPDIR, "/etc/systemd/coredump.conf", True)
+        run("systemctl restart systemd-journald")
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Failed to Harden Limits: {reason}")
