@@ -10,40 +10,35 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, getpass, runpy
+import sys
 
-sys.path.append('mod')
+sys.path.append("../mod")
 
 from mod.filesys import *
-
 
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-BASEDIR = Path(config.get("paths", "base"))
-REPOLIB = BASEDIR / "sys/lib"
-REPODOT = BASEDIR / "sys/dots"
-REPOETC = BASEDIR / "sys/etc"
-EXECUSR = pwd.getpwuid(os.geteuid()).pw_name
-REALUSR = getpass.getuser()
-SERVRIP = getIP()
-USERSIP = getUserIP()
-#-------------------------------------------------------------------
-# LOCAL FUNCTIONS
-#-------------------------------------------------------------------
-LXC = 1 if isLXC() else 0
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
+REPOLIB  = BASEDIR / "sys/lib"
+REPODOT  = BASEDIR / "sys/dots"
+# REPOETC  = BASEDIR / "sys/etc"
+# EXECUSR  = pwd.getpwuid(os.geteuid()).pw_name
+# REALUSR  = getpass.getuser()
+# SERVRIP  = getIP()
+# USERSIP  = getUserIP()
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        checkRoot()
-        checkPython()
-        checkUbuntu()
         run("clear")
-        ############################################################
-        # Gather Information
-        ############################################################
+        rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
+        line()
+        # ----------------------------------------------------------
+        # GATHER INFORMATION
+        # ----------------------------------------------------------
         users = []
         while True:
             data = getData("[cyan]Enter list of sudo users to setup (space delimited): [/cyan]")
@@ -55,14 +50,16 @@ if __name__ == "__main__":
                 break
             else:
                 continue
-        ############################################################
+        # ----------------------------------------------------------
         # COPY FILES TO USER DIR
-        ############################################################
+        # ----------------------------------------------------------
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             WAREDIR = USERDIR / ".labware"
             run("clear")
-            rule(f"[yellow]── Copying Files for User '{user}'[/yellow]", style="yellow", align="left")
+            rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
+            line()
+            printWhite(f"COPYING FILES FOR USER '{user}'")
             # Library Files
             line()
             printHead("Installing Library Files ...")
@@ -76,20 +73,18 @@ if __name__ == "__main__":
             line()
             printHead("Installing Dotfiles ...")
             copyFiles(REPODOT, USERDIR, user=user)
-            # if user == EXECUSR:
-            #     line()
-            #     printHead("Installing Configs ...")
-            #     copyFiles(REPOETC, WAREDIR / "etc", user=user)
             line()
-            CONT = getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
-        ############################################################
-        # USER CONFIGURATION
-        ############################################################
+            getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        # ----------------------------------------------------------
+        # CONFIGURE USERS
+        # ----------------------------------------------------------
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             WAREDIR = USERDIR / ".labware"
             run("clear")
-            rule(f"[yellow]── Configuring User '{user}'[/yellow]")
+            rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
+            line()
+            printWhite(f"CONFIGURING USER '{user}'")
             # SUDO NOPASSWD
             if user != "root":
                 line()
@@ -135,48 +130,18 @@ if __name__ == "__main__":
                 data = {"user_name": git_user, "user_email": git_email, "signing_key": git_key}
                 if not writeTemplate(tmpl, dest, data, user=user):
                     printWarning(f"Could not write .gitconfig for {user}")
-            # if user == "root":
-            #     line()
-            #     printDot("INSTALL CUSTOM GIT COMMANDS")
-        ############################################################
-        # INSTALL BASIC TOOLS / UNINSTALL UNWANTED TOOLS VIA APT
-        ############################################################
-        run("clear")
-        printHead("Installing Basic Tools ...")
-        basic = BASEDIR / "src/setup/cfg/apt-basic.cfg"
-        if not basic.exists():
-            raise FileNotFoundError(f"File not found: '{basic}'")
-        pkgs = getList(basic)
-        installAPT(pkgs)
-        ############################################################
-        # INSTALL SECURITY TOOLS VIA APT
-        ############################################################
         line()
-        printHead("Installing Security Tools ...")
-        secure = BASEDIR / "src/setup/cfg/apt-secure.cfg"
-        if not secure.exists():
-            raise FileNotFoundError(f"File not found: '{secure}'")
-        pkgs = getList(secure)
-        installAPT(pkgs)
-        ############################################################
-        # INSTALL PRIMARY PACKAGES
-        ############################################################
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        # ----------------------------------------------------------
+        # REMOVE REDUNDANT USER ACCOUNTS
+        # ----------------------------------------------------------
+        filename = SETUPDIR / "cfg/usr-remove.cfg"
+        if not filename.exists():
+            raise FileNotFoundError(f"{filename} not found")
+        users = getList(filename)
+        removeUsers(users)
         line()
-        printHead("Installing Primary Packages ...")
-        webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
-        if webmin != 'n':
-            runpy.run_path("pkg/webmin.py")
-        else:
-            virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
-            if virtualmin != 'n':
-                runpy.run_path("pkg/virtualmin.py")
-        docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
-        if docker != 'n':
-            runpy.run_path("pkg/docker.py")
-        lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
-        if lazydocker != 'n':
-            runpy.run_path("pkg/lazydocker.py")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Installer failed: {reason}")
+        outlog.logError(f"An error occurred in sec.users.py: {e}")
         raise e

@@ -14,24 +14,33 @@ import sys
 
 sys.path.append("../mod")
 
-from mod.utils import *
+from mod.filesys import *
 
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         # ----------------------------------------------------------
-        # Section 6.4 - Enable 'acct' & Process Tracking
+        # Section 3 - Network Stack Hardening
         # ----------------------------------------------------------
         line()
-        printHead("Section 6.4 - Enable 'acct' & Process Tracking")
-        pkgs = ["acct"]
-        installAPT(pkgs)
-        run("systemctl enable acct")
+        printHead("Section 3 - Network Stack Hardening")
+        files = ["/etc/sysctl.d/60-ipv6.conf", "/etc/sysctl.d/60-net.conf", "/etc/modprobe.d/disable.conf", "/etc/systemd/logind.conf", "/etc/hosts.allow", "/etc/hosts.deny"]
+        copyRepoFiles(SETUPDIR, files, True)
+        run(f"sysctl -p /etc/sysctl.d/60-ipv6.conf")
+        run(f"sysctl -p /etc/sysctl.d/60-net.conf")
+        run("systemctl restart systemd-sysctl")
+        modules = ["dccp", "tipc", "rds", "sctp"]
+        for mod in modules:
+            run(f"modprobe -r {mod} 2>/dev/null")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
+        outlog.logError(f"An error occurred: {e}")
         raise e

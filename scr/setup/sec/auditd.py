@@ -26,13 +26,20 @@ SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        pkgs = ["auditd", "audispd-plugins"]
+        # ----------------------------------------------------------
+        # Section 6.1 - 'auditd' Logging & Audit Rules
+        # ----------------------------------------------------------
+        line()
+        printHead("Section 6.1 - 'auditd' Logging & Audit Rules")
+        pkgs = ["auditd", "audispd-plugins", "auditd-plugin-clickhouse"]
         installAPT(pkgs)
         copyRepoFile(SETUPDIR / "etc/audit/auditd.rules", "/etc/audit/rules.d/hardening.rules", True)
         files = ["/etc/audit/rules/50-scope.rules", "/etc/audit/rules/50-processes.rules", "/etc/audit/auditd.conf"]
         copyRepoFiles(SETUPDIR, files, True)
         run("systemctl --now enable auditd")
         run("systemctl restart auditd")
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Failed to Harden AuditD: {reason}")

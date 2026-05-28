@@ -14,7 +14,7 @@ import sys
 
 sys.path.append("../mod")
 
-from mod.utils import *
+from mod.filesys import *
 
 #-------------------------------------------------------------------
 # PROCESS
@@ -22,16 +22,18 @@ from mod.utils import *
 if __name__ == "__main__":
     try:
         # ----------------------------------------------------------
-        # Section 6.4 - Enable 'acct' & Process Tracking
+        # Section 1.8 - Detect Mounted Critical Paths
         # ----------------------------------------------------------
         line()
-        printHead("Section 6.4 - Enable 'acct' & Process Tracking")
-        pkgs = ["acct"]
-        installAPT(pkgs)
-        run("systemctl enable acct")
+        printHead("Section 1.8 - Detect Mounted Critical Paths")
+        MOUNTS = ["/home", "/tmp", "/var", "/var/log", "/var/log/audit", "/var/tmp", "/dev/shm"]
+        for mnt in MOUNTS:
+            if run(f"mount | grep -q 'on {mnt}'").returncode == 0:
+                outlog.logSuccess(f"{mnt} is on a dedicated partition")
+            else:
+                outlog.logWarning(f"{mnt} is NOT on a dedicated partition")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
+        outlog.logError(f"An error occurred: {e}")
         raise e

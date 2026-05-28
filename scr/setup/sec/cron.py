@@ -14,24 +14,34 @@ import sys
 
 sys.path.append("../mod")
 
-from mod.utils import *
+from mod.filesys import *
 
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         # ----------------------------------------------------------
-        # Section 6.4 - Enable 'acct' & Process Tracking
+        # Section 2.5 - Secure 'cron' and 'at'
         # ----------------------------------------------------------
         line()
-        printHead("Section 6.4 - Enable 'acct' & Process Tracking")
-        pkgs = ["acct"]
-        installAPT(pkgs)
-        run("systemctl enable acct")
+        printHead("Section 2.5 - Secure 'cron' and 'at'")
+        files = ["/etc/cron.allow", "/etc/at.allow"]
+        copyRepoFiles(SETUPDIR, files, True)
+        run("chown root:root /etc/cron*")
+        run("chmod og-rwx /etc/cron*")
+        run("chown root:root /etc/at*")
+        run("chmod og-rwx /etc/at*")
+        run("systemctl mask atd.service")
+        run("systemctl stop atd.service")
+        run("systemctl daemon-reload")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
+        outlog.logError(f"An error occurred: {e}")
         raise e

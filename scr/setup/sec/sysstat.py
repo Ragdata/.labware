@@ -14,24 +14,27 @@ import sys
 
 sys.path.append("../mod")
 
-from mod.utils import *
+from mod.filesys import *
 
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         # ----------------------------------------------------------
-        # Section 6.4 - Enable 'acct' & Process Tracking
+        # Enable 'sysstat'
         # ----------------------------------------------------------
         line()
-        printHead("Section 6.4 - Enable 'acct' & Process Tracking")
-        pkgs = ["acct"]
-        installAPT(pkgs)
-        run("systemctl enable acct")
+        printWhite("Enable 'sysstat'")
+        copyRepoFile(SETUPDIR, "/etc/default/sysstat", True)
+        run("systemctl enable sysstat")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
+        outlog.logError(f"An error occurred: {e}")
         raise e

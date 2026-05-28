@@ -21,46 +21,36 @@ from mod.filesys import *
 #-------------------------------------------------------------------
 BASEDIR  = Path(config.get("paths", "base"))
 SETUPDIR = BASEDIR / "scr/setup"
-SERVERIP = getIP()
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         # ----------------------------------------------------------
-        # Install 'psad'
+        # Section 5.1 - SSH Hardening
         # ----------------------------------------------------------
         line()
-        printWhite("Install 'psad'")
-        pkgs = ["psad"]
-        installAPT(pkgs)
-        filepath = "/etc/psad/auto_dl"
+        printHead("Section 5.1 - SSH Hardening")
+        filepath = "/etc/ssh/sshd_config"
         template = SETUPDIR / filepath
         filedest = Path(filepath)
-        data = {"server_ip": SERVERIP}
-        if not writeTemplate(template, filedest, data):
+        labusers = getData("[cyan]Restrict SSH logins to the following users[/cyan] (ENTER for none): ")
+        address  = getData("[cyan]Internal IP granted root access[/cyan] (ENTER for none): ")
+        data = {"labusers": labusers, "internal_address": address}
+        if not writeTemplate(template, filedest, data, 0o600, "root", "root"):
             outlog.logError(f"Could not write template to {filedest}", 1)
-        while True:
-            email_address = getData("[cyan]Enter admin email address[/cyan] (required): ")
-            if email_address:
-                break
-        filepath = "/etc/psad/psad.conf"
+        filepath = "/etc/security/access.conf"
         template = SETUPDIR / filepath
         filedest = Path(filepath)
-        data = {"email_address": email_address}
         if not writeTemplate(template, filedest, data):
             outlog.logError(f"Could not write template to {filedest}", 1)
-        run("iptables -A INPUT -j LOG")
-        run("iptables -A FORWARD -j LOG")
-        run("netfilter-persistent save")
-        run("systemctl enable psad.service")
-        run("systemctl restart psad")
-        run("psad --sig-update")
-        run("psad -H")
-        run("psad --fw-analyze")
+        run("systemctl enable ssh")
+        run("systemctl restart ssh")
+        run("systemctl mask debug-shell.service")
+        run("systemctl stop debug-shell.service")
+        run("systemctl daemon-reload")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
+        outlog.logError(f"An error occurred: {e}")
         raise e

@@ -26,11 +26,18 @@ SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
+        # ----------------------------------------------------------
+        # EXTRAS - Install 'rkhunter'
+        # ----------------------------------------------------------
+        line()
+        printWhite("Install 'rkhunter'")
         pkgs = ["rkhunter"]
         installAPT(pkgs)
         copyRepoFile(SETUPDIR, "/etc/default/rkhunter", True)
         run("rkhunter --update")
         run("rkhunter --propupd")
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Failed to install ACCT: {reason}")

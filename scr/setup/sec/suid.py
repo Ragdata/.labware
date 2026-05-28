@@ -26,16 +26,24 @@ SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        # ----------------------------------------------------------
-        # EXTRAS - USBGUARD
-        # ----------------------------------------------------------
         line()
-        printWhite("Install 'usbguard'")
-        run("apt install -y --no-install-recommends usbguard")
-        run("usbguard generate-policy > /tmp/rules.conf")
-        run("install -m 0600 -o root -g root /tmp/rules.conf /etc/usbguard/rules.conf")
-        run("systemctl enable usbguard.service")
-        run("systemctl start usbguard.service")
+        printWhite("Remove SUID Bits")
+        filename = SETUPDIR / "cfg/suid-list.cfg"
+        if not filename.exists():
+            raise FileNotFoundError(f"{filename} not found")
+        ids = getList(filename)
+        for i in ids:
+            file = run(f"command -v {i}", capture=True).stdout.strip()
+            if os.access(file, os.X_OK):
+                run(f"chmod -s {file}")
+                oc = run(f"stat -c \"%A\" {file} | sed 's/s/x/g'", capture=True).stdout.strip()
+                ug = run(f"stat -c \"%U %G\" {file}", capture=True).stdout.strip()
+                run(f"dpkg-statoverride --remove {file} 2> /dev/null")
+                run(f"dpkg-statoverride --add \"{ug}\" \"{oc}\" \"{file}\" 2> /dev/null")
+        shells = run(f"grep -v '^#' /etc/shells", capture=True).stdout.strip()
+        for shell in shells:
+            if shell.exists():
+                run(f"chmod -s {shell}")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:

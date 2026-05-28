@@ -21,6 +21,11 @@ from mod.filesys import *
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
+        # ----------------------------------------------------------
+        # Section 6.2 - Secure 'rsyslog'
+        # ----------------------------------------------------------
+        line()
+        printHead("Section 6.2 - Secure 'rsyslog'")
         pkgs = ["rsyslog"]
         installAPT(pkgs)
         run("systemctl --now enable rsyslog")
@@ -31,6 +36,8 @@ if __name__ == "__main__":
         run("find /var/log -type f -exec chmod 640 {} \\;")
         run("find /var/log -type d -exec chmod 750 {} \\;")
         chmod(Path("/var/log/sudo.log"), 0o640)
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Failed to Harden AuditD: {reason}")
