@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""
+====================================================================
+Package: labware
+====================================================================
+Author:			Ragdata
+Date:			12/05/2026
+License:		MIT License
+Repository:		https://github.com/Ragdata/.labware
+Copyright:		Copyright © 2026 Redeyed Technologies
+====================================================================
+"""
+import sys
+
+sys.path.append("../mod")
+
+from mod.filesys import *
+
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = BASEDIR / "scr/setup"
+#-------------------------------------------------------------------
+# PROCESS
+#-------------------------------------------------------------------
+if __name__ == "__main__":
+    try:
+        # ----------------------------------------------------------
+        # Section 5.2 - Secure SUDO
+        # ----------------------------------------------------------
+        line()
+        printHead("Section 5.2 - Secure SUDO")
+        copyRepoFile(SETUPDIR, "/etc/sudoers.d/01_base", True, mode=0o440)
+        copyRepoFile(SETUPDIR, "/etc/pam.d/su", True)
+        # if run(f"visudo -c -f {filedest}").returncode != 0:
+        #     outlog.logError(f"SUDO config failed validation", 1)
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+    except Exception as e:
+        outlog.logError(f"An error occurred: {e}")
+        raise e
