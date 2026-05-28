@@ -44,8 +44,7 @@ def checkUbuntu() -> None:
         printSuccess("Ubuntu 24.04 confirmed")
 
 def getIP() -> str:
-    resolvectl = run("resolvectl status >/dev/null 2>&1").returncode
-    if resolvectl == 0:
+    if run("resolvectl status >/dev/null 2>&1").returncode == 0:
         ip = run('ip route get "$(resolvectl status | grep -E \'DNS (Server:|Servers:)\' | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout.strip()
     else:
         ip = run('ip route get "$(grep \'^nameserver\' /etc/resolv.conf | tail -n1 | awk \'{print $NF}\')" | grep -Eo \'[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\' | tail -n1', capture=True).stdout.strip()
@@ -60,8 +59,7 @@ def installAPT(packages: list):
         for pkg in packages:
             if pkg[0] == "#":
                 continue
-            result = run(f"dpkg -s {pkg}", check=False, capture=True)
-            if result.returncode != 0:
+            if run(f"dpkg -s {pkg}", check=False, capture=True).returncode != 0:
                 run(f"DEBIAN_FRONTEND=noninteractive apt install -y {pkg}")
                 printSuccess(f"Installed package: {pkg}")
                 logger.info(f"Installed package: {pkg}")
@@ -78,8 +76,7 @@ def installPIP(packages: list):
         for pkg in packages:
             if pkg[0] == "#":
                 continue
-            result = run(f"pip show {pkg}", check=False, capture=True)
-            if result.returncode != 0:
+            if run(f"pip show {pkg}", check=False, capture=True).returncode != 0:
                 run(f"pip install --user {pkg} --break-system-packages")
                 printSuccess(f"Installed python package: {pkg}")
                 logger.info(f"Installed python package: {pkg}")
@@ -92,19 +89,15 @@ def installPIP(packages: list):
         raise e
 
 def isLXC() -> bool:
-    found = run("grep -qE 'container=lxc|container=lxd' /proc/1/environ")
-    if found.returncode != 0:
-        return True
-    else:
-        return False
+    ret = True if run("grep -qE 'container=lxc|container=lxd' /proc/1/environ").returncode == 0 else False
+    return ret
 
 def removeAPT(packages: list):
     try:
         for pkg in packages:
             if pkg[0] == "#":
                 continue
-            result = run(f"dpkg -s {pkg}", check=False, capture=True)
-            if result.returncode == 0:
+            if run(f"dpkg -s {pkg}", check=False, capture=True).returncode == 0:
                 run(f"apt autopurge -y {pkg}")
                 printSuccess(f"Removed package: {pkg}")
                 logger.info(f"Removed package: {pkg}")
@@ -114,6 +107,24 @@ def removeAPT(packages: list):
     except Exception as e:
         reason = str(e)
         outlog.logError(f"Remove package failed: {reason}")
+        raise e
+
+def removeUsers(users: list) -> bool:
+    try:
+        for user in users:
+            if run(f"id {user}").returncode == 0:
+                run(f"pkill -u {user}")
+                if run(f"userdel -r {user}").returncode == 0:
+                    printSuccess(f"Removed user: {user}")
+                    logger.info(f"Removed user: {user}")
+                else:
+                    outlog.logWarning(f"Failed to remove user: {user}")
+            else:
+                outlog.logWarning(f"User not found: {user}")
+        return True
+    except Exception as e:
+        reason = str(e)
+        outlog.logError(f"Remove user failed: {reason}")
         raise e
 
 def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :
