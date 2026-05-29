@@ -10,11 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
-
-sys.path.append("../mod")
-
-from mod.utils import *
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # PROCESS

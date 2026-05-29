@@ -14,3 +14,15 @@ todo.txt
 
 config.yml
 !.github/.bots/config.yml
+
+*.egg-info/
+dist/
+build/
+__pycache__/
+*.pyc
+*.pyo
+
+*.log
+*.bak
+*.swp
+*.tmp

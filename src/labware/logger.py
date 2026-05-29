@@ -12,29 +12,27 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import logging, sys
 
-sys.path.append('.')
-
 from pathlib import Path
 from typing import TextIO, Any
 
 from logging.handlers import RotatingFileHandler
 
-from output import *
+from labware.output import *
 
-LOG_LEVEL: int   = config.getint("logging", "level")
-LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
-LOG_SIZE: int    = config.getint("logging", "size")
-LOG_COUNT: int   = config.getint("logging", "count")
-LOG_FORMAT: str  = config.get("logging", "format")
-CON_FORMAT: str  = config.get("log_formats", "console", raw=True)
-DATE_FORMAT: str = config.get("log_formats", "date", raw=True)
-
-LOG_FORMATS = {
-    "std": config.get("log_formats", "std", raw=True),
-    "short": config.get("log_formats", "short", raw=True),
-    "long": config.get("log_formats", "long", raw=True),
-    "console": config.get("log_formats", "console", raw=True),
-}
+# LOG_LEVEL: int   = config.getint("logging", "level")
+# LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
+# LOG_SIZE: int    = config.getint("logging", "size")
+# LOG_COUNT: int   = config.getint("logging", "count")
+# LOG_FORMAT: str  = config.get("logging", "format")
+# CON_FORMAT: str  = config.get("log_formats", "console", raw=True)
+# DATE_FORMAT: str = config.get("log_formats", "date", raw=True)
+#
+# LOG_FORMATS = {
+#     "std": config.get("log_formats", "std", raw=True),
+#     "short": config.get("log_formats", "short", raw=True),
+#     "long": config.get("log_formats", "long", raw=True),
+#     "console": config.get("log_formats", "console", raw=True),
+# }
 
 
 #-------------------------------------------------------------------
@@ -156,16 +154,16 @@ class Outlog(object):
 
     _logger = None
 
-    def __init__(self, logger):
+    def __init__(self, log: Logger):
         """
         Initialize the OutLog instance.
 
         Args:
-        	logger: An optional logger instance for logging messages.
+        	log: An optional logger instance for logging messages.
         """
-        self._logger = logger
+        self._logger = log
 
-    def logMessage(self, msg: str, level: int = config.get("logging", "level"), style: Optional[str] = None, **kwargs) -> None:
+    def logMessage(self, msg: str, level: int = config.getint("logging", "level"), style: Optional[str] = None, **kwargs) -> None:
         """
         Log and print a message with an optional style.
 
@@ -201,6 +199,8 @@ class Outlog(object):
                 symbol = config.get("symbols", "dot")
         if symbol is not None:
             msg = f"{symbol} " + msg
+        if style is None:
+            style = "default"
         printMessage(msg, style=style, **kwargs)
 
     def logDebug(self, msg: str, **kwargs) -> None:
@@ -212,6 +212,16 @@ class Outlog(object):
         	**kwargs: Arbitrary keyword arguments.
         """
         self.logMessage(msg, level=logging.DEBUG, style="debug", **kwargs)
+
+    def logDefault(self, msg: str, **kwargs) -> None:
+        """
+        Log a DEFAULT message.
+
+        Args:
+        	msg (str): The message to log.
+        	**kwargs: Arbitrary keyword arguments.
+        """
+        self.logMessage(msg, level=logging.INFO, style="default", **kwargs)
 
     def logInfo(self, msg: str, **kwargs) -> None:
         """

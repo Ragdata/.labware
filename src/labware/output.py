@@ -10,10 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
-
-sys.path.append('.')
-
+from pathlib import Path
 from rich.text import Text
 from rich.theme import Theme
 from rich.measure import Measurement
@@ -21,8 +18,7 @@ from rich.console import Console, ConsoleOptions, RenderableType
 
 from typing import Optional, Union
 
-from config import *
-
+from labware.config import config
 
 _theme = Theme({
     "info": config.get("styles", "info"),
@@ -37,7 +33,6 @@ _theme = Theme({
 })
 
 console = Console(theme=_theme)
-
 
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
@@ -221,6 +216,16 @@ def printDot(msg: str, **kwargs) -> None:
     symbol = config.get("symbols", "dot")
     msg = f"{symbol} " + msg
     printMessage(msg, style="dot", **kwargs)
+
+def printDefault(msg: str, **kwargs) -> None:
+    """
+    Print a message in DEFAULT color
+
+    Args:
+    	msg (str): 	The message to print.
+    	**kwargs: 	Arbitrary keyword arguments.
+    """
+    printMessage(msg, style="default", **kwargs)
 
 def printRed(msg: str, **kwargs) -> None:
     """

@@ -10,14 +10,12 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import shutil, sys, grp
-
-sys.path.append('.')
+import shutil, grp
 
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
-from utils import *
+from labware.utils import *
 
 
 #-------------------------------------------------------------------

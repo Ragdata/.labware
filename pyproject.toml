@@ -1,0 +1,180 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "labware"
+version = "0.1.0"
+description = "CLI tool for self-hosting resource management and Linux server setup/hardening"
+readme = "README.md"
+requires-python = ">=3.14"
+license = {text = "MIT"}
+authors = [
+    {name = "Ragdata", email = "ragdata@redeyed.tech"}
+]
+keywords = [
+    "cli",
+    "self-hosting",
+    "linux",
+    "devops",
+    "server-management",
+    "docker",
+    "security",
+    "hardening"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+
+# Core dependencies
+dependencies = [
+    "typer>=0.9.0",              # CLI framework
+    "rich>=13.0.0",              # Terminal formatting and output
+    "sqlitedict>=1.7.0",         # Persistent key-value storage
+    "passlib>=1.7.4",            # Password hashing
+    "bcrypt>=4.0.0",             # Bcrypt support for passlib
+    "jinja2>=3.1.6",
+]
+
+# Optional dependencies
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+docs = [
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "sphinx-autodoc-typehints>=1.22.0",
+]
+
+[project.urls]
+Repository = "https://github.com/Ragdata/.labware"
+Documentation = "https://labware.readthedocs.io"
+Issues = "https://github.com/Ragdata/.labware/issues"
+
+[project.scripts]
+lab = "labware.cli:app"
+
+# Tool configurations
+[tool.setuptools]
+packages = ["labware"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+labware = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ['py314']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | docs
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+py_version = 314
+skip_glob = ["*/migrations/*"]
+known_first_party = ["labware"]
+
+[tool.mypy]
+python_version = "3.14"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_optional = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sqlitedict.*",
+    "passlib.*",
+    "rich.*",
+    "typer.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers --cov=src/labware --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["src/labware"]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "if sys.version_info",
+    "@abstractmethod",
+]
+
+[tool.pylint.messages_control]
+disable = [
+    "C0111",  # missing-docstring
+    "C0103",  # invalid-name
+    "R0913",  # too-many-arguments
+    "R0914",  # too-many-locals
+    "W0212",  # protected-access
+]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pdoc]
+modules = ["labware"]
+
+[tool.semantic-release]
+version_pattern = "v(?P<version>\\d+\\.\\d+\\.\\d+)"
+version_source = "tag"
+upload_to_release = true
+build_command = "pip install build && python -m build"

@@ -10,13 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
-
-sys.path.append('.')
-
 from pathlib import Path
-from typing import Any, Optional, Iterator, Dict
-from sqlitedict import SqliteDict
+from typing import Optional, Iterator, Dict
+from sqlitedict import *
 
 from utils import *
 

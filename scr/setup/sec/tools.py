@@ -10,11 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, runpy
+import runpy
 
-sys.path.append("../mod")
-
-from mod.filesys import *
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # PROCESS
@@ -48,17 +46,17 @@ if __name__ == "__main__":
         printHead("Installing Primary Packages ...")
         webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
         if webmin != 'n':
-            runpy.run_path("pkg/webmin.py")
+            runpy.run_path("../pkg/webmin.py")
         else:
             virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
             if virtualmin != 'n':
-                runpy.run_path("pkg/virtualmin.py")
+                runpy.run_path("../pkg/virtualmin.py")
         docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
         if docker != 'n':
-            runpy.run_path("pkg/docker.py")
+            runpy.run_path("../pkg/docker.py")
         lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
         if lazydocker != 'n':
-            runpy.run_path("pkg/lazydocker.py")
+            runpy.run_path("../pkg/lazydocker.py")
     except Exception as e:
         outlog.logError(f"An error occurred in sec.tools.py: {e}")
         raise e

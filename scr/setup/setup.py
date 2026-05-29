@@ -10,11 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, runpy
+import runpy
 
-sys.path.append('mod')
-
-from mod.filesys import *
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # VARIABLES
@@ -30,7 +28,7 @@ from mod.filesys import *
 #-------------------------------------------------------------------
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
-LXC = 1 if isLXC() else 0
+# LXC = 1 if isLXC() else 0
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -56,21 +54,21 @@ if __name__ == "__main__":
         runpy.run_path("sec/core.py")
         runpy.run_path("sec/apt.py")
         runpy.run_path("sec/banners.py")
-        runpy.run_path("sec/firewalld.py")
         runpy.run_path("sec/mounts.py")
         runpy.run_path("sec/timesyncd.py")
         runpy.run_path("sec/cron.py")
         runpy.run_path("sec/network.py")
+        runpy.run_path("sec/firewalld.py")
         runpy.run_path("sec/sshd.py")
+        runpy.run_path("sec/sudo.py")
         runpy.run_path("sec/account.py")
         runpy.run_path("sec/auditd.py")
-        runpy.run_path("sec/journald.py")
-        runpy.run_path("sec/password.py")
         runpy.run_path("sec/rsyslog.py")
+        runpy.run_path("sec/journald.py")
         runpy.run_path("sec/acct.py")
+        runpy.run_path("sec/password.py")
         runpy.run_path("sec/sysstat.py")
         runpy.run_path("sec/psad.py")
-        runpy.run_path("sec/sudo.py")
         runpy.run_path("sec/usbguard.py")
         runpy.run_path("sec/rkhunter.py")
         runpy.run_path("sec/aide.py")

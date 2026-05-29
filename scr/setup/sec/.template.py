@@ -14,7 +14,7 @@ import sys
 
 sys.path.append("../mod")
 
-from mod.filesys import *
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # PROCESS

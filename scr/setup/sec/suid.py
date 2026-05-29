@@ -10,11 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
-
-sys.path.append("../mod")
-
-from mod.filesys import *
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # VARIABLES
@@ -26,6 +22,9 @@ SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
+        # ----------------------------------------------------------
+        # EXTRAS - Remove SUID Bits
+        # ----------------------------------------------------------
         line()
         printWhite("Remove SUID Bits")
         filename = SETUPDIR / "cfg/suid-list.cfg"

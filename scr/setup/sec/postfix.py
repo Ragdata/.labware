@@ -10,11 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, socket
+import socket
 
-sys.path.append("../mod")
-
-from mod.filesys import *
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # VARIABLES

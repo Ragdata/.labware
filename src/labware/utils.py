@@ -10,11 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, os, subprocess, pwd
+import os, subprocess, pwd
 
-sys.path.append('.')
-
-from logger import *
+from labware.logger import *
 
 
 #-------------------------------------------------------------------

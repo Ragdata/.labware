@@ -1,0 +1,257 @@
+#!/usr/bin/env python3
+"""
+====================================================================
+Package: labware
+====================================================================
+Author:			Ragdata
+Date:			19/04/2026
+License:		MIT License
+Repository:		https://github.com/Ragdata/.labware
+Copyright:		Copyright © 2026 Redeyed Technologies
+====================================================================
+
+Configuration Management Module
+
+This module provides a centralized configuration system that:
+- Defines sensible defaults for all modules
+- Allows external configuration file overrides
+- Provides a singleton config object accessible globally
+- Handles missing files gracefully with fallback defaults
+"""
+from __future__ import annotations
+
+from pathlib import Path
+from configparser import ConfigParser
+from typing import Any, Dict, Optional
+
+# ------------------------------------------------------------------
+# DEFAULTS - Used by output module
+# ------------------------------------------------------------------
+DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
+    "symbols": {
+        "info": "✚",
+        "success": "[🗸]",
+        "warning": "🛆",
+        "error": "[✘]",
+        "tip": "★",
+        "important": "⚑",
+        "debug": "⚙",
+        "head": "➤",
+        "dot": "⦁",
+    },
+    "styles": {
+        "info": "dodger_blue1",
+        "success": "bright_green",
+        "warning": "dark_orange",
+        "error": "bright_red",
+        "tip": "cyan3",
+        "important": "purple3",
+        "debug": "white",
+        "head": "dark_goldenrod",
+        "dot": "green",
+    },
+    "logging": {
+        "level": "20",
+        "size": "1048576",
+        "count": "3",
+        "format": "std",
+        "logdir": ".labware/log",
+    },
+    "log_formats": {
+        "std": "%(asctime)s :: %(levelname)s :: %(message)s",
+        "short": "%(levelname)s :: %(message)s",
+        "long": "%(asctime)s :: %(levelname)s :: %(message)s in %(filename)s\n%(pathname)s [ %(funcName)s line %(lineno)s ]",
+        "console": "%(message)s",
+        "date": "%Y-%m-%d %H:%M:%S",
+    },
+}
+
+# ------------------------------------------------------------------
+# Config Class
+# ------------------------------------------------------------------
+# noinspection PyMethodOverriding
+class Config(ConfigParser):
+    """
+    Enhanced configuration parser with defaults and overrides.
+
+    This class extends ConfigParser to provide:
+    - Automatic defaults from code-defined DEFAULT_CONFIG
+    - Optional external config file overrides
+    - Graceful fallback when files are missing
+    - Type-safe get operations (get, getint, getbool)
+    """
+
+    def __init__(self, config_file: Optional[str | Path] = None, defaults: Optional[Dict[str, Dict[str, Any]]] = None):
+        """
+        Initialize the configuration.
+
+        Args:
+            config_file: Path to external configuration file (optional)
+            defaults: Dictionary of default values to set (optional)
+                     If not provided, uses DEFAULT_CONFIG
+        """
+        # Disable interpolation to allow % characters in values (like datetime formats)
+        super().__init__(interpolation=None)
+        if defaults is None:
+            defaults = DEFAULT_CONFIG
+        # Populate sections/options from defaults
+        self._set_defaults(defaults)
+
+        # If an explicit config_file is provided, attempt to load it
+        if config_file is not None:
+            self._load_config_file(config_file)
+
+    def _set_defaults(self, defaults: Dict[str, Dict[str, Any]]) -> None:
+        """
+        Set default configuration values from a dictionary.
+
+        Args:
+            defaults: Dictionary with structure {section: {option: value}}
+        """
+        for section, options in defaults.items():
+            if not self.has_section(section):
+                self.add_section(section)
+            for option, value in options.items():
+                # Only set if not already set
+                if not self.has_option(section, option):
+                    self.set(section, option, str(value))
+
+    def _load_config_file(self, config_file: str | Path) -> None:
+        """
+        Load configuration from an external file.
+
+        Args:
+            config_file: Path to configuration file
+
+        Raises:
+            FileNotFoundError: If file doesn't exist
+        """
+        if not isinstance(config_file, Path):
+            config_file = Path(config_file)
+
+        if not config_file.exists():
+            raise FileNotFoundError(f"Config file not found: '{config_file}'")
+
+        self.read(config_file)
+
+    def get(self, section: str, option: str, fallback: Optional[Any] = None, **kwargs) -> str:
+        """
+        Get a configuration value with fallback support.
+
+        Args:
+            section: Configuration section
+            option: Configuration option/key
+            fallback: Fallback value if not found
+
+        Returns:
+            Configuration value as string
+        """
+        try:
+            return super().get(section, option, **kwargs)
+        except Exception:
+            if fallback is not None:
+                return str(fallback)
+            # Try DEFAULT_CONFIG for final fallback
+            try:
+                return str(DEFAULT_CONFIG[section][option])
+            except Exception:
+                return ""
+
+    def getint(self, section: str, option: str, fallback: Optional[int] = None) -> int:
+        """
+        Get a configuration value as an integer.
+
+        Args:
+            section: Configuration section
+            option: Configuration option/key
+            fallback: Fallback value if not found
+
+        Returns:
+            Configuration value as integer
+        """
+        try:
+            return super().getint(section, option)
+        except Exception:
+            if fallback is not None:
+                return fallback
+            # Try DEFAULT_CONFIG as final fallback
+            try:
+                return int(DEFAULT_CONFIG[section][option])
+            except Exception:
+                return 0
+
+    def getbool(self, section: str, option: str, fallback: Optional[bool] = None) -> bool:
+        """
+        Get a configuration value as a boolean.
+
+        Args:
+            section: Configuration section
+            option: Configuration option/key
+            fallback: Fallback value if not found
+
+        Returns:
+            Configuration value as boolean
+        """
+        try:
+            return super().getboolean(section, option)
+        except Exception:
+            if fallback is not None:
+                return fallback
+            # Try DEFAULT_CONFIG as final fallback
+            try:
+                val = DEFAULT_CONFIG[section][option]
+                if isinstance(val, bool):
+                    return val
+                if isinstance(val, str):
+                    return val.lower() in ('true', '1', 'yes', 'on')
+                return bool(val)
+            except Exception:
+                return False
+
+# ------------------------------------------------------------------
+# SINGLETON ACCESSOR
+# ------------------------------------------------------------------
+# noinspection PyProtectedMember
+def get_config(config_file: Optional[str | Path] = None) -> Config:
+    """
+    Get or create the global config instance.
+
+    Args:
+        config_file: Optional path to external config file
+                    (only used on first call)
+
+    Returns:
+        Config: The singleton configuration instance
+    """
+    if not hasattr(get_config, '_instance'):
+        # Try to find config file in standard locations
+        if config_file is None:
+            home = Path.home()
+            standard_locations = [
+                home / '.labware.cfg',
+                home / '.labware' / 'config.cfg',
+                Path('/etc/labware/config.cfg'),
+            ]
+
+            for location in standard_locations:
+                if location.exists():
+                    config_file = location
+                    break
+
+        # Create instance with or without file
+        if config_file:
+            try:
+                get_config._instance = Config(config_file=config_file)
+            except FileNotFoundError:
+                # File specified but not found, use defaults
+                get_config._instance = Config()
+        else:
+            # No file found, use defaults only
+            get_config._instance = Config()
+
+    return get_config._instance
+
+# Create module-level singleton for backward compatibility
+config: Config = get_config()
+
+__all__ = ['Config', 'get_config', 'config', 'DEFAULT_CONFIG']
