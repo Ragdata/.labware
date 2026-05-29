@@ -43,7 +43,7 @@ dependencies = [
     "sqlitedict>=1.7.0",         # Persistent key-value storage
     "passlib>=1.7.4",            # Password hashing
     "bcrypt>=4.0.0",             # Bcrypt support for passlib
-    "jinja2>=3.1.6",
+    "jinja2>=3.1.6",             # Templating engine for configuration files
 ]
 
 # Optional dependencies

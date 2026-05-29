@@ -59,4 +59,6 @@ echo -e "${YELLOW}Installing Python Libraries ...${NC}"
 # pip install -r requirements.txt --user --break-system-packages
 cd ../.. || exit
 python3.14 -m pip install -e . --break-system-packages
+python3.14 -m pip install ".[dev]" --break-system-packages
+python3.14 -m pip install ".[docs]" --break-system-packages
 cd -- || exit
