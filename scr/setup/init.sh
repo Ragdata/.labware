@@ -58,5 +58,5 @@ apt install -y curl wget git gnupg2 net-tools dnsutils iputils-ping procps pytho
 echo -e "${YELLOW}Installing Python Libraries ...${NC}"
 # pip install -r requirements.txt --user --break-system-packages
 cd ../.. || exit
-pip install -e . --break-system-packages
+python3.14 -m pip install -e . --break-system-packages
 cd -- || exit
