@@ -142,6 +142,22 @@ def run(command: str, check: bool = True, capture: bool = False, input_txt = Non
             sys.exit(1)
         raise
 
+def runScript(script, *args) -> dict:
+    """Execute shell script with error handling"""
+    try:
+        result = subprocess.run([sys.executable, script, *args], capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Script failed: {script}\n{e.stderr.strip()}", True, 1)
+        raise
+
+    return {
+        "success": result.returncode == 0,
+        "code": result.returncode,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip()
+    }
+
+
 def userExists(uname) -> bool:
     try:
         pwd.getpwnam(uname)

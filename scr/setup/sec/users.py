@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 users = data.split(" ")
                 for user in users:
                     if not userExists(user):
-                        errorExit(f"User '{user}' does not exist")
+                        logger.error(f"User '{user}' does not exist", True, 1)
                 break
             else:
                 continue
