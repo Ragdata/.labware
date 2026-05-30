@@ -204,7 +204,7 @@ class Logger(logging.Logger):
             **kwargs:       Arbitrary keyword arguments
         """
         if self.isEnabledFor(level):
-            self._log(level, msg, *args, **kwargs)
+            self._log(level, msg, args, **kwargs)
 
     @staticmethod
     def outlog(msg: str, style: Optional[str] = None) -> None:
