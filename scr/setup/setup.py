@@ -50,7 +50,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         # SERVER HARDENING
         # ----------------------------------------------------------
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING [/yellow]")
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING [/yellow]", style="yellow", align="left")
         runpy.run_path("sec/remfiles.py")
         runpy.run_path("sec/boot.py")
         runpy.run_path("sec/apparmor.py")
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         # REPORT
         # ----------------------------------------------------------
         run("clear")
-        rule(f"[yellow]── REPORT[/yellow]")
+        rule(f"[yellow]── REPORT[/yellow]", style="yellow", align="left")
         run("systemd-delta --no-pager")
         # ----------------------------------------------------------
         # REBOOT
