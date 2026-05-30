@@ -10,16 +10,17 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-from labware.filesys import *
+from labware.output import outlog
+from labware.filesys import run
 
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        cmd = "curl -fsSL https://software.virtualmin.com/gpl/scripts/virtualmin-install.sh -- --bundle LEMP | sh"
-        outlog.logSuccess("Successfully installed Virtualmin") if run(cmd).returncode == 0 else outlog.logWarning("Virtualmin not installed")
+        cmd = "curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash"
+        logger.success("Successfully installed LazyDocker", True) if run(cmd).returncode == 0 else logger.warning("LazyDocker not installed", True)
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to install Virtualmin: {reason}")
-        raise e
+        logger.error(f"Failed to install LazyDocker: {reason}", True)
+        raise

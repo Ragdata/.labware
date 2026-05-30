@@ -14,30 +14,32 @@ import os, subprocess, pwd
 
 from labware.logger import *
 
+if not isinstance(logger, logging.Logger):
+    logger = get_logger("labware")
 
 #-------------------------------------------------------------------
 # MODULE VARIABLES
 #-------------------------------------------------------------------
-BASEDIR = Path(config.get("paths", "base"))
+# BASEDIR = Path(config.get("paths", "base"))
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
 def checkPython() -> None:
     if sys.version_info < (3, 12):
-        errorExit(f"Requires Python 3.12 or later")
+        logger.error(f"Requires Python 3.14 or later", True, 1)
     else:
-        printSuccess("Python 3.12 or later confirmed")
+        printSuccess("Python 3.14 or later confirmed")
 
 def checkRoot() -> None:
     if os.geteuid() != 0:
-        errorExit(f"Root privileges required")
+        logger.error(f"Root privileges required", True, 1)
     else:
         printSuccess("Root privileges confirmed")
 
 def checkUbuntu() -> None:
     version = run("lsb_release -rs", capture=True).stdout.strip()
     if version != "24.04":
-        errorExit(f"Expected Ubuntu 24.04, found '{version}'")
+        logger.error(f"Expected Ubuntu 24.04, found '{version}'", True, 1)
     else:
         printSuccess("Ubuntu 24.04 confirmed")
 
@@ -66,8 +68,8 @@ def installAPT(packages: list):
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Install package failed: {reason}")
-        raise e
+        logger.error(f"Install package failed: {reason}", True)
+        raise
 
 def installPIP(packages: list):
     try:
@@ -83,8 +85,8 @@ def installPIP(packages: list):
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Install failed: {reason}")
-        raise e
+        logger.error(f"Install failed: {reason}", True)
+        raise
 
 def isLXC() -> bool:
     ret = True if run("grep -qE 'container=lxc|container=lxd' /proc/1/environ").returncode == 0 else False
@@ -104,8 +106,8 @@ def removeAPT(packages: list):
                 logger.debug(f"Package not installed: {pkg}")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Remove package failed: {reason}")
-        raise e
+        logger.error(f"Remove package failed: {reason}", True)
+        raise
 
 def removeUsers(users: list) -> bool:
     try:
@@ -116,14 +118,14 @@ def removeUsers(users: list) -> bool:
                     printSuccess(f"Removed user: {user}")
                     logger.info(f"Removed user: {user}")
                 else:
-                    outlog.logWarning(f"Failed to remove user: {user}")
+                    logger.error(f"Failed to remove user: {user}", True)
             else:
-                outlog.logWarning(f"User not found: {user}")
+                logger.warning(f"User not found: {user}", True)
         return True
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Remove user failed: {reason}")
-        raise e
+        logger.error(f"Remove user failed: {reason}", True)
+        raise
 
 def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :
     """Execute shell command with error handling"""
@@ -132,10 +134,10 @@ def run(command: str, check: bool = True, capture: bool = False, input_txt = Non
         result = subprocess.run(command, shell=True, check=check, text=True, capture_output=capture, input=input_txt)
         return result
     except subprocess.CalledProcessError as e:
-        outlog.logError(f"Command failed: {command}\n{e.stderr.strip()}")
+        logger.error(f"Command failed: {command}\n{e.stderr.strip()}", True)
         if check:
             sys.exit(1)
-        raise e
+        raise
 
 def userExists(uname) -> bool:
     try:

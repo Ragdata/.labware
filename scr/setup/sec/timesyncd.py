@@ -33,5 +33,5 @@ if __name__ == "__main__":
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        outlog.logError(f"An error occurred: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise

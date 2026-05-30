@@ -19,21 +19,20 @@ from logging.handlers import RotatingFileHandler
 
 from labware.output import *
 
-# LOG_LEVEL: int   = config.getint("logging", "level")
-# LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
-# LOG_SIZE: int    = config.getint("logging", "size")
-# LOG_COUNT: int   = config.getint("logging", "count")
-# LOG_FORMAT: str  = config.get("logging", "format")
-# CON_FORMAT: str  = config.get("log_formats", "console", raw=True)
-# DATE_FORMAT: str = config.get("log_formats", "date", raw=True)
-#
-# LOG_FORMATS = {
-#     "std": config.get("log_formats", "std", raw=True),
-#     "short": config.get("log_formats", "short", raw=True),
-#     "long": config.get("log_formats", "long", raw=True),
-#     "console": config.get("log_formats", "console", raw=True),
-# }
+LOG_LEVEL: int   = config.getint("logging", "level")
+LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
+LOG_SIZE: int    = config.getint("logging", "size")
+LOG_COUNT: int   = config.getint("logging", "count")
+LOG_FORMAT: str  = config.get("logging", "format")
+CON_FORMAT: str  = config.get("log_formats", "console", raw=True)
+DATE_FORMAT: str = config.get("log_formats", "date", raw=True)
 
+LOG_FORMATS = {
+    "std": config.get("log_formats", "std", raw=True),
+    "short": config.get("log_formats", "short", raw=True),
+    "long": config.get("log_formats", "long", raw=True),
+    "console": config.get("log_formats", "console", raw=True),
+}
 
 #-------------------------------------------------------------------
 # Logger Class
@@ -53,82 +52,141 @@ class Logger(logging.Logger):
         super().__init__(name, level)
         self.setLevel(level)
 
-    def critical(self, msg:str, *args, **kwargs) -> None:
+    def critical(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log a CRITICAL message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.CRITICAL, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "error")
+        if xit:
+            exit(xit)
 
-    def debug(self, msg:str, *args, **kwargs) -> None:
+    def debug(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log a DEBUG message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.DEBUG, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "debug")
+        if xit:
+            exit(xit)
 
-    def error(self, msg:str, *args, **kwargs) -> None:
+    def default(self, msg: str, out: bool = True, xit: int = 0, *args, **kwargs) -> None:
+        """
+        Log a DEFAULT message
+
+        Args:
+            msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
+            *args:          Variable length argument list
+            **kwargs:       Arbitrary keyword arguments
+        """
+        self.log(logging.INFO, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "default")
+        if xit:
+            exit(xit)
+
+    def error(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log an ERROR message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.ERROR, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "error")
+        if xit:
+            exit(xit)
 
-    def exception(self, msg:str, *args, **kwargs) -> None:
+    def exception(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log an ERROR message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.ERROR, msg, *args, exc_info=True, **kwargs)
+        if out:
+            self.outlog(msg, "error")
+        if xit:
+            exit(xit)
 
-    def fatal(self, msg:str, *args, **kwargs) -> None:
+    def fatal(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log a FATAL message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.FATAL, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "error")
+        if xit:
+            exit(xit)
 
-    def info(self, msg:str, *args, **kwargs) -> None:
+    def info(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log an INFO message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.INFO, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "info")
+        if xit:
+            exit(xit)
 
-    def warning(self, msg:str, *args, **kwargs) -> None:
+    def warning(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log a WARNING message
 
         Args:
             msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
         """
         self.log(logging.WARNING, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "warning")
+        if xit:
+            exit(xit)
 
     def log(self, level: int, msg: str, *args, **kwargs) -> None:
         """
@@ -141,151 +199,23 @@ class Logger(logging.Logger):
             **kwargs:       Arbitrary keyword arguments
         """
         if self.isEnabledFor(level):
-            self._log(level, msg, args, **kwargs)
+            self._log(level, msg, *args, **kwargs)
 
-
-#-------------------------------------------------------------------
-# OutLog Class
-#-------------------------------------------------------------------
-class Outlog(object):
-    """
-    A class to handle console message with concurrent logging
-    """
-
-    _logger = None
-
-    def __init__(self, log: Logger):
+    @staticmethod
+    def outlog(msg: str, style: Optional[str] = None) -> None:
         """
-        Initialize the OutLog instance.
-
-        Args:
-        	log: An optional logger instance for logging messages.
-        """
-        self._logger = log
-
-    def logMessage(self, msg: str, level: int = config.getint("logging", "level"), style: Optional[str] = None, **kwargs) -> None:
-        """
-        Log and print a message with an optional style.
+        Print message to console with an optional style.
 
         Args:
         	msg (str):      The message to log and print.
-        	level (int):    The level of the message to log and print.
         	style (str):    The style to apply to the message. (Optional)
-        	**kwargs:       Arbitrary keyword arguments.
         """
-        if self._logger.isEnabledFor(level):
-            self._logger.log(level, msg)
+        if style is not None:
+            symbol = config.get("symbols", style)
+            msg = f"{symbol} {msg}"
         else:
-            return
-        symbol = None
-        match style:
-            case "debug":
-                symbol = config.get("symbols", "debug")
-            case "info":
-                symbol = config.get("symbols", "info")
-            case "warning":
-                symbol = config.get("symbols", "warning")
-            case "error":
-                symbol = config.get("symbols", "error")
-            case "success":
-                symbol = config.get("symbols", "success")
-            case "tip":
-                symbol = config.get("symbols", "tip")
-            case "important":
-                symbol = config.get("symbols", "important")
-            case "head":
-                symbol = config.get("symbols", "head")
-            case "dot":
-                symbol = config.get("symbols", "dot")
-        if symbol is not None:
-            msg = f"{symbol} " + msg
-        if style is None:
             style = "default"
-        printMessage(msg, style=style, **kwargs)
-
-    def logDebug(self, msg: str, **kwargs) -> None:
-        """
-        Log a DEBUG message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.DEBUG, style="debug", **kwargs)
-
-    def logDefault(self, msg: str, **kwargs) -> None:
-        """
-        Log a DEFAULT message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.INFO, style="default", **kwargs)
-
-    def logInfo(self, msg: str, **kwargs) -> None:
-        """
-        Log an INFO message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.INFO, style="info", **kwargs)
-
-    def logWarning(self, msg: str, **kwargs) -> None:
-        """
-        Log a WARNING message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.WARNING, style="warning", **kwargs)
-
-    def logError(self, msg: str, xit: int = 0, **kwargs) -> None:
-        """
-        Log an ERROR message.
-
-        Args:
-        	msg (str): The message to log.
-        	xit (int): The return code
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.ERROR, style="error", **kwargs)
-        if xit != 0:
-            exit(xit)
-
-    def logSuccess(self, msg: str, **kwargs) -> None:
-        """
-        Log a SUCCESS message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.INFO, style="success", **kwargs)
-
-    def logCritical(self, msg: str, **kwargs) -> None:
-        """
-        Log an ERROR message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.CRITICAL, style="error", **kwargs)
-
-    def logFatal(self, msg: str, **kwargs) -> None:
-        """
-        Log an ERROR message.
-
-        Args:
-        	msg (str): The message to log.
-        	**kwargs: Arbitrary keyword arguments.
-        """
-        self.logMessage(msg, level=logging.FATAL, style="error", **kwargs)
-
+        printMessage(msg, style=style)
 
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
@@ -338,18 +268,29 @@ def getFormatter(name: str = LOG_FORMAT) -> logging.Formatter:
     msgFormat = LOG_FORMATS.get(name, LOG_FORMATS["std"])
     return logging.Formatter(msgFormat, datefmt=DATE_FORMAT)
 
-
 #-------------------------------------------------------------------
 # MODULE OBJECTS
 #-------------------------------------------------------------------
-logger = getFileLogger("labware", LOG_LEVEL, LOG_FORMAT)
+# noinspection PyProtectedMember
+def get_logger(name: str, level: int = LOG_LEVEL, fmt: str = LOG_FORMAT) -> Logger:
+    """
+    Get or create a global logger instance with the specified name, level, and format.
 
-outlog = Outlog(logger)
+    Args:
+    	name (str):     Name of the logger.
+    	level (int):    Logging level for the logger (default is LOG_LEVEL).
+    	fmt (str):      Log format string (default is LOG_FORMAT).
 
-def errorExit(msg: str, code: int = 1, exc: Exception | None = None) -> None:
-    """ Log an error message and exit the program """
-    outlog.logError(msg)
-    if exc is not None:
-        raise exc
-    else:
-        sys.exit(code)
+    Returns:
+    	Logger: Configured singleton logger instance.
+    """
+    try:
+        if not hasattr(get_logger, "_instances"):
+            get_logger._instances = dict()
+        if name not in get_logger._instances:
+            get_logger._instances[name] = getFileLogger(name, level=level, fmt=fmt)
+    except Exception as e:
+        console.print(f"Could not instantiate logger: {e}", style="error", highlight=False)
+        exit(1)
+
+    return get_logger._instances[name]

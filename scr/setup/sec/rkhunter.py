@@ -36,5 +36,5 @@ if __name__ == "__main__":
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
-        raise e
+        logger.error(f"Failed to install 'rkhunter': {reason}", True)
+        raise

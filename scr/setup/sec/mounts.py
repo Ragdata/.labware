@@ -25,11 +25,11 @@ if __name__ == "__main__":
         MOUNTS = ["/home", "/tmp", "/var", "/var/log", "/var/log/audit", "/var/tmp", "/dev/shm"]
         for mnt in MOUNTS:
             if run(f"mount | grep -q 'on {mnt}'").returncode == 0:
-                outlog.logSuccess(f"{mnt} is on a dedicated partition")
+                logger.success(f"{mnt} is on a dedicated partition", True)
             else:
-                outlog.logWarning(f"{mnt} is NOT on a dedicated partition")
+                logger.warning(f"{mnt} is NOT on a dedicated partition", True)
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        outlog.logError(f"An error occurred: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise

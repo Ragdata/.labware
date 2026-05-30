@@ -35,7 +35,7 @@ if __name__ == "__main__":
         filedest = Path(filepath)
         data = {"server_ip": SERVERIP}
         if not writeTemplate(template, filedest, data):
-            outlog.logError(f"Could not write template to {filedest}", 1)
+            logger.error(f"Could not write template to {filedest}", True, 1)
         while True:
             email_address = getData("[cyan]Enter admin email address[/cyan] (required): ")
             if email_address:
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         filedest = Path(filepath)
         data = {"email_address": email_address}
         if not writeTemplate(template, filedest, data):
-            outlog.logError(f"Could not write template to {filedest}", 1)
+            logger.error(f"Could not write template to {filedest}", True, 1)
         run("iptables -A INPUT -j LOG")
         run("iptables -A FORWARD -j LOG")
         run("netfilter-persistent save")
@@ -58,5 +58,5 @@ if __name__ == "__main__":
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to install ACCT: {reason}")
-        raise e
+        logger.error(f"Failed to install 'psad': {reason}", True)
+        raise

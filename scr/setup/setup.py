@@ -12,23 +12,30 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import runpy
 
+from labware.logger import *
+
+logger = get_logger("setup")
+
 from labware.filesys import *
 
-#-------------------------------------------------------------------
-# VARIABLES
-#-------------------------------------------------------------------
-# BASEDIR = Path(config.get("paths", "base"))
-# REPOLIB = BASEDIR / "sys/lib"
-# REPODOT = BASEDIR / "sys/dots"
-# REPOETC = BASEDIR / "sys/etc"
-# EXECUSR = pwd.getpwuid(os.geteuid()).pw_name
-# REALUSR = getpass.getuser()
-# SERVRIP = getIP()
-# USERSIP = getUserIP()
 #-------------------------------------------------------------------
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
 # LXC = 1 if isLXC() else 0
+def setPaths() -> None:
+    REPOBASE = Path(__file__).resolve().parent.parent.parent
+    config.add_section("paths")
+    config.set("paths", "base",      str(REPOBASE))
+    config.set("paths", "pkg",       str(REPOBASE / "pkg"))
+    config.set("paths", "scr",       str(REPOBASE / "scr"))
+    config.set("paths", "svc",       str(REPOBASE / "svc"))
+    config.set("paths", "sys",       str(REPOBASE / "sys"))
+    config.set("paths", "dot",       str(REPOBASE / "sys" / "dots"))
+    config.set("paths", "lib",       str(REPOBASE / "sys" / "lib"))
+    config.set("paths", "admin",     str(REPOBASE / "scr" / "admin"))
+    config.set("paths", "scripts",   str(REPOBASE / "scr" / "pkg"))
+    config.set("paths", "setup",     str(REPOBASE / "scr" / "setup"))
+    config.set("paths", "templates", str(REPOBASE / "scr" / "setup" / "etc"))
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -37,6 +44,7 @@ if __name__ == "__main__":
         checkRoot()
         checkPython()
         checkUbuntu()
+        setPaths()
         run("clear")
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
@@ -93,7 +101,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         getData("[yellow]Press [ENTER] to reboot ...[/yellow] ")
-        os.system("systemctl reboot")
+        run("systemctl reboot")
     except Exception as e:
-        outlog.logError(f"An error occurred: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise

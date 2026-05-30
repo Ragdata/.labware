@@ -38,5 +38,5 @@ if __name__ == "__main__":
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to Harden AuditD: {reason}")
-        raise e
+        logger.error(f"Failed to Harden 'auditd': {reason}", True)
+        raise

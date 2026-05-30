@@ -10,30 +10,31 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, tempfile, argparse
-
-sys.path.append('../setup/mod')
+import tempfile, argparse
 
 from labware.filesys import *
 
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-BASEDIR = Path(config.get("paths", "base"))
-WAREDIR = Path.home() / ".labware"
-REPOSCR = BASEDIR / "scr/admin"
-
+DEFAULT_FILE = Path(config.get("paths", "admin")) / "cfg" / "pwd-sources.cfg"
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         parser = argparse.ArgumentParser()
-        parser.add_argument("-f", "--file", dest="file", nargs="?", default="")
+        parser.add_argument("-f", "--file", dest="file", nargs="?", default=str(DEFAULT_FILE), help="Path to the password sources configuration file")
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
+        args = parser.parse_args()
+
+        for url in args.file:
+
+
+
+        # with tempfile.TemporaryDirectory() as tmpdir:
+        #     tmpdir = Path(tmpdir)
 
     except Exception as e:
-        outlog.logError(f"Script encountered an error: {e}")
-        raise e
+        logger.error(f"Script encountered an error: {e}", True)
+        raise

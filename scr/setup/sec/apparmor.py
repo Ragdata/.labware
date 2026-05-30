@@ -35,5 +35,5 @@ if __name__ == "__main__":
         run("sysctl --system")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to install Apparmor: {reason}")
-        raise e
+        logger.error(f"Failed to install Apparmor: {reason}", True)
+        raise

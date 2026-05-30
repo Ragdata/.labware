@@ -24,7 +24,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Installing Basic Tools ...")
-        basic = BASEDIR / "src/setup/cfg/apt-basic.cfg"
+        basic = Path(config.get("paths", "setup")) / "cfg" / "apt-basic.cfg"
         if not basic.exists():
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         line()
         printHead("Installing Security Tools ...")
-        secure = BASEDIR / "src/setup/cfg/apt-secure.cfg"
+        secure = Path(config.get("paths", "setup")) / "cfg" / "apt-secure.cfg"
         if not secure.exists():
             raise FileNotFoundError(f"File not found: '{secure}'")
         pkgs = getList(secure)
@@ -46,17 +46,21 @@ if __name__ == "__main__":
         printHead("Installing Primary Packages ...")
         webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
         if webmin != 'n':
-            runpy.run_path("../pkg/webmin.py")
+            path = Path(config.get("paths", "scripts")) / "webmin.py"
+            runpy.run_path(str(path))
         else:
             virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
             if virtualmin != 'n':
-                runpy.run_path("../pkg/virtualmin.py")
+                path = Path(config.get("paths", "scripts")) / "virtualmin.py"
+                runpy.run_path(str(path))
         docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
         if docker != 'n':
-            runpy.run_path("../pkg/docker.py")
+            path = Path(config.get("paths", "scripts")) / "docker.py"
+            runpy.run_path(str(path))
         lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
         if lazydocker != 'n':
-            runpy.run_path("../pkg/lazydocker.py")
+            path = Path(config.get("paths", "scripts")) / "lazydocker.py"
+            runpy.run_path(str(path))
     except Exception as e:
-        outlog.logError(f"An error occurred in sec.tools.py: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise

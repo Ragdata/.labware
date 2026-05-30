@@ -17,9 +17,9 @@ from labware.filesys import *
 #-------------------------------------------------------------------
 if __name__ == "__main__":
     try:
-        cmd = "curl -o webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh | sh"
-        outlog.logSuccess("Successfully installed Webmin") if run(cmd).returncode == 0 else outlog.logWarning("Webmin not installed")
+        cmd = "curl -fsSL https://software.virtualmin.com/gpl/scripts/virtualmin-install.sh -- --bundle LEMP | sh"
+        logger.success("Successfully installed Virtualmin", True) if run(cmd).returncode == 0 else logger.warning("Virtualmin not installed", True)
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to install Webmin: {reason}")
-        raise e
+        logger.error(f"Failed to install Virtualmin: {reason}", True)
+        raise

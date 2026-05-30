@@ -34,5 +34,5 @@ if __name__ == "__main__":
         run("systemctl restart postfix.service")
     except Exception as e:
         reason = str(e)
-        outlog.logError(f"Failed to Harden Limits: {reason}")
-        raise e
+        logger.error(f"Failed to install Postfix: {reason}", True)
+        raise

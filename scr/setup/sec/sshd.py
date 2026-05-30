@@ -34,12 +34,12 @@ if __name__ == "__main__":
         address  = getData("[cyan]Internal IP granted root access[/cyan] (ENTER for none): ")
         data = {"labusers": labusers, "internal_address": address}
         if not writeTemplate(template, filedest, data, 0o600, "root", "root"):
-            outlog.logError(f"Could not write template to {filedest}", 1)
+            logger.error(f"Could not write template to {filedest}", True, 1)
         filepath = "/etc/security/access.conf"
         template = SETUPDIR / filepath
         filedest = Path(filepath)
         if not writeTemplate(template, filedest, data):
-            outlog.logError(f"Could not write template to {filedest}", 1)
+            logger.error(f"Could not write template to {filedest}", True, 1)
         run("systemctl enable ssh")
         run("systemctl restart ssh")
         run("systemctl mask debug-shell.service")
@@ -48,5 +48,5 @@ if __name__ == "__main__":
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        outlog.logError(f"An error occurred: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise

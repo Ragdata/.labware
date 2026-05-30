@@ -30,9 +30,9 @@ if __name__ == "__main__":
         copyRepoFile(SETUPDIR, "/etc/sudoers.d/01_base", True, mode=0o440)
         copyRepoFile(SETUPDIR, "/etc/pam.d/su", True)
         # if run(f"visudo -c -f {filedest}").returncode != 0:
-        #     outlog.logError(f"SUDO config failed validation", 1)
+        #     logger.error(f"SUDO config failed validation", True, 1)
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
     except Exception as e:
-        outlog.logError(f"An error occurred: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise

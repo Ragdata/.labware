@@ -16,9 +16,9 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 BASEDIR  = Path(config.get("paths", "base"))
-SETUPDIR = BASEDIR / "scr/setup"
-REPOLIB  = BASEDIR / "sys/lib"
-REPODOT  = BASEDIR / "sys/dots"
+SETUPDIR = Path(config.get("paths", "setup"))
+REPOLIB  = Path(config.get("paths", "lib"))
+REPODOT  = Path(config.get("paths", "dot"))
 # REPOETC  = BASEDIR / "sys/etc"
 # EXECUSR  = pwd.getpwuid(os.geteuid()).pw_name
 # REALUSR  = getpass.getuser()
@@ -139,5 +139,5 @@ if __name__ == "__main__":
         line()
         getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
-        outlog.logError(f"An error occurred in sec.users.py: {e}")
-        raise e
+        logger.error(f"An error occurred: {e}", True)
+        raise
