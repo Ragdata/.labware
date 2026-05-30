@@ -10,14 +10,17 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import tempfile, argparse, requests
+import tempfile, argparse, requests, sys
 
 from pathlib import Path
+
+BASEDIR = Path(__file__).parents[2]
+
+sys.path.append(str(BASEDIR))
+
 from urllib.parse import urlparse
 
 from labware.config import *
-
-BASEDIR = Path(__file__).resolve().parent.parent.parent
 
 config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 

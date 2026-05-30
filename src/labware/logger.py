@@ -13,6 +13,11 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 import logging, sys
 
 from pathlib import Path
+
+BASEDIR = Path(__file__).parents[2]
+
+sys.path.append(str(BASEDIR))
+
 from typing import TextIO, Any
 
 from logging.handlers import RotatingFileHandler

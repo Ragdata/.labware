@@ -10,13 +10,15 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import runpy
+import runpy, sys
 
 from pathlib import Path
 
-from labware.config import *
+BASEDIR = Path(__file__).parents[2]
 
-BASEDIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASEDIR))
+
+from labware.config import *
 
 config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 

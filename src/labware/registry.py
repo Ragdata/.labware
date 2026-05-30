@@ -10,7 +10,14 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
+import sys
+
 from pathlib import Path
+
+BASEDIR = Path(__file__).parents[2]
+
+sys.path.append(str(BASEDIR))
+
 from typing import Optional, Iterator, Dict
 from sqlitedict import *
 

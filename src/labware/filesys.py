@@ -10,7 +10,13 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import shutil, grp
+import shutil, grp, sys
+
+from pathlib import Path
+
+BASEDIR = Path(__file__).parents[2]
+
+sys.path.append(str(BASEDIR))
 
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader

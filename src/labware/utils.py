@@ -10,7 +10,13 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import os, subprocess, pwd
+import os, subprocess, pwd, sys
+
+from pathlib import Path
+
+BASEDIR = Path(__file__).parents[2]
+
+sys.path.append(str(BASEDIR))
 
 from labware.logger import *
 
