@@ -15,7 +15,7 @@ import shutil, grp
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
-from labware.utils import *
+from utils import *
 
 if not isinstance(logger, Logger):
     logger: Logger = get_logger("labware")
