@@ -10,13 +10,14 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import runpy, sys
+import sys
 
 from pathlib import Path
 
 BASEDIR = Path(__file__).parents[2]
 
 sys.path.append(str(BASEDIR))
+sys.path.append(".")
 
 from labware.config import *
 
@@ -27,6 +28,15 @@ from labware.logger import *
 logger: Logger = get_logger("setup")
 
 from labware.filesys import *
+
+import sec.users as users, sec.tools as tools, sec.remfiles as remfiles, sec.boot as boot, sec.apparmor as apparmor, sec.core as core, sec.apt as apt
+import sec.banners as banners, sec.mounts as mounts, sec.timesyncd as timesyncd, sec.cron as cron, sec.network as network, sec.firewalld as firewalld
+import sec.sshd as sshd, sec.sudo as sudo, sec.account as account, sec.auditd as auditd, sec.rsyslog as rsyslog, sec.journald as journald, sec.acct as acct
+import sec.password as password, sec.sysstat as sysstat, sec.psad as psad, sec.usbguard as usbguard, sec.rkhunter as rkhunter, sec.aide as aide, sec.suid as suid
+import sec.compilers as compilers
+
+#sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
+
 
 #-------------------------------------------------------------------
 # LOCAL FUNCTIONS
@@ -44,39 +54,39 @@ if __name__ == "__main__":
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------
-        runScript("sec/users.py")
-        runScript("sec/tools.py")
+        users.execute()
+        tools.execute()
         run("clear")
         # ----------------------------------------------------------
         # SERVER HARDENING
         # ----------------------------------------------------------
         rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING [/yellow]", style="yellow", align="left")
-        runScript("sec/remfiles.py")
-        runScript("sec/boot.py")
-        runScript("sec/apparmor.py")
-        runScript("sec/core.py")
-        runScript("sec/apt.py")
-        runScript("sec/banners.py")
-        runScript("sec/mounts.py")
-        runScript("sec/timesyncd.py")
-        runScript("sec/cron.py")
-        runScript("sec/network.py")
-        runScript("sec/firewalld.py")
-        runScript("sec/sshd.py")
-        runScript("sec/sudo.py")
-        runScript("sec/account.py")
-        runScript("sec/auditd.py")
-        runScript("sec/rsyslog.py")
-        runScript("sec/journald.py")
-        runScript("sec/acct.py")
-        runScript("sec/password.py")
-        runScript("sec/sysstat.py")
-        runScript("sec/psad.py")
-        runScript("sec/usbguard.py")
-        runScript("sec/rkhunter.py")
-        runScript("sec/aide.py")
-        runScript("sec/suid.py")
-        runScript("sec/compilers.py")
+        remfiles.execute()
+        boot.execute()
+        apparmor.execute()
+        core.execute()
+        apt.execute()
+        banners.execute()
+        mounts.execute()
+        timesyncd.execute()
+        cron.execute()
+        network.execute()
+        firewalld.execute()
+        sshd.execute()
+        sudo.execute()
+        account.execute()
+        auditd.execute()
+        rsyslog.execute()
+        journald.execute()
+        acct.execute()
+        password.execute()
+        sysstat.execute()
+        psad.execute()
+        usbguard.execute()
+        rkhunter.execute()
+        aide.execute()
+        suid.execute()
+        compilers.execute()
         # ----------------------------------------------------------
         # CLEANUP
         # ----------------------------------------------------------

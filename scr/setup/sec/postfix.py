@@ -23,7 +23,7 @@ HOSTNAME = socket.getfqdn()
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
-if __name__ == "__main__":
+def execute():
     try:
         pkgs = ["postfix", "mailutils"]
         installAPT(pkgs)

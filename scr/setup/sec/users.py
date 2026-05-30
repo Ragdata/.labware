@@ -27,7 +27,7 @@ REPODOT  = Path(config.get("paths", "dot"))
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
-if __name__ == "__main__":
+def execute():
     try:
         run("clear")
         rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
@@ -139,5 +139,5 @@ if __name__ == "__main__":
         line()
         getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
-        logger.error(f"An error occurred: {e}", True)
+        logger.error(f"Failed executing script 'users': {e}", True, 1)
         raise
