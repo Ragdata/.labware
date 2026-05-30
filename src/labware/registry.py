@@ -16,8 +16,8 @@ from sqlitedict import *
 
 from utils import *
 
-if not isinstance(logger, logging.Logger):
-    logger = get_logger("labware")
+if not isinstance(logger, Logger):
+    logger: Logger = get_logger("labware")
 
 #-------------------------------------------------------------------
 # Module Variables

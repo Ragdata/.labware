@@ -14,8 +14,8 @@ import os, subprocess, pwd
 
 from labware.logger import *
 
-if not isinstance(logger, logging.Logger):
-    logger = get_logger("labware")
+if not isinstance(logger, Logger):
+    logger: Logger = get_logger("labware")
 
 #-------------------------------------------------------------------
 # MODULE VARIABLES

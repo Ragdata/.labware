@@ -63,7 +63,7 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "long": "%(asctime)s :: %(levelname)s :: %(message)s in %(filename)s\n%(pathname)s [ %(funcName)s line %(lineno)s ]",
         "console": "%(message)s",
         "date": "%Y-%m-%d %H:%M:%S",
-    },
+    }
 }
 
 # ------------------------------------------------------------------
@@ -91,7 +91,8 @@ class Config(ConfigParser):
                      If not provided, uses DEFAULT_CONFIG
         """
         # Disable interpolation to allow % characters in values (like datetime formats)
-        super().__init__(interpolation=None)
+        # super().__init__(interpolation=None)
+        super().__init__()
         if defaults is None:
             defaults = DEFAULT_CONFIG
         # Populate sections/options from defaults
@@ -229,8 +230,8 @@ def get_config(config_file: Optional[str | Path] = None) -> Config:
             home = Path.home()
             standard_locations = [
                 home / '.labware.cfg',
-                home / '.labware' / 'config.cfg',
-                Path('/etc/labware/config.cfg'),
+                home / '.labware' / '.labware.cfg',
+                Path('/usr/share/labware/.labware.cfg'),
             ]
 
             for location in standard_locations:

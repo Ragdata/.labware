@@ -17,8 +17,8 @@ from jinja2 import Environment, FileSystemLoader
 
 from labware.utils import *
 
-if not isinstance(logger, logging.Logger):
-    logger = get_logger("labware")
+if not isinstance(logger, Logger):
+    logger: Logger = get_logger("labware")
 
 #-------------------------------------------------------------------
 # MODULE VARIABLES
@@ -40,8 +40,7 @@ def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
         if shutil.copy2(filepath, backupfile):
             return True
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Failed to get list: {reason}", True)
+        logger.error(f"Failed to get list: {e}", True)
         raise
     return False
 
@@ -131,8 +130,7 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
             else:
                 return False
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Failed to copy files: {reason}", True)
+        logger.error(f"Failed to copy files: {e}", True)
         raise
 
 def copyRepoFile(repo: Path, stub: str, bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool:
@@ -160,8 +158,7 @@ def copyRepoFile(repo: Path, stub: str, bkp: bool = False, bkpdir: Path = Path.h
         logger.debug(f"Copied {dest.name}")
         return True
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Failed to copy files: {reason}", True)
+        logger.error(f"Failed to copy files: {e}", True)
         raise
 
 def copyRepoFiles(repo: Path, data: list[str], bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool:
@@ -172,8 +169,7 @@ def copyRepoFiles(repo: Path, data: list[str], bkp: bool = False, bkpdir: Path =
                 return False
         return True
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Failed to copy files: {reason}", True)
+        logger.error(f"Failed to copy files: {e}", True)
         raise
 
 def findFileString(filepath: Path, string: str) -> bool:
@@ -186,8 +182,7 @@ def findFileString(filepath: Path, string: str) -> bool:
                     return True
         return False
     except Exception as e:
-        reason = str(e)
-        logger.error(f"{reason}", True)
+        logger.error(f"{e}", True)
         raise
 
 def getList(filepath: Path) -> list:
@@ -198,8 +193,22 @@ def getList(filepath: Path) -> list:
             lines = [l.strip() for l in f]
             return lines
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Failed to get list: {reason}", True)
+        logger.error(f"Failed to get list: {e}", True)
+        raise
+
+def mergeFiles(files: list[str], file: str) -> bool:
+    try:
+        seen = set()
+        with open(file, 'w', encoding='utf-8') as out:
+            for filepath in files:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    for l in f:
+                        if l not in seen:
+                            out.write(l)
+                            seen.add(l)
+        return True
+    except Exception as e:
+        logger.error(f"Failed to merge files: {e}", True)
         raise
 
 def perms(src: dict[str, list]) -> None:
@@ -227,8 +236,7 @@ def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: st
         logger.debug(f"Wrote File: {dst}")
         return True
     except Exception as e:
-        reason = str(e)
-        logger.error(f"File write failed: {reason}", True)
+        logger.error(f"File write failed: {e}", True)
         raise
 
 def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: str = "", group: str = "", bkp: bool = True, bkpdir: Path = Path.home() / ".backup") -> bool:
@@ -256,7 +264,6 @@ def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: s
         logger.debug(f"Wrote template file to '{dest}'")
         return True
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Template write failed: {reason}", True)
+        logger.error(f"Template write failed: {e}", True)
         raise
 
