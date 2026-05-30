@@ -12,9 +12,17 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import runpy
 
+from pathlib import Path
+
+from labware.config import *
+
+BASEDIR = Path(__file__).resolve().parent.parent.parent
+
+config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
+
 from labware.logger import *
 
-logger = get_logger("setup")
+logger: Logger = get_logger("setup")
 
 from labware.filesys import *
 
@@ -22,20 +30,6 @@ from labware.filesys import *
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
 # LXC = 1 if isLXC() else 0
-def setPaths() -> None:
-    REPOBASE = Path(__file__).resolve().parent.parent.parent
-    config.add_section("paths")
-    config.set("paths", "base",      str(REPOBASE))
-    config.set("paths", "pkg",       str(REPOBASE / "pkg"))
-    config.set("paths", "scr",       str(REPOBASE / "scr"))
-    config.set("paths", "svc",       str(REPOBASE / "svc"))
-    config.set("paths", "sys",       str(REPOBASE / "sys"))
-    config.set("paths", "dot",       str(REPOBASE / "sys" / "dots"))
-    config.set("paths", "lib",       str(REPOBASE / "sys" / "lib"))
-    config.set("paths", "admin",     str(REPOBASE / "scr" / "admin"))
-    config.set("paths", "scripts",   str(REPOBASE / "scr" / "pkg"))
-    config.set("paths", "setup",     str(REPOBASE / "scr" / "setup"))
-    config.set("paths", "templates", str(REPOBASE / "scr" / "setup" / "etc"))
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -44,7 +38,6 @@ if __name__ == "__main__":
         checkRoot()
         checkPython()
         checkUbuntu()
-        setPaths()
         run("clear")
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
