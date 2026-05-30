@@ -12,7 +12,7 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import os, subprocess, pwd
 
-from logger import *
+from labware.logger import *
 
 if not isinstance(logger, Logger):
     logger: Logger = get_logger("labware")

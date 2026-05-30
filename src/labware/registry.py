@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Optional, Iterator, Dict
 from sqlitedict import *
 
-from utils import *
+from labware.utils import *
 
 if not isinstance(logger, Logger):
     logger: Logger = get_logger("labware")

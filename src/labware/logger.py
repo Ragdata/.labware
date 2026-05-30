@@ -17,7 +17,7 @@ from typing import TextIO, Any
 
 from logging.handlers import RotatingFileHandler
 
-from output import *
+from labware.output import *
 
 LOG_LEVEL: int   = config.getint("logging", "level")
 LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
