@@ -10,8 +10,6 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-from pathlib import Path
-
 __pkg_name__ = 'labware'
 __version__  = '0.1.0'
 

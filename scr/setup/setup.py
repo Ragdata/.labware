@@ -16,7 +16,7 @@ from pathlib import Path
 
 from labware.config import *
 
-BASEDIR = Path(__file__).resolve().parent.parent.parent
+BASEDIR = Path(__file__).resolve().parent.parent
 
 config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 
