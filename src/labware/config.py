@@ -58,11 +58,11 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "logdir": ".labware/log",
     },
     "log_formats": {
-        "std": "%(asctime)s :: %(levelname)s :: %(message)s",
-        "short": "%(levelname)s :: %(message)s",
-        "long": "%(asctime)s :: %(levelname)s :: %(message)s in %(filename)s\n%(pathname)s [ %(funcName)s line %(lineno)s ]",
-        "console": "%(message)s",
-        "date": "%Y-%m-%d %H:%M:%S",
+        "std": "%%(asctime)s :: %%(levelname)s :: %%(message)s",
+        "short": "%%(levelname)s :: %%(message)s",
+        "long": "%%(asctime)s :: %%(levelname)s :: %%(message)s in %%(filename)s\n%%(pathname)s [ %%(funcName)s line %%(lineno)s ]",
+        "console": "%%(message)s",
+        "date": "%%Y-%%m-%%d %%H:%%M:%%S",
     }
 }
 
