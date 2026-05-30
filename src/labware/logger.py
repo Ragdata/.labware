@@ -299,3 +299,5 @@ def get_logger(name: str, level: int = LOG_LEVEL, fmt: str = LOG_FORMAT) -> Logg
         exit(1)
 
     return get_logger._instances[name]
+
+logger: Logger
