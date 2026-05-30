@@ -23,9 +23,6 @@ from jinja2 import Environment, FileSystemLoader
 
 from labware.utils import *
 
-if not isinstance(logger, Logger):
-    logger: Logger = get_logger("labware")
-
 #-------------------------------------------------------------------
 # MODULE VARIABLES
 #-------------------------------------------------------------------

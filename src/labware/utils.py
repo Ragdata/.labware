@@ -20,9 +20,6 @@ sys.path.append(str(BASEDIR))
 
 from labware.logger import *
 
-if not isinstance(logger, Logger):
-    logger: Logger = get_logger("labware")
-
 #-------------------------------------------------------------------
 # MODULE VARIABLES
 #-------------------------------------------------------------------

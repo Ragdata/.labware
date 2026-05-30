@@ -300,4 +300,8 @@ def get_logger(name: str, level: int = LOG_LEVEL, fmt: str = LOG_FORMAT) -> Logg
 
     return get_logger._instances[name]
 
-logger: Logger
+
+logger = None
+
+if not isinstance(logger, Logger):
+    logger = get_logger("labware")
