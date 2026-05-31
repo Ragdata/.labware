@@ -14,7 +14,7 @@ Command Line Module
 """
 import typer, rich, os
 
-from typing_extensions import Annotated
+from typing import Annotated
 
 from labware import __version__
 
@@ -31,7 +31,7 @@ def callback() -> None:
 # Commands
 #--------------------------------------------------------------
 @app.command()
-def version(verbose: Annotated[bool, typer.Option(False, "--verbose", "-v", is_flag=True)] = False) -> None:
+def version() -> None:
     """Display the version of the LabWare CLI"""
     typer.echo(f"LabWare CLI v{__version__}")
 
