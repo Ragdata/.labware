@@ -12,11 +12,24 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 
 Command Line Module
 """
-import typer, rich, os
+import typer, rich, sys
+
+from pathlib import Path
+
+BASEDIR = Path(__file__).parents[2]
+
+sys.path.append(str(BASEDIR))
+
+from labware.config import *
+
+config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
+
+sys.path.append(str(BASEDIR / config.get("src", "setup")))
 
 from typing import Annotated
 
 from labware import __version__
+from scr.setup import setup
 
 
 app = typer.Typer(rich_markup_mode="rich", invoke_without_command=True, suggest_commands=True)
@@ -30,6 +43,12 @@ def callback() -> None:
 #--------------------------------------------------------------
 # Commands
 #--------------------------------------------------------------
+@app.command()
+def setup() -> None:
+    """Setup LabWare"""
+    setup.execute()
+
+
 @app.command()
 def version() -> None:
     """Display the version of the LabWare CLI"""

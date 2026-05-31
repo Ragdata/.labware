@@ -53,7 +53,7 @@ REPOLIB  = BASEDIR / config.get("src", "lib")
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
-if __name__ == "__main__":
+def execute() -> None:
     try:
         checkRoot()
         checkPython()
