@@ -29,8 +29,8 @@ sys.path.append(str(BASEDIR / config.get("src", "setup")))
 from typing import Annotated
 
 from labware import __version__
-from scr.setup import setup
 
+import scr.setup.setup as install
 
 app = typer.Typer(rich_markup_mode="rich", invoke_without_command=True, suggest_commands=True)
 
@@ -46,7 +46,7 @@ def callback() -> None:
 @app.command()
 def setup() -> None:
     """Setup LabWare"""
-    setup.execute()
+    install.execute()
 
 
 @app.command()
