@@ -39,6 +39,13 @@ import sec.compilers as compilers
 
 
 #-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+config.set("paths", "base", str(BASEDIR))
+SETUPDIR = BASEDIR / config.get("src", "setup")
+REPODOT  = BASEDIR / config.get("src", "dot")
+REPOLIB  = BASEDIR / config.get("src", "lib")
+#-------------------------------------------------------------------
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
 # LXC = 1 if isLXC() else 0

@@ -15,11 +15,12 @@ from labware.filesys import *
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-BASEDIR  = Path(config.get("paths", "base"))
-SETUPDIR = Path(config.get("paths", "setup"))
-REPOLIB  = Path(config.get("paths", "lib"))
-REPODOT  = Path(config.get("paths", "dot"))
-# REPOETC  = BASEDIR / "sys/etc"
+config.set("paths", "base", str(BASEDIR))
+SETUPDIR = BASEDIR / config.get("src", "setup")
+REPODOT  = BASEDIR / config.get("src", "dot")
+REPOLIB  = BASEDIR / config.get("src", "lib")
+REPOSCR  = BASEDIR / "scr"
+SERVSVC  = Path(config.get("paths", "opt")) / "svc"
 # EXECUSR  = pwd.getpwuid(os.geteuid()).pw_name
 # REALUSR  = getpass.getuser()
 # SERVRIP  = getIP()
@@ -51,15 +52,18 @@ def execute():
         # ----------------------------------------------------------
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
-            WAREDIR = USERDIR / ".labware"
+            WARELIB = USERDIR / ".labware" / "lib"
+            WARESCR = USERDIR / ".labware" / "scr"
             run("clear")
             rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"COPYING FILES FOR USER '{user}'")
+            if not WARELIB.exists():
+                WARELIB.mkdir(parents=True, exist_ok=True)
             # Library Files
             line()
             printHead("Installing Library Files ...")
-            copyFiles(REPOLIB, WAREDIR / "lib", user=user)
+            copyFiles(REPOLIB, WARELIB, user=user)
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
@@ -69,6 +73,32 @@ def execute():
             line()
             printHead("Installing Dotfiles ...")
             copyFiles(REPODOT, USERDIR, user=user)
+            line()
+            if user == "root":
+                if not WARESCR.exists():
+                    WARESCR.mkdir(parents=True, exist_ok=True)
+                if not SERVSVC.exists():
+                    SERVSVC.mkdir(parents=True, exist_ok=True)
+                line()
+                printHead("Installing Labfiles ...")
+                copyFiles(REPOSCR / "lab", WARESCR / "lab", user=user)
+                line()
+                printHead("Installing Packages ...")
+                copyFiles(REPOSCR / "pkg", WARESCR / "pkg", user=user)
+                line()
+                printHead("Installing Services ...")
+                copyFiles(BASEDIR / "svc", SERVSVC, user=user)
+                line()
+                printHead("Setting Permissions ...")
+                for item in os.scandir(WARESCR / "lab"):
+                    if item.is_file():
+                        chmod(Path(item.path), mode=0o755)
+                for item in os.scandir(WARESCR / "pkg"):
+                    if item.is_file():
+                        chmod(Path(item.path), mode=0o755)
+                for item in os.scandir(WARESCR / "pkg" / "pve"):
+                    if item.is_file():
+                        chmod(Path(item.path), mode=0o755)
             line()
             getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
         # ----------------------------------------------------------
