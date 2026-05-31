@@ -15,7 +15,7 @@ from labware.filesys import *
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-config.set("paths", "base", str(BASEDIR))
+BASEDIR  = Path(config.get("paths", "base"))
 SETUPDIR = BASEDIR / config.get("src", "setup")
 REPODOT  = BASEDIR / config.get("src", "dot")
 REPOLIB  = BASEDIR / config.get("src", "lib")

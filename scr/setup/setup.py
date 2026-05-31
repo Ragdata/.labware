@@ -41,6 +41,7 @@ import sec.compilers as compilers
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
+config.add_section("paths")
 config.set("paths", "base", str(BASEDIR))
 SETUPDIR = BASEDIR / config.get("src", "setup")
 REPODOT  = BASEDIR / config.get("src", "dot")
