@@ -40,3 +40,9 @@ def execute():
         reason = str(e)
         logger.error(f"Failed to Harden 'auditd': {reason}", True)
         raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()

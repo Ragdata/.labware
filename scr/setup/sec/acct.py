@@ -31,3 +31,9 @@ def execute():
         reason = str(e)
         logger.error(f"Failed to install 'acct': {reason}", True)
         raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()

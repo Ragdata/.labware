@@ -37,3 +37,9 @@ def execute():
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()

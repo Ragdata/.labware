@@ -23,10 +23,12 @@ from jinja2 import Environment, FileSystemLoader
 
 from labware.utils import *
 
+TEMPLATES = BASEDIR / config.get("src", "setup")
+
 #-------------------------------------------------------------------
 # MODULE VARIABLES
 #-------------------------------------------------------------------
-loader = Environment(loader=FileSystemLoader(config.get("paths", "templates")))
+loader = Environment(loader=FileSystemLoader(str(TEMPLATES)))
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------

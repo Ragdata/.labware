@@ -24,8 +24,6 @@ from pathlib import Path
 from configparser import ConfigParser
 from typing import Any, Dict, Optional
 
-from labware.logger import *
-
 # ------------------------------------------------------------------
 # DEFAULTS - Used by output module
 # ------------------------------------------------------------------
@@ -171,7 +169,6 @@ class Config(ConfigParser):
                 if DEFAULT_CONFIG[section][option]:
                     return str(DEFAULT_CONFIG[section][option])
                 else:
-                    logger.warning(f"Option '{option}' not found in section '{section}'", True)
                     raise KeyError(f"Option '{option}' not found in section '{section}'")
             except Exception:
                 return ""

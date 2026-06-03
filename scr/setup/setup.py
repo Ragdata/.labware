@@ -10,6 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
+import logging
 import sys
 
 from pathlib import Path
@@ -21,11 +22,11 @@ sys.path.append(".")
 
 from labware.config import *
 
-config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
+config: Config = get_config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 
 from labware.logger import *
 
-logger: Logger = get_logger("setup")
+logger: Logger = get_logger("setup", logging.DEBUG)
 
 from labware.filesys import *
 
@@ -43,6 +44,7 @@ import sec.compilers as compilers
 #-------------------------------------------------------------------
 config.add_section("paths")
 config.set("paths", "base", str(BASEDIR))
+
 SETUPDIR = BASEDIR / config.get("src", "setup")
 REPODOT  = BASEDIR / config.get("src", "dot")
 REPOLIB  = BASEDIR / config.get("src", "lib")

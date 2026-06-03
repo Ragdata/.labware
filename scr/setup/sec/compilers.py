@@ -41,3 +41,9 @@ def execute():
         reason = str(e)
         logger.error(f"Failed to Harden Compilers: {reason}", True)
         raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()

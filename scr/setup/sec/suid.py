@@ -49,3 +49,9 @@ def execute():
         reason = str(e)
         logger.error(f"Failed to Harden SUID: {reason}", True)
         raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()
