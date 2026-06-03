@@ -13,16 +13,18 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 Configuration Management Module
 
 This module provides a centralized configuration system that:
-- Defines sensible defaults for all modules
-- Allows external configuration file overrides
-- Provides a singleton config object accessible globally
-- Handles missing files gracefully with fallback defaults
+    - Defines sensible defaults for all modules
+    - Allows external configuration file overrides
+    - Provides a singleton config object accessible globally
+    - Handles missing files gracefully with fallback defaults
 """
 from __future__ import annotations
 
 from pathlib import Path
 from configparser import ConfigParser
 from typing import Any, Dict, Optional
+
+from labware.logger import *
 
 # ------------------------------------------------------------------
 # DEFAULTS - Used by output module
@@ -60,7 +62,7 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
     "log_formats": {
         "std": "%%(asctime)s :: %%(levelname)s :: %%(message)s",
         "short": "%%(levelname)s :: %%(message)s",
-        "long": "%%(asctime)s :: %%(levelname)s :: %%(message)s in %%(filename)s\n%%(pathname)s [ %%(funcName)s line %%(lineno)s ]",
+        "long": "%%(asctime)s :: %%(levelname)s :: %%(message)s in %%(filename)s\\n%%(pathname)s [ %%(funcName)s line %%(lineno)s ]",
         "console": "%%(message)s",
         "date": "%%Y-%%m-%%d %%H:%%M:%%S",
     }
@@ -84,10 +86,10 @@ class Config(ConfigParser):
     Enhanced configuration parser with defaults and overrides.
 
     This class extends ConfigParser to provide:
-    - Automatic defaults from code-defined DEFAULT_CONFIG
-    - Optional external config file overrides
-    - Graceful fallback when files are missing
-    - Type-safe get operations (get, getint, getbool)
+        - Automatic defaults from code-defined DEFAULT_CONFIG
+        - Optional external config file overrides
+        - Graceful fallback when files are missing
+        - Type-safe get operations (get, getint, getbool)
     """
 
     def __init__(self, config_file: Optional[str | Path] = None, defaults: Optional[Dict[str, Dict[str, Any]]] = None):
@@ -144,6 +146,9 @@ class Config(ConfigParser):
 
         self.read(config_file)
 
+    def _exists(self, section: str, option: str) -> bool:
+        return self.has_section(section) and self.has_option(section, option)
+
     def get(self, section: str, option: str, fallback: Optional[Any] = None, **kwargs) -> str:
         """
         Get a configuration value with fallback support.
@@ -163,7 +168,11 @@ class Config(ConfigParser):
                 return str(fallback)
             # Try DEFAULT_CONFIG for final fallback
             try:
-                return str(DEFAULT_CONFIG[section][option])
+                if DEFAULT_CONFIG[section][option]:
+                    return str(DEFAULT_CONFIG[section][option])
+                else:
+                    logger.warning(f"Option '{option}' not found in section '{section}'", True)
+                    raise KeyError(f"Option '{option}' not found in section '{section}'")
             except Exception:
                 return ""
 
@@ -258,6 +267,13 @@ def get_config(config_file: Optional[str | Path] = None) -> Config:
         else:
             # No file found, use defaults only
             get_config._instance = Config()
+    elif config_file is not None:
+        # Instance already exists, but a new config_file is provided
+        # Attempt to load it as an override
+        try:
+            get_config._instance._load_config_file(config_file)
+        except FileNotFoundError:
+            pass  # Ignore if file not found, keep existing config
 
     return get_config._instance
 
