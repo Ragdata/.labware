@@ -30,9 +30,9 @@ from typing import Any, Dict, Optional
 DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
     "symbols": {
         "info": "✚",
-        "success": "[🗸]",
+        "success": "🗸",
         "warning": "🛆",
-        "error": "[✘]",
+        "error": "✘",
         "tip": "★",
         "important": "⚑",
         "debug": "⚙",
@@ -64,6 +64,15 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "console": "%%(message)s",
         "date": "%%Y-%%m-%%d %%H:%%M:%%S",
     }
+    # "log_formats": {
+    #     "std": "{asctime} :: {levelname} :: {message}",
+    #     "short": "{levelname} :: {message}",
+    #     "long": "{asctime} :: {levelname} :: {message} in {filename}\n{pathname} [ {funcName} line {lineno} ]",
+    #     "console": "{message}",
+    #     # Use double-percent to escape literal percent signs for ConfigParser interpolation,
+    #     # so values like '%Y-%m-%d %H:%M:%S' are stored safely while keeping interpolation enabled.
+    #     "date": "%%Y-%%m-%%d %%H:%%M:%%S",
+    # }
 }
 
 # ------------------------------------------------------------------
@@ -83,10 +92,10 @@ class Config(ConfigParser):
 
     def __init__(self, config_file: Optional[str | Path] = None, defaults: Optional[Dict[str, Dict[str, Any]]] = None):
         """
-        Initialize the configuration.
+        Initialise the configuration.
 
         Args:
-            config_file: Path to external configuration file (optional)
+            config_file: Path to an external configuration file (optional)
             defaults: Dictionary of default values to set (optional)
                      If not provided, uses DEFAULT_CONFIG
         """
@@ -122,10 +131,10 @@ class Config(ConfigParser):
         Load configuration from an external file.
 
         Args:
-            config_file: Path to configuration file
+            config_file: Path to a configuration file
 
         Raises:
-            FileNotFoundError: If file doesn't exist
+            FileNotFoundError: If the file doesn't exist
         """
         if not isinstance(config_file, Path):
             config_file = Path(config_file)
@@ -218,8 +227,8 @@ def get_config(config_file: Optional[str | Path] = None) -> Config:
     Get or create the global config instance.
 
     Args:
-        config_file: Optional path to external config file
-                    (only used on first call)
+        config_file: Optional path to an external config file
+                    (only used on the first call)
 
     Returns:
         Config: The singleton configuration instance
