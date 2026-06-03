@@ -129,8 +129,15 @@ def execute():
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
-            gpgkey = getData(f"[cyan]Paste SECRET key[/cyan] (ENTER to bypass): ")
-            if not gpgkey == False:
+            printCyan("Paste SECRET key (ENTER to bypass):")
+            lines = []
+            while True:
+                l = input()
+                if l == "":
+                    break
+                lines.append(l)
+            if lines:
+                gpgkey = "\n".join(lines)
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
                 writeFile(file, gpgkey, mode=0o600, user=user)
                 if user == "root":
@@ -140,7 +147,7 @@ def execute():
             # GNUPG CONFIG
             line()
             printDot("GNUPG CONFIG")
-            gpgcfg = getData(f"[cyan]Default Key for {user}[/cyan] (ENTER to bypass): ")
+            gpgcfg = getData(f"[cyan]Default Key ID for {user}[/cyan] (ENTER to bypass): ")
             if not gpgcfg == False:
                 tmpl = BASEDIR / "cfg/gnupg/gpg.conf"
                 dest = USERDIR / ".gnupg/gpg.conf"
