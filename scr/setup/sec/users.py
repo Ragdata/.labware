@@ -171,3 +171,9 @@ def execute():
     except Exception as e:
         logger.error(f"Failed executing script 'users': {e}", True, 1)
         raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()
