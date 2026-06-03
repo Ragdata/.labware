@@ -29,14 +29,15 @@ LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")
 LOG_SIZE: int    = config.getint("logging", "size")
 LOG_COUNT: int   = config.getint("logging", "count")
 LOG_FORMAT: str  = config.get("logging", "format")
-CON_FORMAT: str  = config.get("log_formats", "console", raw=True)
-DATE_FORMAT: str = config.get("log_formats", "date", raw=True)
+# Request interpolation so escaped percent sequences (%%) become single '%' for strftime
+CON_FORMAT: str  = config.get("log_formats", "console")
+DATE_FORMAT: str = config.get("log_formats", "date")
 
 LOG_FORMATS = {
-    "std": config.get("log_formats", "std", raw=True),
-    "short": config.get("log_formats", "short", raw=True),
-    "long": config.get("log_formats", "long", raw=True),
-    "console": config.get("log_formats", "console", raw=True),
+    "std": config.get("log_formats", "std"),
+    "short": config.get("log_formats", "short"),
+    "long": config.get("log_formats", "long"),
+    "console": config.get("log_formats", "console"),
 }
 
 #-------------------------------------------------------------------
@@ -47,7 +48,7 @@ class Logger(logging.Logger):
 
     def __init__(self, name: str, level: int = LOG_LEVEL, **kwargs) -> None:
         """
-        Initialize the logger with a name and level
+        Initialise the logger with a name and level
 
         Args:
             name (str):     Name of the logger
@@ -209,7 +210,7 @@ class Logger(logging.Logger):
     @staticmethod
     def outlog(msg: str, style: Optional[str] = None) -> None:
         """
-        Print message to console with an optional style.
+        Print a message to the console with an optional style.
 
         Args:
         	msg (str):      The message to log and print.
@@ -227,11 +228,10 @@ class Logger(logging.Logger):
 #-------------------------------------------------------------------
 def initRotatingFileHandler(name: str, path: Path = LOG_DIR, maxSize: int = LOG_SIZE, backups: int = LOG_COUNT) -> RotatingFileHandler:
     """
-    Initialize and return a RotatingFileHandler.
+    Initialise and return a RotatingFileHandler.
 
     Args:
     	name (str):     Name of the logger.
-    	level (int):    Logging level for the file handler (default is LOG_LEVEL_FILE).
     	path (Path):    Directory where the log file will be stored (default is DOT_LOG).
     	maxSize (int):  Maximum size of the log file before rotation (default is 5 MB).
     	backups (int):  Number of backup files to keep (default is 5).
@@ -246,7 +246,7 @@ def initRotatingFileHandler(name: str, path: Path = LOG_DIR, maxSize: int = LOG_
 
 def initStreamHandler(stream: TextIO | Any = sys.stdout, level: int = LOG_LEVEL, style: str = CON_FORMAT) -> logging.StreamHandler:
     """
-    Initialize and return a StreamHandler.
+    Initialise and return a StreamHandler.
 
     Args:
     	stream (TextIO | Any): The stream to which the log messages will be sent (default is sys.stdout).
