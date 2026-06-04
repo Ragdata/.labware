@@ -143,12 +143,12 @@ def execute():
             printDot("GNUPG CONFIG")
             gpgcfg = getData(f"[cyan]Default Key ID for {user}[/cyan] (ENTER to bypass): ")
             if not gpgcfg == False:
-                tmpl = BASEDIR / "cfg/gnupg/gpg.conf"
+                tmpl = SETUPDIR / "cfg/gnupg/gpg.conf"
                 dest = USERDIR / ".gnupg/gpg.conf"
                 data = {"signing_key": gpgcfg}
                 if not writeTemplate(tmpl, dest, data, user=user):
                     printWarning(f"Could not write GNUPG2 config for user '{user}'")
-                file = BASEDIR / "cfg/gnupg/gpg-agent.conf"
+                file = SETUPDIR / "cfg/gnupg/gpg-agent.conf"
                 dest = USERDIR / ".gnupg/gpg-agent.conf"
                 if not copyFiles(file, dest, user=user):
                     printWarning(f"Could not copy gpg-agent.conf to {dest}")
@@ -159,7 +159,7 @@ def execute():
             if not git_user == False:
                 git_email = getData(f"[cyan]Enter git email for {user}[/cyan]: ")
                 git_key = getData(f"[cyan]Enter signing key for {user}[/cyan]: ")
-                tmpl = BASEDIR / "cfg/git/.gitconfig"
+                tmpl = SETUPDIR / "cfg/git/.gitconfig"
                 dest = USERDIR / ".gitconfig"
                 data = {"user_name": git_user, "user_email": git_email, "signing_key": git_key}
                 if not writeTemplate(tmpl, dest, data, user=user):
