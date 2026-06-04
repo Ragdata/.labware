@@ -116,8 +116,8 @@ def removeUsers(users: list) -> bool:
     try:
         for user in users:
             if run(f"id {user} > /dev/null 2>&1").returncode == 0:
-                run(f"pkill -u {user} > /dev/null 2>&1")
-                if run(f"userdel -r {user} > /dev/null 2>&1").returncode == 0:
+                run(f"pkill -u {user} > /dev/null 2>&1", check=False)
+                if run(f"userdel -r {user} > /dev/null 2>&1", check=False).returncode == 0:
                     printSuccess(f"Removed user: {user}")
                     logger.info(f"Removed user: {user}")
                 else:
@@ -136,7 +136,7 @@ def run(command: str, check: bool = True, capture: bool = False, input_txt = Non
         result = subprocess.run(command, shell=True, check=check, text=True, capture_output=capture, input=input_txt)
         return result
     except subprocess.CalledProcessError as e:
-        logger.error(f"Command failed: {command}\n{e.stderr}", True)
+        logger.error(f"Command failed: {command}", True)
         if check:
             sys.exit(1)
         raise
