@@ -63,6 +63,7 @@ def execute() -> None:
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------
+        banner.execute()
         users.execute()
         tools.execute()
         clear()

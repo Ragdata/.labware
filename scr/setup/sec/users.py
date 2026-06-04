@@ -37,7 +37,6 @@ SERVSVC  = Path(config.get("paths", "opt")) / "svc"
 #-------------------------------------------------------------------
 def execute():
     try:
-        clear()
         rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
         line()
         # ----------------------------------------------------------
