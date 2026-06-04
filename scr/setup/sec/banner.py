@@ -28,8 +28,8 @@ def execute():
         year = datetime.now().year
         with open(BASEDIR / "sys/assets/ascii/labware.txt", "r") as f:
             printYellow(f.read(), lt=True)
-            printYellow(f"Copyright © 2025-{year} - Redeyed Technologies (MIT Licensed)")
-
+            printYellow(f"       Copyright © 2025-{year} - Redeyed Technologies (MIT Licensed)")
+            line()
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise
