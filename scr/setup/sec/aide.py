@@ -37,7 +37,8 @@ def execute():
         # EXTRAS - Install 'aide'
         # ----------------------------------------------------------
         line()
-        printWhite("Install 'aide'")
+        printHead("EXTRAS - Install Advanced Intrusion Detection Environment ('aide')")
+        line()
         pkgs = ["aide", "aide-common"]
         installAPT(pkgs)
         copyRepoFile(SETUPDIR, "/etc/aide/aide.conf", True)

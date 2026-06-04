@@ -55,7 +55,7 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "bright_red": "red3",
         "green": "green4",
         "bright_green": "green3",
-        "yellow": "gold1",
+        "yellow": "gold3",
         "bright_yellow": "yellow1",
         "blue": "dodger_blue3",
         "bright_blue": "dodger_blue1",

@@ -138,7 +138,8 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
 
 def copyRepoFile(repo: Path, stub: str, bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:
-        tmpl = repo / stub
+        rel = stub[1:] if stub.startswith("/") else stub
+        tmpl = repo / rel
         dest = Path(stub)
         if not user:
             user = pwd.getpwuid(os.geteuid()).pw_name
