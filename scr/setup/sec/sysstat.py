@@ -39,7 +39,7 @@ def execute():
         copyRepoFile(SETUPDIR, "/etc/default/sysstat", True)
         run("systemctl enable sysstat")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

@@ -64,7 +64,7 @@ def execute():
         run("psad -H")
         run("psad --fw-analyze")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'psad': {reason}", True)

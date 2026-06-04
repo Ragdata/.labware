@@ -42,6 +42,8 @@ def execute():
         run("echo 'kernel.randomize_va_space = 2' > /etc/sysctl.d/60-aslr.conf")
         run("echo 'kernel.yama.ptrace_scopr = 1' > /etc/sysctl.d/60-yama.conf")
         run("sysctl --system")
+        line()
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install Apparmor: {reason}", True)

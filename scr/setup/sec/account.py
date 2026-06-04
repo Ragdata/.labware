@@ -44,7 +44,7 @@ def execute():
         if run('awk -F: \'($2 == "") { print $1 }\' /etc/shadow | xargs -r -n 1 passwd -l').returncode != 0:
             logger.warning("Encountered problem locking empty password accounts", True)
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

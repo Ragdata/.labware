@@ -34,7 +34,7 @@ def execute():
         chown(Path("/boot/grub/grub.cfg"), "root", "root")
         run("chmod og-rwx /boot/grub/grub.cfg")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

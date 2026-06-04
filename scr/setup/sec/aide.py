@@ -50,7 +50,7 @@ def execute():
         run("systemctl start aide-check.timer")
         run("systemctl daemon-reload")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'aide': {reason}", True)

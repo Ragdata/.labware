@@ -36,12 +36,14 @@ def execute():
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
         installAPT(pkgs)
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
         # ----------------------------------------------------------
         # INSTALL SECURITY TOOLS
         # ----------------------------------------------------------
         clear()
         banner.execute()
-        rule(f"[yellow]── TOOLS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
         line()
         printHead("Installing Security Tools ...")
         secure = Path(config.get("paths", "setup")) / "cfg" / "apt-secure.cfg"
@@ -49,31 +51,8 @@ def execute():
             raise FileNotFoundError(f"File not found: '{secure}'")
         pkgs = getList(secure)
         installAPT(pkgs)
-        # ----------------------------------------------------------
-        # INSTALL PRIMARY TOOLS
-        # ----------------------------------------------------------
-        clear()
-        banner.execute()
-        rule(f"[yellow]── TOOLS MODULE [/yellow]", style="yellow", align="left")
         line()
-        printHead("Installing Primary Packages ...")
-        webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
-        if webmin != 'n':
-            path = Path(config.get("paths", "scripts")) / "webmin.py"
-            runpy.run_path(str(path))
-        else:
-            virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
-            if virtualmin != 'n':
-                path = Path(config.get("paths", "scripts")) / "virtualmin.py"
-                runpy.run_path(str(path))
-        docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
-        if docker != 'n':
-            path = Path(config.get("paths", "scripts")) / "docker.py"
-            runpy.run_path(str(path))
-        lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
-        if lazydocker != 'n':
-            path = Path(config.get("paths", "scripts")) / "lazydocker.py"
-            runpy.run_path(str(path))
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

@@ -42,6 +42,8 @@ def execute():
         run("postconf -e smtpd_client_restrictions=permit_mynetworks,reject_unauth_destination")
         run("postconf -e inet_interfaces=loopback-only")
         run("systemctl restart postfix.service")
+        line()
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install Postfix: {reason}", True)

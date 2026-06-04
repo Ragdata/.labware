@@ -44,7 +44,7 @@ def execute():
         run("systemctl --now enable auditd")
         run("systemctl restart auditd")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden 'auditd': {reason}", True)

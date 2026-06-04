@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
+import sys, runpy
 
 from pathlib import Path
 
@@ -40,9 +40,9 @@ logger: Logger = get_logger("setup", logging.DEBUG)
 #-------------------------------------------------------------------
 config.set("paths", "base", str(BASEDIR))
 
-SETUPDIR = BASEDIR / config.get("src", "setup")
-REPODOT  = BASEDIR / config.get("src", "dot")
-REPOLIB  = BASEDIR / config.get("src", "lib")
+# SETUPDIR = BASEDIR / config.get("src", "setup")
+# REPODOT  = BASEDIR / config.get("src", "dot")
+# REPOLIB  = BASEDIR / config.get("src", "lib")
 #-------------------------------------------------------------------
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
@@ -91,9 +91,45 @@ def execute() -> None:
         suid.execute()
         compilers.execute()
         # ----------------------------------------------------------
+        # INSTALL PRIMARY TOOLS
+        # ----------------------------------------------------------
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
+        line()
+        printHead("Installing Primary Packages ...")
+        webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
+        if webmin != 'n':
+            path = Path(config.get("paths", "scripts")) / "webmin.py"
+            runpy.run_path(str(path))
+        else:
+            virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
+            if virtualmin != 'n':
+                path = Path(config.get("paths", "scripts")) / "virtualmin.py"
+                runpy.run_path(str(path))
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
+        line()
+        docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
+        if docker != 'n':
+            path = Path(config.get("paths", "scripts")) / "docker.py"
+            runpy.run_path(str(path))
+            lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
+            if lazydocker != 'n':
+                path = Path(config.get("paths", "scripts")) / "lazydocker.py"
+                runpy.run_path(str(path))
+        line()
+        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        # ----------------------------------------------------------
         # CLEANUP
         # ----------------------------------------------------------
+        clear()
+        banner.execute()
         line()
+        rule(f"[yellow]── CLEANUP[/yellow]", style="yellow", align="left")
         printHead("CLEANUP")
         run("apt -qq -y clean && apt -qq -y autoremove")
         line()
@@ -102,6 +138,8 @@ def execute() -> None:
         # REPORT
         # ----------------------------------------------------------
         clear()
+        banner.execute()
+        line()
         rule(f"[yellow]── REPORT[/yellow]", style="yellow", align="left")
         run("systemd-delta --no-pager")
         # ----------------------------------------------------------

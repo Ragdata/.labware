@@ -35,7 +35,7 @@ def execute():
         installAPT(pkgs)
         run("systemctl enable acct")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'acct': {reason}", True)

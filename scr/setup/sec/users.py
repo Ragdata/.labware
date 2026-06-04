@@ -64,9 +64,9 @@ def execute():
         # COPY FILES TO USER DIR
         # ----------------------------------------------------------
         for user in users:
-            USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
-            WARELIB = USERDIR / ".labware" / "lib"
-            WARESCR = USERDIR / ".labware" / "scr"
+            USERDIR: Path = Path(f"/home/{user}") if user != "root" else Path("/root")
+            WARELIB: Path = USERDIR / ".labware" / "lib"
+            WARESCR: Path = USERDIR / ".labware" / "scr"
             clear()
             banner.execute()
             rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")

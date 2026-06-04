@@ -42,7 +42,7 @@ def execute():
         run("find /var/log -type d -exec chmod 750 {} \\;")
         chmod(Path("/var/log/sudo.log"), 0o640)
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden 'rsyslog': {reason}", True)

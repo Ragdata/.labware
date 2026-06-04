@@ -42,7 +42,7 @@ def execute():
         copyRepoFile(SETUPDIR, "/etc/systemd/coredump.conf", True)
         run("systemctl restart systemd-journald")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden Coredumps: {reason}", True)

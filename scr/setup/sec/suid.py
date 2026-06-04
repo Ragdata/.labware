@@ -53,7 +53,7 @@ def execute():
             if shell.exists():
                 run(f"chmod -s {shell}")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden SUID: {reason}", True)

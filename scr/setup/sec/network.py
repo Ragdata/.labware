@@ -45,7 +45,7 @@ def execute():
         for mod in modules:
             run(f"modprobe -r {mod} 2>/dev/null")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

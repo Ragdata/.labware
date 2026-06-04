@@ -40,7 +40,7 @@ def execute():
         copyRepoFiles(SETUPDIR, files, True)
         run("systemctl restart systemd-journald")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise
