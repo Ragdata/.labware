@@ -243,6 +243,7 @@ def printRed(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_red", **kwargs)
     else:
         printMessage(msg, style="red", **kwargs)
@@ -256,6 +257,7 @@ def printGreen(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_green", **kwargs)
     else:
         printMessage(msg, style="green", **kwargs)
@@ -269,6 +271,7 @@ def printBlue(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_blue", **kwargs)
     else:
         printMessage(msg, style="blue", **kwargs)
@@ -282,6 +285,7 @@ def printYellow(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_yellow", **kwargs)
     else:
         printMessage(msg, style="yellow", **kwargs)
@@ -295,6 +299,7 @@ def printPurple(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_magenta", **kwargs)
     else:
         printMessage(msg, style="magenta", **kwargs)
@@ -308,6 +313,7 @@ def printCyan(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_cyan", **kwargs)
     else:
         printMessage(msg, style="cyan", **kwargs)
@@ -321,6 +327,7 @@ def printWhite(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     if kwargs.get("lt"):
+        kwargs.pop("lt")
         printMessage(msg, style="bright_white", **kwargs)
     else:
         printMessage(msg, style="white", **kwargs)
