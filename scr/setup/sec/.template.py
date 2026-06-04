@@ -12,15 +12,20 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import sys
 
-sys.path.append("../mod")
+sys.path.append(".")
 
 from labware.filesys import *
+
+from scr.setup.sec import banner
 
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 def execute():
     try:
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TEMPLATE MODULE [/yellow]", style="yellow", align="left")
         # ----------------------------------------------------------
         #
         # ----------------------------------------------------------

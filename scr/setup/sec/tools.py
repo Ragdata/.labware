@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── TOOLS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
         line()
         # ----------------------------------------------------------
         # INSTALL BASIC TOOLS
@@ -39,6 +39,9 @@ def execute():
         # ----------------------------------------------------------
         # INSTALL SECURITY TOOLS
         # ----------------------------------------------------------
+        clear()
+        banner.execute()
+        rule(f"[yellow]── TOOLS MODULE [/yellow]", style="yellow", align="left")
         line()
         printHead("Installing Security Tools ...")
         secure = Path(config.get("paths", "setup")) / "cfg" / "apt-secure.cfg"
@@ -49,6 +52,9 @@ def execute():
         # ----------------------------------------------------------
         # INSTALL PRIMARY TOOLS
         # ----------------------------------------------------------
+        clear()
+        banner.execute()
+        rule(f"[yellow]── TOOLS MODULE [/yellow]", style="yellow", align="left")
         line()
         printHead("Installing Primary Packages ...")
         webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()

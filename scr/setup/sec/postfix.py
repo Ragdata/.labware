@@ -10,9 +10,13 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import socket
+import sys, socket
+
+sys.path.append(".")
 
 from labware.filesys import *
+
+from scr.setup.sec import banner
 
 #-------------------------------------------------------------------
 # VARIABLES
@@ -25,6 +29,12 @@ HOSTNAME = socket.getfqdn()
 #-------------------------------------------------------------------
 def execute():
     try:
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - POSTFIX MODULE [/yellow]", style="yellow", align="left")
+        # ----------------------------------------------------------
+        # EXTRAS - Install Postfix
+        # ----------------------------------------------------------
         pkgs = ["postfix", "mailutils"]
         installAPT(pkgs)
         run("postconf -e disable_vrfy_command=yes")

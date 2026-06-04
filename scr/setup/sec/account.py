@@ -10,13 +10,22 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
+import sys
+
+sys.path.append(".")
+
 from labware.filesys import *
+
+from scr.setup.sec import banner
 
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 def execute():
     try:
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - ACCOUNT MODULE [/yellow]", style="yellow", align="left")
         # ----------------------------------------------------------
         # Section 5.5 - Account Auditing
         # ----------------------------------------------------------

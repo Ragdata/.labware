@@ -42,7 +42,9 @@ SERVSVC  = Path(config.get("paths", "opt")) / "svc"
 #-------------------------------------------------------------------
 def execute():
     try:
-        rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")
         line()
         # ----------------------------------------------------------
         # GATHER INFORMATION
@@ -67,7 +69,7 @@ def execute():
             WARESCR = USERDIR / ".labware" / "scr"
             clear()
             banner.execute()
-            rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
+            rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"COPYING FILES FOR USER '{user}'")
             if not WARELIB.exists():
@@ -118,10 +120,9 @@ def execute():
         # ----------------------------------------------------------
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
-            WAREDIR = USERDIR / ".labware"
             clear()
             banner.execute()
-            rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
+            rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"CONFIGURING USER '{user}'")
             # SUDO NOPASSWD

@@ -29,7 +29,7 @@ import sec.users as users, sec.tools as tools, sec.remfiles as remfiles, sec.boo
 import sec.motd as motd, sec.mounts as mounts, sec.timesyncd as timesyncd, sec.cron as cron, sec.network as network, sec.firewalld as firewalld
 import sec.sshd as sshd, sec.sudo as sudo, sec.account as account, sec.auditd as auditd, sec.rsyslog as rsyslog, sec.journald as journald, sec.acct as acct
 import sec.password as password, sec.sysstat as sysstat, sec.psad as psad, sec.usbguard as usbguard, sec.rkhunter as rkhunter, sec.aide as aide, sec.suid as suid
-import sec.compilers as compilers, sec.banner as banner
+import sec.compilers as compilers, sec.banner as banner, sec.postfix as postfix
 
 #sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
 
@@ -55,19 +55,14 @@ def execute() -> None:
         checkRoot()
         checkPython()
         checkUbuntu()
-        clear()
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------
-        banner.execute()
         users.execute()
         tools.execute()
-        clear()
         # ----------------------------------------------------------
         # SERVER HARDENING
         # ----------------------------------------------------------
-        banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING [/yellow]", style="yellow", align="left")
         remfiles.execute()
         boot.execute()
         apparmor.execute()
@@ -91,6 +86,7 @@ def execute() -> None:
         psad.execute()
         usbguard.execute()
         rkhunter.execute()
+        postfix.execute()
         aide.execute()
         suid.execute()
         compilers.execute()

@@ -10,7 +10,13 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
+import sys
+
+sys.path.append(".")
+
 from labware.filesys import *
+
+from scr.setup.sec import banner
 
 #-------------------------------------------------------------------
 # VARIABLES
@@ -22,6 +28,9 @@ SETUPDIR = BASEDIR / "scr/setup"
 #-------------------------------------------------------------------
 def execute():
     try:
+        clear()
+        banner.execute()
+        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SYSSTAT MODULE [/yellow]", style="yellow", align="left")
         # ----------------------------------------------------------
         # Enable 'sysstat'
         # ----------------------------------------------------------
