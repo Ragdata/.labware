@@ -115,7 +115,7 @@ def removeAPT(packages: list):
 def removeUsers(users: list) -> bool:
     try:
         for user in users:
-            if run(f"id {user} > /dev/null 2>&1").returncode == 0:
+            if run(f"id {user} > /dev/null 2>&1", check=False).returncode == 0:
                 run(f"pkill -u {user} > /dev/null 2>&1", check=False)
                 if run(f"userdel -r {user} > /dev/null 2>&1", check=False).returncode == 0:
                     printSuccess(f"Removed user: {user}")
