@@ -14,11 +14,11 @@ import os, subprocess, pwd, sys
 
 from pathlib import Path
 
-BASEDIR = Path(__file__).parents[2]
-
-sys.path.append(str(BASEDIR))
+sys.path.append(".")
 
 from labware.logger import *
+
+BASEDIR = Path(config.get("paths", "base"))
 
 #-------------------------------------------------------------------
 # MODULE VARIABLES

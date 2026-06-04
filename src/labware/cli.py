@@ -16,17 +16,15 @@ import typer, rich, sys
 
 from pathlib import Path
 
-BASEDIR = Path(__file__).parents[2]
-
-sys.path.append(str(BASEDIR))
+sys.path.append(".")
 
 from labware.config import *
+
+BASEDIR = Path(config.get("paths", "base"))
 
 config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 
 sys.path.append(str(BASEDIR / config.get("src", "setup")))
-
-from typing import Annotated
 
 from labware import __version__
 

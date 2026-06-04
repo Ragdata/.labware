@@ -12,17 +12,15 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import logging, sys
 
+sys.path.append(".")
+
 from pathlib import Path
-
-BASEDIR = Path(__file__).parents[2]
-
-sys.path.append(str(BASEDIR))
-
 from typing import TextIO, Any
-
 from logging.handlers import RotatingFileHandler
 
 from labware.output import *
+
+BASEDIR = Path(config.get("paths", "base"))
 
 LOG_LEVEL: int   = config.getint("logging", "level")
 LOG_DIR: Path    = Path.home() / config.get("logging", "logdir")

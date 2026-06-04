@@ -83,7 +83,10 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "long": "%%(asctime)s :: %%(levelname)s :: %%(message)s in %%(filename)s\\n%%(pathname)s [ %%(funcName)s line %%(lineno)s ]",
         "console": "%%(message)s",
         "date": "%%Y-%%m-%%d %%H:%%M:%%S",
-    }
+    },
+    "paths": {
+        "base": Path(__file__).parents[2]
+    },
     # "log_formats": {
     #     "std": "{asctime} :: {levelname} :: {message}",
     #     "short": "{levelname} :: {message}",

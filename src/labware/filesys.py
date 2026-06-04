@@ -12,16 +12,14 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import shutil, grp, sys
 
-from pathlib import Path
-
-BASEDIR = Path(__file__).parents[2]
-
-sys.path.append(str(BASEDIR))
+sys.path.append(".")
 
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 from labware.utils import *
+
+BASEDIR = Path(config.get("paths", "base"))
 
 TEMPLATES = BASEDIR / config.get("src", "setup")
 

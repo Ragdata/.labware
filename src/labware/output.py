@@ -14,9 +14,7 @@ import sys
 
 from pathlib import Path
 
-BASEDIR = Path(__file__).parents[2]
-
-sys.path.append(str(BASEDIR))
+sys.path.append(".")
 
 from rich.text import Text
 from rich.theme import Theme
@@ -26,6 +24,8 @@ from rich.console import Console, ConsoleOptions, RenderableType
 from typing import Optional, Union
 
 from labware.config import *
+
+BASEDIR = Path(config.get("paths", "base"))
 
 _theme = Theme({
     "info": config.get("styles", "info"),
