@@ -136,17 +136,17 @@ def run(command: str, check: bool = True, capture: bool = False, input_txt = Non
         result = subprocess.run(command, shell=True, check=check, text=True, capture_output=capture, input=input_txt)
         return result
     except subprocess.CalledProcessError as e:
-        logger.error(f"Command failed: {command}\n{e.stderr.strip()}", True)
+        logger.error(f"Command failed: {command}\n{e.stderr}", True)
         if check:
             sys.exit(1)
         raise
 
 def runScript(script, *args) -> dict:
-    """Execute shell script with error handling"""
+    """Execute a shell script with error handling"""
     try:
         result = subprocess.run([sys.executable, script, *args], capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        logger.error(f"Script failed: {script}\n{e.stderr.strip()}", True, 1)
+        logger.error(f"Script failed: {script}\n{e.stderr}", True, 1)
         raise
 
     return {
@@ -155,7 +155,6 @@ def runScript(script, *args) -> dict:
         "stdout": result.stdout.strip(),
         "stderr": result.stderr.strip()
     }
-
 
 def userExists(uname) -> bool:
     try:
