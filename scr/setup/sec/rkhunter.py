@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RKHUNTER MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RKHUNTER MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # EXTRAS - Install 'rkhunter'
         # ----------------------------------------------------------
@@ -42,7 +42,7 @@ def execute():
         run("rkhunter --update")
         run("rkhunter --propupd")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'rkhunter': {reason}", True)

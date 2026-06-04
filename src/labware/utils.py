@@ -54,24 +54,29 @@ def getIP() -> str:
     return ip
 
 def getUserIP() -> str:
-    ip = run("who | awk '{print $NF}' | tr -d '()' | grep -E '^[0-9]' | head -n1").stdout.strip()
-    return ip
+    return run("who | awk '{print $NF}' | tr -d '()' | grep -E '^[0-9]' | head -n1").stdout.strip()
 
-def installAPT(packages: list):
+def installAPT(packages: list, quiet: bool = False):
     try:
         for pkg in packages:
             if pkg[0] == "#":
                 continue
             if run(f"dpkg -s {pkg}", check=False, capture=True).returncode != 0:
-                run(f"DEBIAN_FRONTEND=noninteractive apt install -qq -y {pkg}")
-                printSuccess(f"Installed package: {pkg}")
+                if not quiet:
+                    line()
+                    run(f"DEBIAN_FRONTEND=noninteractive apt install -y {pkg}")
+                    line()
+                elif quiet:
+                    run(f"DEBIAN_FRONTEND=noninteractive apt install -qq -y {pkg}")
+                symbol = config.get("symbols", "success")
+                printMessage(f"{symbol} Installed package: {pkg}", style="dark_orange")
                 logger.info(f"Installed package: {pkg}")
+                line()
             else:
                 printDot(f"Package already installed: {pkg}")
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Install package failed: {reason}", True)
+        logger.error(f"Install package failed: {e}", True)
         raise
 
 def installPIP(packages: list):
@@ -87,13 +92,11 @@ def installPIP(packages: list):
                 printDot(f"Package already installed: {pkg}")
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Install failed: {reason}", True)
+        logger.error(f"Install failed: {e}", True)
         raise
 
 def isLXC() -> bool:
-    ret = True if run("grep -qE 'container=lxc|container=lxd' /proc/1/environ").returncode == 0 else False
-    return ret
+    return True if run("grep -qE 'container=lxc|container=lxd' /proc/1/environ").returncode == 0 else False
 
 def removeAPT(packages: list):
     try:
@@ -108,8 +111,7 @@ def removeAPT(packages: list):
                 printError(f"Package not installed: {pkg}")
                 logger.debug(f"Package not installed: {pkg}")
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Remove package failed: {reason}", True)
+        logger.error(f"Remove package failed: {e}", True)
         raise
 
 def removeUsers(users: list) -> bool:
@@ -135,7 +137,7 @@ def run(command: str, check: bool = True, capture: bool = False, input_txt = Non
         logger.info(f"Executing BASH: {command}")
         result = subprocess.run(command, shell=True, check=check, text=True, capture_output=capture, input=input_txt)
         return result
-    except subprocess.CalledProcessError as e:
+    except subprocess.CalledProcessError:
         logger.error(f"Command failed: {command}", True)
         if check:
             sys.exit(1)
@@ -145,8 +147,8 @@ def runScript(script, *args) -> dict:
     """Execute a shell script with error handling"""
     try:
         result = subprocess.run([sys.executable, script, *args], capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Script failed: {script}\n{e.stderr}", True, 1)
+    except subprocess.CalledProcessError:
+        logger.error(f"Script failed: {script}", True, 1)
         raise
 
     return {

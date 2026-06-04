@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - APT MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - APT MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 1.5 - Unattended Upgrades + APT Config
         # ----------------------------------------------------------
@@ -39,7 +39,7 @@ def execute():
         files = ["/etc/apt/apt.conf.d/50unattended-upgrades", "/etc/apt/apt.conf.d/98-hardening", "/etc/apt/apt.conf.d/99-noexec-tmp"]
         copyRepoFiles(SETUPDIR, files, True)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - BOOT MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - BOOT MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 1.2 - Secure Bootloader
         # ----------------------------------------------------------
@@ -34,7 +34,7 @@ def execute():
         chown(Path("/boot/grub/grub.cfg"), "root", "root")
         run("chmod og-rwx /boot/grub/grub.cfg")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

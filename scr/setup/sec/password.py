@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PASSWORD MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PASSWORD MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 5.4 - Password Policy
         # ----------------------------------------------------------
@@ -74,7 +74,7 @@ def execute():
         #     with open(dotfile, "a") as f:
         #         f.write("umask 027")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
         # Section 6.5 - Secure Password Files
         # ----------------------------------------------------------
@@ -92,7 +92,7 @@ def execute():
         }
         perms(data)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

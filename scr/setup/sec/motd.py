@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - MOTD MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - MOTD MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 1.6 - Legal Banners
         # ----------------------------------------------------------
@@ -42,7 +42,7 @@ def execute():
         run("systemctl stop motd-news.timer")
         run("systemctl mask motd-news.timer")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

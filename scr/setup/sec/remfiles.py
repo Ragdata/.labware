@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - REMFILES MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - REMFILES MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 1.1 - Remove Unnecessary Filesystems
         # ----------------------------------------------------------
@@ -38,7 +38,7 @@ def execute():
         removeAPT(files)
         run("systemctl mask autofs")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
         # Section 2.1 - Remove Unused Services
         # ----------------------------------------------------------
@@ -50,7 +50,7 @@ def execute():
         pkgs = getList(remove)
         removeAPT(pkgs)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

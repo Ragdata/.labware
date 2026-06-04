@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - APPARMOR MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - APPARMOR MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 1.3 - Enable AppArmor & Secure Kernel
         # ----------------------------------------------------------
@@ -43,7 +43,7 @@ def execute():
         run("echo 'kernel.yama.ptrace_scopr = 1' > /etc/sysctl.d/60-yama.conf")
         run("sysctl --system")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install Apparmor: {reason}", True)

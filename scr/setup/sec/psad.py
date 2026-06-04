@@ -31,7 +31,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PSAD MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PSAD MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Install 'psad'
         # ----------------------------------------------------------
@@ -46,7 +46,7 @@ def execute():
         if not writeTemplate(template, filedest, data):
             logger.error(f"Could not write template to {filedest}", True, 1)
         while True:
-            email_address = getData("[cyan]Enter admin email address[/cyan] (required): ")
+            email_address = getData(f"[{cyan}]Enter admin email address[/{cyan}] (required): ")
             if email_address:
                 break
         filepath = "/etc/psad/psad.conf"
@@ -64,7 +64,7 @@ def execute():
         run("psad -H")
         run("psad --fw-analyze")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'psad': {reason}", True)

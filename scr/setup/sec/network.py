@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - NETWORK MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - NETWORK MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 3 - Network Stack Hardening
         # ----------------------------------------------------------
@@ -45,7 +45,7 @@ def execute():
         for mod in modules:
             run(f"modprobe -r {mod} 2>/dev/null")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

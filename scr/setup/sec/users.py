@@ -44,14 +44,14 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
         line()
         # ----------------------------------------------------------
         # GATHER INFORMATION
         # ----------------------------------------------------------
         users = []
         while True:
-            data = getData("[cyan]Enter list of sudo users to setup (space delimited): [/cyan]")
+            data = getData(f"[{cyan}]Enter list of sudo users to setup[/{cyan}] (space delimited): ")
             if data != "":
                 users = data.split(" ")
                 for user in users:
@@ -69,7 +69,7 @@ def execute():
             WARESCR: Path = USERDIR / ".labware" / "scr"
             clear()
             banner.execute()
-            rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")
+            rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
             line()
             printWhite(f"COPYING FILES FOR USER '{user}'")
             if not WARELIB.exists():
@@ -114,7 +114,7 @@ def execute():
                     if item.is_file():
                         chmod(Path(item.path), mode=0o755)
             line()
-            getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+            getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
         # CONFIGURE USERS
         # ----------------------------------------------------------
@@ -122,21 +122,21 @@ def execute():
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             clear()
             banner.execute()
-            rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/yellow]", style="yellow", align="left")
+            rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
             line()
             printWhite(f"CONFIGURING USER '{user}'")
             # SUDO NOPASSWD
             if user != "root":
                 line()
                 printDot("SUDO NOPASSWD")
-                nopasswd = getData(f"[cyan]Allow user {user} to use sudo without a password?[/cyan] (y/N): ").lower()
+                nopasswd = getData(f"[{cyan}]Allow user {user} to use sudo without a password?[/{cyan}] (y/N): ").lower()
                 if nopasswd == "y":
                     data = f"{user} ALL=(ALL) NOPASSWD: ALL"
                     writeFile(Path(f"/etc/sudoers.d/{user}"), data, user=user)
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
-            printMessage("[cyan]Paste SECRET key[/cyan] (Ctrl+D to end/bypass):")
+            printMessage("[{cyan}]Paste SECRET key[/{cyan}] (Ctrl+D to end/bypass):")
             gpgkey = sys.stdin.read()
             if gpgkey:
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
@@ -148,7 +148,7 @@ def execute():
             # GNUPG CONFIG
             line()
             printDot("GNUPG CONFIG")
-            gpgcfg = getData(f"[cyan]Default Key ID for {user}[/cyan] (ENTER to bypass): ")
+            gpgcfg = getData(f"[{cyan}]Default Key ID for {user}[/{cyan}] (ENTER to bypass): ")
             if gpgcfg:
                 tmpl = SETUPDIR / "cfg/gnupg/gpg.conf"
                 dest = USERDIR / ".gnupg/gpg.conf"
@@ -162,17 +162,17 @@ def execute():
             # GITCONFIG
             line()
             printDot("GIT CONFIG")
-            git_user = getData(f"[cyan]Enter git username for {user}[/cyan] (ENTER to bypass): ")
+            git_user = getData(f"[{cyan}]Enter git username for {user}[/{cyan}] (ENTER to bypass): ")
             if git_user:
-                git_email = getData(f"[cyan]Enter git email for {user}[/cyan]: ")
-                git_key = getData(f"[cyan]Enter signing key for {user}[/cyan]: ")
+                git_email = getData(f"[{cyan}]Enter git email for {user}[/{cyan}]: ")
+                git_key = getData(f"[{cyan}]Enter signing key for {user}[/{cyan}]: ")
                 tmpl = SETUPDIR / "cfg/git/.gitconfig"
                 dest = USERDIR / ".gitconfig"
                 data = {"user_name": git_user, "user_email": git_email, "signing_key": git_key}
                 if not writeTemplate(tmpl, dest, data, user=user):
                     printWarning(f"Could not write .gitconfig for {user}")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         line()
         # ----------------------------------------------------------
         # REMOVE REDUNDANT USER ACCOUNTS
@@ -183,7 +183,7 @@ def execute():
         users = getList(filename)
         removeUsers(users)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"Failed executing script 'users': {e}", True, 1)
         raise

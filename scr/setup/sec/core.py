@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - COREDUMPS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - COREDUMPS MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 1.4 - Coredumps
         # ----------------------------------------------------------
@@ -42,7 +42,7 @@ def execute():
         copyRepoFile(SETUPDIR, "/etc/systemd/coredump.conf", True)
         run("systemctl restart systemd-journald")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden Coredumps: {reason}", True)

@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AIDE MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AIDE MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # EXTRAS - Install 'aide'
         # ----------------------------------------------------------
@@ -50,7 +50,7 @@ def execute():
         run("systemctl start aide-check.timer")
         run("systemctl daemon-reload")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'aide': {reason}", True)

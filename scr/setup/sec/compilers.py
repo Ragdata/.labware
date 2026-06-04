@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - COMPILERS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - COMPILERS MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # EXTRAS - Restrict Access to Compilers
         # ----------------------------------------------------------
@@ -45,7 +45,7 @@ def execute():
         if ascomp.is_file() and os.access(ascomp, os.X_OK):
             chmod(run("readlink -eq $(command -v as)", capture=True).stdout.strip(), 0o750)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden Compilers: {reason}", True)

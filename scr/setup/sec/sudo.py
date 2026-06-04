@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUDO MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUDO MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 5.2 - Secure SUDO
         # ----------------------------------------------------------
@@ -41,7 +41,7 @@ def execute():
         # if run(f"visudo -c -f {filedest}").returncode != 0:
         #     logger.error(f"SUDO config failed validation", True, 1)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

@@ -95,58 +95,58 @@ def execute() -> None:
         # ----------------------------------------------------------
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
         line()
         printHead("Installing Primary Packages ...")
-        webmin = getData("[cyan]Install Webmin?[/cyan] (Y/n): ").lower()
+        webmin = getData(f"[{cyan}]Install Webmin?[/{cyan}] (Y/n): ").lower()
         if webmin != 'n':
             path = Path(config.get("paths", "scripts")) / "webmin.py"
             runpy.run_path(str(path))
         else:
-            virtualmin = getData("[cyan]Install Virtualmin[/cyan] (Y/n): ").lower()
+            virtualmin = getData(f"[{cyan}]Install Virtualmin[/{cyan}] (Y/n): ").lower()
             if virtualmin != 'n':
                 path = Path(config.get("paths", "scripts")) / "virtualmin.py"
                 runpy.run_path(str(path))
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
         line()
-        docker = getData("[cyan]Install Docker[/cyan] (Y/n): ").lower()
+        docker = getData(f"[{cyan}]Install Docker[/{cyan}] (Y/n): ").lower()
         if docker != 'n':
             path = Path(config.get("paths", "scripts")) / "docker.py"
             runpy.run_path(str(path))
-            lazydocker = getData("[cyan]Install LazyDocker[/cyan] (Y/n): ").lower()
+            lazydocker = getData(f"[{cyan}]Install LazyDocker[/{cyan}] (Y/n): ").lower()
             if lazydocker != 'n':
                 path = Path(config.get("paths", "scripts")) / "lazydocker.py"
                 runpy.run_path(str(path))
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
         # CLEANUP
         # ----------------------------------------------------------
         clear()
         banner.execute()
         line()
-        rule(f"[yellow]── CLEANUP[/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CLEANUP[/{yellow}]", style=yellow, align="left")
         printHead("CLEANUP")
         run("apt -qq -y clean && apt -qq -y autoremove")
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
         # REPORT
         # ----------------------------------------------------------
         clear()
         banner.execute()
         line()
-        rule(f"[yellow]── REPORT[/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── REPORT[/{yellow}]", style=yellow, align="left")
         run("systemd-delta --no-pager")
         # ----------------------------------------------------------
         # REBOOT
         # ----------------------------------------------------------
         line()
-        getData("[yellow]Press [ENTER] to reboot ...[/yellow] ")
+        getData(f"[{yellow}]Press [ENTER] to reboot ...[/{yellow}] ")
         run("systemctl reboot")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)

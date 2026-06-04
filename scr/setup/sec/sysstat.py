@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SYSSTAT MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SYSSTAT MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Enable 'sysstat'
         # ----------------------------------------------------------
@@ -39,7 +39,7 @@ def execute():
         copyRepoFile(SETUPDIR, "/etc/default/sysstat", True)
         run("systemctl enable sysstat")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

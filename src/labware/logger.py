@@ -160,6 +160,23 @@ class Logger(logging.Logger):
         if xit:
             exit(xit)
 
+    def important(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+        """
+        Log an IMPORTANT message
+
+        Args:
+            msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
+            *args:          Variable length argument list
+            **kwargs:       Arbitrary keyword arguments
+        """
+        self.log(logging.INFO, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "important")
+        if xit:
+            exit(xit)
+
     def info(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
         """
         Log an INFO message
@@ -174,6 +191,40 @@ class Logger(logging.Logger):
         self.log(logging.INFO, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "info")
+        if xit:
+            exit(xit)
+
+    def success(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+        """
+        Log a SUCCESS message
+
+        Args:
+            msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
+            *args:          Variable length argument list
+            **kwargs:       Arbitrary keyword arguments
+        """
+        self.log(logging.INFO, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "success")
+        if xit:
+            exit(xit)
+
+    def tip(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+        """
+        Log a TIP message
+
+        Args:
+            msg (str):      The message to log
+            out (bool):     Print the message to console (Defaults to False)
+            xit (int):      Exit the program with this code after logging (Defaults to 0)
+            *args:          Variable length argument list
+            **kwargs:       Arbitrary keyword arguments
+        """
+        self.log(logging.INFO, msg, *args, **kwargs)
+        if out:
+            self.outlog(msg, "tip")
         if xit:
             exit(xit)
 
@@ -300,8 +351,7 @@ def get_logger(name: str, level: int = LOG_LEVEL, fmt: str = LOG_FORMAT) -> Logg
 
     return get_logger._instances[name]
 
-
-logger = None
+logger: Logger = ""
 
 if not isinstance(logger, Logger):
     logger = get_logger("labware")

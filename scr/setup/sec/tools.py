@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
         line()
         # ----------------------------------------------------------
         # INSTALL BASIC TOOLS
@@ -37,13 +37,13 @@ def execute():
         pkgs = getList(basic)
         installAPT(pkgs)
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
         # INSTALL SECURITY TOOLS
         # ----------------------------------------------------------
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
         line()
         printHead("Installing Security Tools ...")
         secure = Path(config.get("paths", "setup")) / "cfg" / "apt-secure.cfg"
@@ -52,7 +52,7 @@ def execute():
         pkgs = getList(secure)
         installAPT(pkgs)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

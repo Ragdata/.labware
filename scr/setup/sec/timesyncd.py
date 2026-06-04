@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TIMESYNCD MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TIMESYNCD MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 2.4 - NTP
         # ----------------------------------------------------------
@@ -40,7 +40,7 @@ def execute():
         run("systemctl restart systemd-timesyncd")
         run("systemctl enable systemd-timesyncd")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

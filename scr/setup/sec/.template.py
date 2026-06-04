@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TEMPLATE MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TEMPLATE MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         #
         # ----------------------------------------------------------
@@ -33,7 +33,7 @@ def execute():
         printHead("")
 
         line()
-        getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
         raise

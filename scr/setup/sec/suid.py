@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUID MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUID MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # EXTRAS - Remove SUID Bits
         # ----------------------------------------------------------
@@ -53,7 +53,7 @@ def execute():
             if shell.exists():
                 run(f"chmod -s {shell}")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden SUID: {reason}", True)

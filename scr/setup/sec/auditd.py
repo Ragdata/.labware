@@ -30,7 +30,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AUDITD MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AUDITD MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 6.1 - 'auditd' Logging & Audit Rules
         # ----------------------------------------------------------
@@ -44,7 +44,7 @@ def execute():
         run("systemctl --now enable auditd")
         run("systemctl restart auditd")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden 'auditd': {reason}", True)

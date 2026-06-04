@@ -31,7 +31,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - POSTFIX MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - POSTFIX MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # EXTRAS - Install Postfix
         # ----------------------------------------------------------
@@ -43,7 +43,7 @@ def execute():
         run("postconf -e inet_interfaces=loopback-only")
         run("systemctl restart postfix.service")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install Postfix: {reason}", True)

@@ -25,7 +25,7 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RSYSLOG MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RSYSLOG MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 6.2 - Secure 'rsyslog'
         # ----------------------------------------------------------
@@ -42,7 +42,7 @@ def execute():
         run("find /var/log -type d -exec chmod 750 {} \\;")
         chmod(Path("/var/log/sudo.log"), 0o640)
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to Harden 'rsyslog': {reason}", True)

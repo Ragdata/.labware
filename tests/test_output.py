@@ -126,7 +126,7 @@ class TestOutputFunctions(unittest.TestCase):
 
     def test_getData_calls_console_input(self):
         with patch.object(self.out.console, "input", return_value="x") as mock_input:
-            result = self.out.getData("prompt: ")
+            result = self.out.getData(f"prompt: ")
             mock_input.assert_called_once_with("prompt: ")
             self.assertEqual(result, "x")
 

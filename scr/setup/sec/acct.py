@@ -25,17 +25,18 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - ACCT MODULE [/yellow]", style="yellow", align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - ACCT MODULE [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # Section 6.4 - Enable 'acct' & Process Tracking
         # ----------------------------------------------------------
         line()
         printHead("Section 6.4 - Enable 'acct' & Process Tracking")
+        line()
         pkgs = ["acct"]
         installAPT(pkgs)
         run("systemctl enable acct")
         line()
-        getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         reason = str(e)
         logger.error(f"Failed to install 'acct': {reason}", True)
