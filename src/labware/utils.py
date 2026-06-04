@@ -126,8 +126,7 @@ def removeUsers(users: list) -> bool:
                 logger.warning(f"User not found: {user}", True)
         return True
     except Exception as e:
-        reason = str(e)
-        logger.error(f"Remove user failed: {reason}", True)
+        logger.error(f"Remove user failed: {e}", True)
         raise
 
 def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :

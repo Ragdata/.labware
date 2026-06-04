@@ -195,7 +195,10 @@ def getList(filepath: Path) -> list:
         if not filepath.exists():
             raise FileNotFoundError(f"{filepath} does not exist")
         with open(str(filepath), 'r') as f:
-            lines = [l.strip() for l in f]
+            lines = []
+            for l in f:
+                if l.strip() and not l.startswith('#'):
+                    lines.append(l.strip())
             return lines
     except Exception as e:
         logger.error(f"Failed to get list: {e}", True)
