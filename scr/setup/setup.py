@@ -10,7 +10,6 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import logging
 import sys
 
 from pathlib import Path
@@ -24,10 +23,6 @@ from labware.config import *
 
 config: Config = get_config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 
-from labware.logger import *
-
-logger: Logger = get_logger("setup", logging.DEBUG)
-
 from labware.filesys import *
 
 import sec.users as users, sec.tools as tools, sec.remfiles as remfiles, sec.boot as boot, sec.apparmor as apparmor, sec.core as core, sec.apt as apt
@@ -38,6 +33,7 @@ import sec.compilers as compilers, sec.banner as banner
 
 #sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
 
+logger: Logger = get_logger("setup", logging.DEBUG)
 
 #-------------------------------------------------------------------
 # VARIABLES

@@ -10,19 +10,26 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import runpy
+import sys, runpy
+
+sys.path.append(".")
 
 from labware.filesys import *
+
+from scr.setup.sec import banner
 
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 def execute():
     try:
+        clear()
+        banner.execute()
+        rule(f"[yellow]── TOOLS MODULE [/yellow]", style="yellow", align="left")
+        line()
         # ----------------------------------------------------------
         # INSTALL BASIC TOOLS
         # ----------------------------------------------------------
-        line()
         printHead("Installing Basic Tools ...")
         basic = Path(config.get("paths", "setup")) / "cfg" / "apt-basic.cfg"
         if not basic.exists():

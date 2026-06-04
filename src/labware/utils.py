@@ -63,7 +63,7 @@ def installAPT(packages: list):
             if pkg[0] == "#":
                 continue
             if run(f"dpkg -s {pkg}", check=False, capture=True).returncode != 0:
-                run(f"DEBIAN_FRONTEND=noninteractive apt install -y {pkg}")
+                run(f"DEBIAN_FRONTEND=noninteractive apt install -qq -y {pkg}")
                 printSuccess(f"Installed package: {pkg}")
                 logger.info(f"Installed package: {pkg}")
             else:
