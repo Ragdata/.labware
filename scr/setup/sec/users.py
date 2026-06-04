@@ -10,8 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-from labware.filesys import *
+from pprint import pprint
 
+from labware.filesys import *
 
 BASEDIR = Path(__file__).parents[3].resolve() if not BASEDIR else BASEDIR
 
@@ -134,7 +135,7 @@ def execute():
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
-            printCyan("Paste SECRET key (Ctrl+D to end/bypass):")
+            printMessage("[cyan]Paste SECRET key[/cyan] (Ctrl+D to end/bypass):")
             gpgkey = sys.stdin.read()
             if gpgkey:
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
@@ -179,6 +180,8 @@ def execute():
         if not filename.exists():
             raise FileNotFoundError(f"{filename} not found")
         users = getList(filename)
+        pprint(users)
+        exit(1)
         removeUsers(users)
         line()
         getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
