@@ -16,7 +16,7 @@ sys.path.append(".")
 
 from labware.filesys import *
 
-from scr.setup.sec import banner
+from setup.sec import banner
 
 #-------------------------------------------------------------------
 # VARIABLES
