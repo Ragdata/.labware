@@ -15,10 +15,13 @@ from labware.filesys import *
 BASEDIR = Path(__file__).parents[3].resolve() if not BASEDIR else BASEDIR
 
 sys.path.append(str(BASEDIR))
+sys.path.append(".")
 
 CONFIG_FILE = BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg"
 
 config = get_config(CONFIG_FILE)
+
+import banner
 
 #-------------------------------------------------------------------
 # VARIABLES
@@ -61,6 +64,7 @@ def execute():
             WARELIB = USERDIR / ".labware" / "lib"
             WARESCR = USERDIR / ".labware" / "scr"
             clear()
+            banner.execute()
             rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"COPYING FILES FOR USER '{user}'")
@@ -114,6 +118,7 @@ def execute():
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             WAREDIR = USERDIR / ".labware"
             clear()
+            banner.execute()
             rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"CONFIGURING USER '{user}'")
@@ -141,7 +146,7 @@ def execute():
             line()
             printDot("GNUPG CONFIG")
             gpgcfg = getData(f"[cyan]Default Key ID for {user}[/cyan] (ENTER to bypass): ")
-            if not gpgcfg == False:
+            if gpgcfg:
                 tmpl = SETUPDIR / "cfg/gnupg/gpg.conf"
                 dest = USERDIR / ".gnupg/gpg.conf"
                 data = {"signing_key": gpgcfg}
@@ -155,7 +160,7 @@ def execute():
             line()
             printDot("GIT CONFIG")
             git_user = getData(f"[cyan]Enter git username for {user}[/cyan] (ENTER to bypass): ")
-            if not git_user == False:
+            if git_user:
                 git_email = getData(f"[cyan]Enter git email for {user}[/cyan]: ")
                 git_key = getData(f"[cyan]Enter signing key for {user}[/cyan]: ")
                 tmpl = SETUPDIR / "cfg/git/.gitconfig"
@@ -165,6 +170,7 @@ def execute():
                     printWarning(f"Could not write .gitconfig for {user}")
         line()
         getData("[cyan]Press [ENTER] to continue ...[/cyan] ")
+        line()
         # ----------------------------------------------------------
         # REMOVE REDUNDANT USER ACCOUNTS
         # ----------------------------------------------------------
