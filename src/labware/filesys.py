@@ -197,7 +197,7 @@ def getList(filepath: Path) -> list:
         with open(str(filepath), 'r') as f:
             lines = []
             for l in f:
-                if l.strip() and not l.startswith('#'):
+                if isinstance(l, str) and not l.startswith('#'):
                     lines.append(l.strip())
             return lines
     except Exception as e:
