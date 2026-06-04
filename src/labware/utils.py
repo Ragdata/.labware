@@ -63,7 +63,6 @@ def installAPT(packages: list, quiet: bool = False):
                 continue
             if run(f"dpkg -s {pkg}", check=False, capture=True).returncode != 0:
                 if not quiet:
-                    line()
                     run(f"DEBIAN_FRONTEND=noninteractive apt install -y {pkg}")
                     line()
                 elif quiet:
@@ -73,7 +72,6 @@ def installAPT(packages: list, quiet: bool = False):
                 logger.info(f"Installed package: {pkg}")
                 line()
             else:
-                line()
                 symbol = config.get("symbols", "dot")
                 printMessage(f"{symbol} Package already installed: {pkg}", style=bright_blue)
                 line()
