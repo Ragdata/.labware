@@ -254,11 +254,15 @@ def writeTemplate(tmpl: Path, dest: Path, data: dict, mode: int = 0o644, user: s
             raise RuntimeError(f"User {user} does not exist")
         if not tmpl.exists():
             raise FileNotFoundError(f"{tmpl} does not exist")
+        if TEMPLATES in tmpl.parents:
+            tmpl_path = tmpl.relative_to(TEMPLATES)
+        else:
+            raise ValueError(f"Template {tmpl} is not in {TEMPLATES}")
         if not dest.parent.exists():
             dest.parent.mkdir(parents=True, mode=0o755)
         if dest.exists():
             os.remove(str(dest))
-        template = loader.get_template(str(tmpl))
+        template = loader.get_template(str(tmpl_path))
         if dest.exists() and bkp:
             backup(dest, bkpdir)
         with open(dest, 'w') as f:
