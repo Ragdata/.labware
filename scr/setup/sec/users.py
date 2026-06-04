@@ -180,8 +180,6 @@ def execute():
         if not filename.exists():
             raise FileNotFoundError(f"{filename} not found")
         users = getList(filename)
-        pprint(users)
-        exit(1)
         removeUsers(users)
         line()
         getData("[yellow]MODULE COMPLETE :: Press [ENTER] to continue ...[/yellow] ")
