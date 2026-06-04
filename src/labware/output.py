@@ -226,7 +226,7 @@ def printDot(msg: str, **kwargs) -> None:
 
 def printDefault(msg: str, **kwargs) -> None:
     """
-    Print a message in DEFAULT color
+    Print a message in DEFAULT colour
 
     Args:
     	msg (str): 	The message to print.
@@ -336,6 +336,6 @@ def line(count=1) -> None:
 
 def rule(*args, **kwargs) -> None:
     """
-	Draw a line with optional title
+	Draw a line with an optional title
 	"""
     console.rule(*args, **kwargs)
