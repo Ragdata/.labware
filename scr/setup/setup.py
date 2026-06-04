@@ -31,10 +31,10 @@ logger: Logger = get_logger("setup", logging.DEBUG)
 from labware.filesys import *
 
 import sec.users as users, sec.tools as tools, sec.remfiles as remfiles, sec.boot as boot, sec.apparmor as apparmor, sec.core as core, sec.apt as apt
-import sec.banners as banners, sec.mounts as mounts, sec.timesyncd as timesyncd, sec.cron as cron, sec.network as network, sec.firewalld as firewalld
+import sec.motd as motd, sec.mounts as mounts, sec.timesyncd as timesyncd, sec.cron as cron, sec.network as network, sec.firewalld as firewalld
 import sec.sshd as sshd, sec.sudo as sudo, sec.account as account, sec.auditd as auditd, sec.rsyslog as rsyslog, sec.journald as journald, sec.acct as acct
 import sec.password as password, sec.sysstat as sysstat, sec.psad as psad, sec.usbguard as usbguard, sec.rkhunter as rkhunter, sec.aide as aide, sec.suid as suid
-import sec.compilers as compilers
+import sec.compilers as compilers, sec.banner as banner
 
 #sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
 
@@ -59,23 +59,24 @@ def execute() -> None:
         checkRoot()
         checkPython()
         checkUbuntu()
-        run("clear")
+        clear()
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------
         users.execute()
         tools.execute()
-        run("clear")
+        clear()
         # ----------------------------------------------------------
         # SERVER HARDENING
         # ----------------------------------------------------------
+        banner.execute()
         rule(f"[yellow]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING [/yellow]", style="yellow", align="left")
         remfiles.execute()
         boot.execute()
         apparmor.execute()
         core.execute()
         apt.execute()
-        banners.execute()
+        motd.execute()
         mounts.execute()
         timesyncd.execute()
         cron.execute()
@@ -107,7 +108,7 @@ def execute() -> None:
         # ----------------------------------------------------------
         # REPORT
         # ----------------------------------------------------------
-        run("clear")
+        clear()
         rule(f"[yellow]── REPORT[/yellow]", style="yellow", align="left")
         run("systemd-delta --no-pager")
         # ----------------------------------------------------------

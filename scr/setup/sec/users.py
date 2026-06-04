@@ -37,7 +37,7 @@ SERVSVC  = Path(config.get("paths", "opt")) / "svc"
 #-------------------------------------------------------------------
 def execute():
     try:
-        run("clear")
+        clear()
         rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
         line()
         # ----------------------------------------------------------
@@ -61,7 +61,7 @@ def execute():
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             WARELIB = USERDIR / ".labware" / "lib"
             WARESCR = USERDIR / ".labware" / "scr"
-            run("clear")
+            clear()
             rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"COPYING FILES FOR USER '{user}'")
@@ -114,7 +114,7 @@ def execute():
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
             WAREDIR = USERDIR / ".labware"
-            run("clear")
+            clear()
             rule(f"[yellow]── USERS MODULE [/yellow]", style="yellow", align="left")
             line()
             printWhite(f"CONFIGURING USER '{user}'")
