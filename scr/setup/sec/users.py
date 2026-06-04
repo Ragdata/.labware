@@ -129,15 +129,9 @@ def execute():
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
-            printCyan("Paste SECRET key (ENTER to bypass):")
-            lines = []
-            while True:
-                l = input()
-                if l == "":
-                    break
-                lines.append(l)
-            if lines:
-                gpgkey = "\n".join(lines)
+            printCyan("Paste SECRET key (Ctrl+D to end/bypass):")
+            gpgkey = sys.stdin.read()
+            if gpgkey:
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
                 writeFile(file, gpgkey, mode=0o600, user=user)
                 if user == "root":
