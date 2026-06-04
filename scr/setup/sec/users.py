@@ -12,6 +12,7 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 from labware.filesys import *
 
+
 BASEDIR = Path(__file__).parents[3].resolve() if not BASEDIR else BASEDIR
 
 sys.path.append(str(BASEDIR))
@@ -21,7 +22,7 @@ CONFIG_FILE = BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg"
 
 config = get_config(CONFIG_FILE)
 
-import banner
+from scr.setup.sec import banner
 
 #-------------------------------------------------------------------
 # VARIABLES
