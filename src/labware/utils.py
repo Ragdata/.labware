@@ -69,11 +69,14 @@ def installAPT(packages: list, quiet: bool = False):
                 elif quiet:
                     run(f"DEBIAN_FRONTEND=noninteractive apt install -qq -y {pkg}")
                 symbol = config.get("symbols", "success")
-                printMessage(f"{symbol} Installed package: {pkg}", style="dark_orange")
+                printMessage(f"{symbol} Installed package: {pkg}", style=bright_green)
                 logger.info(f"Installed package: {pkg}")
                 line()
             else:
-                printDot(f"Package already installed: {pkg}")
+                line()
+                symbol = config.get("symbols", "dot")
+                printMessage(f"{symbol} Package already installed: {pkg}", style=bright_blue)
+                line()
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
         logger.error(f"Install package failed: {e}", True)
