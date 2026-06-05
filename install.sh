@@ -101,4 +101,4 @@ echo
 echo -e "${YELLOW}Installing Labware Scripts ...${NC}"
 lw::copyTree "scr" "/opt/labware"
 lw::copyTree "svc" "/opt/labware/svc"
-lw::copyTree "sys" "/opt/labware"
+lw::copyTree "sys" "/opt/labware/sys"
