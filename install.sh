@@ -72,12 +72,15 @@ echo -e "${YELLOW}Adding Repositories${NC}"
 add-apt-repository -y ppa:deadsnakes/ppa
 add-apt-repository -y ppa:git-core/ppa
 
+echo
 echo -e "${YELLOW}Updating System ...${NC}"
 apt update
 
+echo
 echo -e "${YELLOW}Upgrading System ...${NC}"
 apt full-upgrade -y
 
+echo
 echo -e "${YELLOW}Install Essential Tools ...${NC}"
 apt install -y curl wget git gnupg2 net-tools dnsutils iputils-ping procps python3.14-full python3.14-venv
 
@@ -88,14 +91,13 @@ if ! which python3.14 > /dev/null 2>&1; then
     apt install -y python3.14-full python3.14-venv
 fi
 
+echo
 echo -e "${YELLOW}Installing Python Package and Dependencies in dev mode ...${NC}"
-# pip install -r requirements.txt --user --break-system-packages
-cd ../.. || exit
 python3.14 -m pip install -e . --break-system-packages
 python3.14 -m pip install ".[dev]" --break-system-packages
 python3.14 -m pip install ".[docs]" --break-system-packages
-cd -- || exit
 
+echo
 echo -e "${YELLOW}Installing Labware Scripts ...${NC}"
 lw::copyTree "scr" "/opt/labware"
 lw::copyTree "svc" "/opt/labware"
