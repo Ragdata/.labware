@@ -1,0 +1,36 @@
+# AIDE Drop-in: Custom Excludes Template
+# Copyright (c) 2025-2026 Marc Allgeier (fidpa)
+# SPDX-License-Identifier: MIT
+#
+# Template for user-defined custom excludes
+#
+# Usage:
+#   1. Copy to /etc/aide/aide.conf.d/99-custom.conf
+#   2. Edit with your service-specific excludes
+#   3. Test: sudo aide --config-check
+#   4. Regenerate DB: sudo aideinit
+
+# Example: Application cache directory
+# !/opt/myapp/cache
+
+# Example: Application data directory (monitor structure, not content)
+# /opt/myapp/data VarDir
+
+# Example: Application logs (growing files)
+# /opt/myapp/logs ActLog
+
+# Example: Application configuration (full monitoring)
+# /opt/myapp/config Full
+
+# ============================================
+# AIDE Group Quick Reference
+# ============================================
+#
+# Full     = Complete integrity check (immutable files)
+# VarFile  = Metadata only (content can change)
+# VarDir   = Monitor directory structure
+# ActLog   = Active logs (files can grow)
+# RotLog   = Rotated logs
+# OwnerMode = Only ownership and permissions
+#
+# See docs/FALSE_POSITIVE_REDUCTION.md for details
