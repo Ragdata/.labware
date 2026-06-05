@@ -100,5 +100,5 @@ python3.14 -m pip install ".[docs]" --break-system-packages
 echo
 echo -e "${YELLOW}Installing Labware Scripts ...${NC}"
 lw::copyTree "scr" "/opt/labware"
-lw::copyTree "svc" "/opt/labware"
+lw::copyTree "svc" "/opt/labware/svc"
 lw::copyTree "sys" "/opt/labware"
