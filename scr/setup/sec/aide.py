@@ -25,6 +25,24 @@ from scr.setup.sec import banner
 #-------------------------------------------------------------------
 BASEDIR  = Path(config.get("paths", "base"))
 SETUPDIR = BASEDIR / "scr/setup"
+CHECKED: bool
+#-------------------------------------------------------------------
+# FUNCTIONS
+#-------------------------------------------------------------------
+def copyConfigs(dropins: list[str]) -> None:
+    files = ["/etc/systemd/system/aide-check.service", "/etc/systemd/system/aide-check.timer"]
+    copyRepoFiles(SETUPDIR, files, True)
+
+def getDropIns() -> list:
+    pass
+
+def install():
+    """
+    Install AIDE (Advanced Intrusion Detection Environment) on the system.
+    """
+    pkgs = ["aide", "aide-common"]
+    installAPT(pkgs)
+
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -32,23 +50,21 @@ def execute():
     try:
         clear()
         banner.execute()
-        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AIDE MODULE [/{yellow}]", style=yellow, align="left")
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - EXTRAS [/{yellow}]", style=yellow, align="left")
         # ----------------------------------------------------------
         # EXTRAS - Install 'aide'
         # ----------------------------------------------------------
         line()
-        printHead("EXTRAS - Install Advanced Intrusion Detection Environment ('aide')")
+        printHead("Install Advanced Intrusion Detection Environment ('aide')")
         line()
-        pkgs = ["aide", "aide-common"]
-        installAPT(pkgs)
+        install()
         copyRepoFile(SETUPDIR, "/etc/aide/aide.conf", True)
         run("aideinit --yes")
         db = Path("/var/lib/aide/aide.db.new")
         if db.exists():
             mv = Path("/var/lib/aide/aide.db")
             db.replace(mv)
-        files = ["/etc/systemd/system/aide-check.service", "/etc/systemd/system/aide-check.timer"]
-        copyRepoFiles(SETUPDIR, files, True)
+        copyConfigs()
         run("systemctl enable aide-check.timer")
         run("systemctl start aide-check.timer")
         run("systemctl daemon-reload")

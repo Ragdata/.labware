@@ -40,6 +40,8 @@ logger: Logger = get_logger("setup", logging.DEBUG)
 #-------------------------------------------------------------------
 config.set("paths", "base", str(BASEDIR))
 
+CHECKED: bool
+
 # SETUPDIR = BASEDIR / config.get("src", "setup")
 # REPODOT  = BASEDIR / config.get("src", "dot")
 # REPOLIB  = BASEDIR / config.get("src", "lib")
@@ -52,9 +54,8 @@ config.set("paths", "base", str(BASEDIR))
 #-------------------------------------------------------------------
 def execute() -> None:
     try:
-        checkRoot()
-        checkPython()
-        checkUbuntu()
+        global CHECKED
+        CHECKED = checkRequired()
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------

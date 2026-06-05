@@ -44,7 +44,8 @@ dependencies = [
     "passlib>=1.7.4",            # Password hashing
     "bcrypt>=4.0.0",             # Bcrypt support for passlib
     "jinja2>=3.1.6",             # Templating engine for configuration files
-    "requests>=2.34.0"           # HTTP library for API interactions
+    "requests>=2.34.0",          # HTTP library for API interactions
+    "python-dotenv>=1.2.2"       # Load environment variables from .env files
 ]
 
 # Optional dependencies

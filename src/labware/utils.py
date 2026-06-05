@@ -18,15 +18,20 @@ sys.path.append(".")
 
 from labware.logger import *
 
-BASEDIR = Path(config.get("paths", "base"))
-
 #-------------------------------------------------------------------
 # MODULE VARIABLES
 #-------------------------------------------------------------------
-# BASEDIR = Path(config.get("paths", "base"))
+BASEDIR = Path(config.get("paths", "base"))
+CHECKED: bool
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
+def checkRequired() -> bool:
+    checkRoot()
+    checkPython()
+    checkUbuntu()
+    return True
+
 def checkPython() -> None:
     if sys.version_info < (3, 12):
         logger.error(f"Requires Python 3.14 or later", True, 1)

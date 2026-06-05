@@ -13,6 +13,8 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 __pkg_name__ = 'labware'
 __version__  = '0.1.2'
 
+CHECKED: bool = False
+
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
 #-------------------------------------------------------------------
@@ -26,4 +28,4 @@ def version(output: bool = True):
 		return f"{__version__}"
 	return None
 
-__all__ = ["__pkg_name__", "__version__", "version"]
+__all__ = ["__pkg_name__", "__version__", "version", "CHECKED"]
