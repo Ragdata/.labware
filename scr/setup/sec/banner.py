@@ -14,7 +14,7 @@ import sys
 
 sys.path.append("../mod")
 
-from labware.logger import *
+from labware.filesys import *
 from datetime import datetime
 
 #-------------------------------------------------------------------

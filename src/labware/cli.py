@@ -18,17 +18,16 @@ from pathlib import Path
 
 sys.path.append(".")
 
+from labware import __version__
 from labware.config import *
 
-BASEDIR = Path(config.get("paths", "base"))
+config: Config = Config()
 
-config: Config = Config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
+SETUPDIR = config.get("paths", "setup")
 
-sys.path.append(str(BASEDIR / config.get("src", "setup")))
+sys.path.append(SETUPDIR)
 
-from labware import __version__
-
-import scr.setup.setup as install
+import setup.setup as install
 
 app = typer.Typer(rich_markup_mode="rich", invoke_without_command=True, suggest_commands=True)
 

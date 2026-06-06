@@ -14,15 +14,15 @@ import sys
 
 sys.path.append(".")
 
-from labware.filesys import *
+import banner
 
-from scr.setup.sec import banner
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-BASEDIR  = Path(config.get("paths", "base"))
-SETUPDIR = BASEDIR / "scr/setup"
+CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
+SETUPDIR = Path(config.get("paths", "setup"))
 SERVERIP = getIP()
 #-------------------------------------------------------------------
 # PROCESS
@@ -32,6 +32,11 @@ def execute():
         clear()
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PSAD MODULE [/{yellow}]", style=yellow, align="left")
+        global CHECKED
+        if not CHECKED:
+            line()
+            CHECKED = checkRequired()
+            config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Install 'psad'
         # ----------------------------------------------------------

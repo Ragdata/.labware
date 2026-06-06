@@ -1,3 +1,4 @@
+# suppress inspection "DuplicateKeyInSection" for whole file
 ####################################################################
 # Ubuntu 24.04 Security Audit Rules
 ####################################################################
@@ -160,6 +161,10 @@
 # Monitor AppArmor
 -w /etc/apparmor.d/ -p wa -k apparmor
 -w /etc/apparmor/ -p wa -k apparmor
+-w /sbin/apparmor_parser -p x -k apparmor-tools
+-w /usr/sbin/aa-complain -p x -k apparmor-tools
+-w /usr/sbin/aa-disable -p x -k apparmor-tools
+-w /usr/sbin/aa-enforce -p x -k apparmor-tools
 
 # Monitor power management
 -w /sbin/shutdown -p x -k power

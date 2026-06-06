@@ -10,29 +10,24 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-from pprint import pprint
+import sys
 
-from labware.filesys import *
-
-BASEDIR = Path(__file__).parents[3].resolve() if not BASEDIR else BASEDIR
-
-sys.path.append(str(BASEDIR))
 sys.path.append(".")
 
-CONFIG_FILE = BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg"
+import banner
 
-config = get_config(CONFIG_FILE)
-
-from scr.setup.sec import banner
+from labware.filesys import *
 
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-SETUPDIR = BASEDIR / config.get("src", "setup")
-REPODOT  = BASEDIR / config.get("src", "dot")
-REPOLIB  = BASEDIR / config.get("src", "lib")
-REPOSCR  = BASEDIR / "scr"
-SERVSVC  = Path(config.get("paths", "opt")) / "svc"
+CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
+BASEDIR  = Path(config.get("paths", "base"))
+SETUPDIR = Path(config.get("paths", "setup"))
+DOTSDIR  = Path(config.get("paths", "sys")) / "dots"
+LIBDIR   = Path(config.get("paths", "sys")) / "lib"
+PKGDIR   = Path(config.get("paths", "scr")) / "pkg"
+SVCDIR   = Path(config.get("paths", "opt")) / "svc"
 # EXECUSR  = pwd.getpwuid(os.geteuid()).pw_name
 # REALUSR  = getpass.getuser()
 # SERVRIP  = getIP()
@@ -45,7 +40,11 @@ def execute():
         clear()
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
-        line()
+        global CHECKED
+        if not CHECKED:
+            line()
+            CHECKED = checkRequired()
+            config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # GATHER INFORMATION
         # ----------------------------------------------------------
@@ -64,9 +63,8 @@ def execute():
         # COPY FILES TO USER DIR
         # ----------------------------------------------------------
         for user in users:
-            USERDIR: Path = Path(f"/home/{user}") if user != "root" else Path("/root")
-            WARELIB: Path = USERDIR / ".labware" / "lib"
-            WARESCR: Path = USERDIR / ".labware" / "scr"
+            USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
+            WARELIB = USERDIR / ".labware" / "lib"
             clear()
             banner.execute()
             rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
@@ -77,7 +75,7 @@ def execute():
             # Library Files
             line()
             printHead("Installing Library Files ...")
-            copyFiles(REPOLIB, WARELIB, user=user)
+            copyFiles(LIBDIR, WARELIB, user=user)
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
@@ -86,33 +84,7 @@ def execute():
             # Install Dotfiles
             line()
             printHead("Installing Dotfiles ...")
-            copyFiles(REPODOT, USERDIR, user=user)
-            line()
-            if user == "root":
-                if not WARESCR.exists():
-                    WARESCR.mkdir(parents=True, exist_ok=True)
-                if not SERVSVC.exists():
-                    SERVSVC.mkdir(parents=True, exist_ok=True)
-                line()
-                printHead("Installing Labfiles ...")
-                copyFiles(REPOSCR / "lab", WARESCR / "lab", user=user)
-                line()
-                printHead("Installing Packages ...")
-                copyFiles(REPOSCR / "pkg", WARESCR / "pkg", user=user)
-                line()
-                printHead("Installing Services ...")
-                copyFiles(BASEDIR / "svc", SERVSVC, user=user)
-                line()
-                printHead("Setting Permissions ...")
-                for item in os.scandir(WARESCR / "lab"):
-                    if item.is_file():
-                        chmod(Path(item.path), mode=0o755)
-                for item in os.scandir(WARESCR / "pkg"):
-                    if item.is_file():
-                        chmod(Path(item.path), mode=0o755)
-                for item in os.scandir(WARESCR / "pkg" / "pve"):
-                    if item.is_file():
-                        chmod(Path(item.path), mode=0o755)
+            copyFiles(DOTSDIR, USERDIR, user=user)
             line()
             getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------

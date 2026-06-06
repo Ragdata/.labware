@@ -14,14 +14,9 @@ import sys, runpy
 
 from pathlib import Path
 
-BASEDIR = Path(__file__).parents[2]
-
-sys.path.append(str(BASEDIR))
 sys.path.append(".")
 
 from labware.config import *
-
-config: Config = get_config(config_file=BASEDIR / "scr" / "lab" / "cfg" / ".labware.cfg")
 
 from labware.filesys import *
 
@@ -29,22 +24,17 @@ import sec.users as users, sec.tools as tools, sec.remfiles as remfiles, sec.boo
 import sec.motd as motd, sec.mounts as mounts, sec.timesyncd as timesyncd, sec.cron as cron, sec.network as network, sec.firewalld as firewalld
 import sec.sshd as sshd, sec.sudo as sudo, sec.account as account, sec.auditd as auditd, sec.rsyslog as rsyslog, sec.journald as journald, sec.acct as acct
 import sec.password as password, sec.sysstat as sysstat, sec.psad as psad, sec.usbguard as usbguard, sec.rkhunter as rkhunter, sec.aide as aide, sec.suid as suid
-import sec.compilers as compilers, sec.banner as banner, sec.postfix as postfix
+import sec.compilers as compilers, sec.banner as banner, sec.postfix as postfix, sec.package as package
 
 #sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
 
+config: Config = get_config()
 logger: Logger = get_logger("setup", logging.DEBUG)
 
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-config.set("paths", "base", str(BASEDIR))
-
-CHECKED: bool
-
-# SETUPDIR = BASEDIR / config.get("src", "setup")
-# REPODOT  = BASEDIR / config.get("src", "dot")
-# REPOLIB  = BASEDIR / config.get("src", "lib")
+CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
 #-------------------------------------------------------------------
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
@@ -55,7 +45,9 @@ CHECKED: bool
 def execute() -> None:
     try:
         global CHECKED
-        CHECKED = checkRequired()
+        if not CHECKED:
+            CHECKED = checkRequired()
+            config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------
@@ -92,38 +84,9 @@ def execute() -> None:
         suid.execute()
         compilers.execute()
         # ----------------------------------------------------------
-        # INSTALL PRIMARY TOOLS
+        # INSTALL PACKAGES
         # ----------------------------------------------------------
-        clear()
-        banner.execute()
-        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
-        line()
-        printHead("Installing Primary Packages ...")
-        webmin = getData(f"[{cyan}]Install Webmin?[/{cyan}] (Y/n): ").lower()
-        if webmin != 'n':
-            path = Path(config.get("paths", "scripts")) / "webmin.py"
-            runpy.run_path(str(path))
-        else:
-            virtualmin = getData(f"[{cyan}]Install Virtualmin[/{cyan}] (Y/n): ").lower()
-            if virtualmin != 'n':
-                path = Path(config.get("paths", "scripts")) / "virtualmin.py"
-                runpy.run_path(str(path))
-        line()
-        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
-        clear()
-        banner.execute()
-        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
-        line()
-        docker = getData(f"[{cyan}]Install Docker[/{cyan}] (Y/n): ").lower()
-        if docker != 'n':
-            path = Path(config.get("paths", "scripts")) / "docker.py"
-            runpy.run_path(str(path))
-            lazydocker = getData(f"[{cyan}]Install LazyDocker[/{cyan}] (Y/n): ").lower()
-            if lazydocker != 'n':
-                path = Path(config.get("paths", "scripts")) / "lazydocker.py"
-                runpy.run_path(str(path))
-        line()
-        getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
+        package.execute()
         # ----------------------------------------------------------
         # CLEANUP
         # ----------------------------------------------------------

@@ -85,7 +85,7 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "date": "%%Y-%%m-%%d %%H:%%M:%%S",
     },
     "paths": {
-        "base": Path(__file__).parents[2]
+        "base": "/opt/labware"
     },
     # "log_formats": {
     #     "std": "{asctime} :: {levelname} :: {message}",

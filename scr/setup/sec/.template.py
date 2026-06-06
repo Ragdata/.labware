@@ -14,10 +14,14 @@ import sys
 
 sys.path.append(".")
 
+import banner
+
 from labware.filesys import *
 
-from scr.setup.sec import banner
-
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -26,6 +30,11 @@ def execute():
         clear()
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TEMPLATE MODULE [/{yellow}]", style=yellow, align="left")
+        global CHECKED
+        if not CHECKED:
+            line()
+            CHECKED = checkRequired()
+            config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         #
         # ----------------------------------------------------------

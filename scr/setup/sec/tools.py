@@ -10,14 +10,18 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, runpy
+import sys
 
 sys.path.append(".")
 
+import banner
+
 from labware.filesys import *
 
-from scr.setup.sec import banner
-
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -27,6 +31,11 @@ def execute():
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
         line()
+        global CHECKED
+        if not CHECKED:
+            line()
+            CHECKED = checkRequired()
+            config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # INSTALL BASIC TOOLS
         # ----------------------------------------------------------
