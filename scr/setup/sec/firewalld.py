@@ -32,14 +32,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - FIREWALLD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 4 - Install & Configure FirewallD
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 4 - Install & Configure FirewallD")
+        line()
         run("apt install -y firewalld")
         run("systemctl enable firewalld")
         run("systemctl start firewalld")

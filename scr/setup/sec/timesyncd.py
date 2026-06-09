@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TIMESYNCD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 2.4 - NTP
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 2.4 - NTP")
+        line()
         copyRepoFile(SETUPDIR, "/etc/systemd/timesync.conf", True)
         run("systemctl restart systemd-timesyncd")
         run("systemctl enable systemd-timesyncd")

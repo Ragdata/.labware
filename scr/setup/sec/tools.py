@@ -33,13 +33,15 @@ def execute():
         line()
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # INSTALL BASIC TOOLS
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
+        line()
         printHead("Installing Basic Tools ...")
+        line()
         basic = Path(config.get("paths", "setup")) / "cfg" / "apt-basic.cfg"
         if not basic.exists():
             raise FileNotFoundError(f"File not found: '{basic}'")

@@ -32,14 +32,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RSYSLOG MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 6.2 - Secure 'rsyslog'
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 6.2 - Secure 'rsyslog'")
+        line()
         pkgs = ["rsyslog"]
         installAPT(pkgs)
         run("systemctl --now enable rsyslog")

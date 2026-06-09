@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - NETWORK MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 3 - Network Stack Hardening
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 3 - Network Stack Hardening")
+        line()
         files = ["/etc/sysctl.d/60-ipv6.conf", "/etc/sysctl.d/60-net.conf", "/etc/modprobe.d/disable.conf", "/etc/systemd/logind.conf", "/etc/hosts.allow", "/etc/hosts.deny"]
         copyRepoFiles(SETUPDIR, files, True)
         run(f"sysctl -p /etc/sysctl.d/60-ipv6.conf")

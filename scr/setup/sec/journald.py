@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - JOURNALD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 6.3 - Log Rotation & JournalD
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 6.3 - Log Rotation & JournalD")
+        line()
         files = ["/etc/logrotate.conf", "/etc/logrotate.d/sudo", "/etc/systemd/journald.conf"]
         copyRepoFiles(SETUPDIR, files, True)
         run("systemctl restart systemd-journald")

@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - CRON MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 2.5 - Secure 'cron' and 'at'
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 2.5 - Secure 'cron' and 'at'")
+        line()
         files = ["/etc/cron.allow", "/etc/at.allow"]
         copyRepoFiles(SETUPDIR, files, True)
         run("chown root:root /etc/cron*")

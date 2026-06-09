@@ -42,13 +42,14 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # GATHER INFORMATION
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         users = []
+        line()
         while True:
             data = getData(f"[{cyan}]Enter list of sudo users to setup[/{cyan}] (space delimited): ")
             if data != "":

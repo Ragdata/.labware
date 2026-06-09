@@ -34,12 +34,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - POSTFIX MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # EXTRAS - Install Postfix
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
+        line()
+        printWhite("Install 'postfix'")
+        line()
         pkgs = ["postfix", "mailutils"]
         installAPT(pkgs)
         run("postconf -e disable_vrfy_command=yes")

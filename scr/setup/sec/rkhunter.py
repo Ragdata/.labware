@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RKHUNTER MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # EXTRAS - Install 'rkhunter'
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printWhite("Install 'rkhunter'")
+        line()
         pkgs = ["rkhunter"]
         installAPT(pkgs)
         copyRepoFile(SETUPDIR, "/etc/default/rkhunter", True)

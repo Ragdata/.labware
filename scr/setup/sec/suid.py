@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUID MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # EXTRAS - Remove SUID Bits
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printWhite("Remove SUID Bits")
+        line()
         filename = SETUPDIR / "cfg/suid-list.cfg"
         if not filename.exists():
             raise FileNotFoundError(f"{filename} not found")

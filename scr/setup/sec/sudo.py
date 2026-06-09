@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUDO MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 5.2 - Secure SUDO
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 5.2 - Secure SUDO")
+        line()
         copyRepoFile(SETUPDIR, "/etc/sudoers.d/01_base", True, mode=0o440)
         copyRepoFile(SETUPDIR, "/etc/pam.d/su", True)
         # if run(f"visudo -c -f {filedest}").returncode != 0:

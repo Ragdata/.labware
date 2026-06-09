@@ -32,14 +32,15 @@ def execute():
         rule(f"[{yellow}]── PACKAGES MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # INSTALL PACKAGES
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Installing Primary Packages ...")
+        line()
         webmin = getData(f"[{cyan}]Install Webmin?[/{cyan}] (Y/n): ").lower()
         if webmin != 'n':
             path = Path(config.get("paths", "pkg")) / "webmin.py"

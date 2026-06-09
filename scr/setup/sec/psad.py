@@ -34,14 +34,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PSAD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
-        # Install 'psad'
+        # EXTRAS - Port Scan Attack Detector ('psad')
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printWhite("Install 'psad'")
+        line()
         pkgs = ["psad"]
         installAPT(pkgs)
         filepath = "/etc/psad/auto_dl"

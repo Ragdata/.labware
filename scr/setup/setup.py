@@ -76,13 +76,13 @@ def execute() -> None:
         acct.execute()
         password.execute()
         sysstat.execute()
+        suid.execute()
+        compilers.execute()
         psad.execute()
         usbguard.execute()
         rkhunter.execute()
         postfix.execute()
         aide.execute()
-        suid.execute()
-        compilers.execute()
         # ----------------------------------------------------------
         # INSTALL PACKAGES
         # ----------------------------------------------------------

@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - COMPILERS MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # EXTRAS - Restrict Access to Compilers
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printWhite("Restrict Access to Compilers")
+        line()
         compilers = run("dpkg-query -L $(dpkg -l | grep compil | awk '{print $2}')", capture=True).stdout.strip()
         for comp in compilers:
             if comp.is_file() and os.access(comp, os.X_OK):

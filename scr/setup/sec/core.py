@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - COREDUMPS MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 1.4 - Coredumps
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 1.4 - Coredumps")
+        line()
         copyRepoFile(SETUPDIR, "/etc/security/limits.conf", True)
         run("echo 'fs.suid_dumpable = 0' > /etc/sysctl.d/60-coredump.conf")
         run("sysctl -p /etc/sysctl.d/60-coredump.conf")

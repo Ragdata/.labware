@@ -33,14 +33,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - MOTD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 1.6 - Legal Banners
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 1.6 - Legal Banners")
+        line()
         files = ["/etc/issue.net", "/etc/issue", "/etc/motd"]
         copyRepoFiles(SETUPDIR, files, True)
         run("chmod -x /etc/update-motd.d/*")

@@ -32,14 +32,15 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - REMFILES MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # Section 1.1 - Remove Unnecessary Filesystems
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("Section 1.1 - Remove Unnecessary Filesystems")
+        line()
         filesys = BASEDIR / "src/setup/cfg/apt-filesys.cfg"
         if not filesys.exists():
             raise FileNotFoundError(f"File not found: '{filesys}'")
