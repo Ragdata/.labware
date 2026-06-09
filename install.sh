@@ -102,3 +102,10 @@ echo -e "${YELLOW}Installing Labware Scripts ...${NC}"
 lw::copyTree "scr" "/opt/labware"
 lw::copyTree "svc" "/opt/labware/svc"
 lw::copyTree "sys" "/opt/labware/sys"
+lw::copyTree "usr/local/bin" "/usr/local/bin"
+
+echo
+echo -e "${YELLOW}Installing Bash Production Toolkit ...${NC}"
+git clone https://github.com/fidpa/bash-production-toolkit.git /tmp/bash-production-toolkit
+bash /tmp/bash-production-toolkit/install.sh --prefix /usr/local/lib/bash-production-toolkit
+rm -rf /tmp/bash-production-toolkit
