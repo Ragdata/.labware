@@ -1,0 +1,54 @@
+[Unit]
+Description=AIDE Failure Alert (Telegram Notification)
+Documentation=https://github.com/fidpa/ubuntu-server-security
+# This service triggers Telegram alerts when AIDE fails
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+Group=root
+
+# Script to execute
+ExecStart={{ SCRIPT_PATH }}/aide-failure-alert.sh
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+
+# Allow read access to AIDE state and logs
+ReadWritePaths=/var/lib/aide
+ReadWritePaths=/var/log/aide
+
+# Environment
+# Bash Production Toolkit path (default: /usr/local/lib/bash-production-toolkit)
+Environment="BASH_TOOLKIT_PATH={{ BASH_TOOLKIT_PATH }}"
+
+# Telegram configuration (Option 1: Simple ENV vars)
+Environment="TELEGRAM_BOT_TOKEN={{ BOT_TOKEN }}"
+Environment="TELEGRAM_CHAT_ID={{ BOT_ID }}"
+
+# Telegram configuration (Option 2: Vaultwarden integration)
+# Requires: Bitwarden CLI installed + BW_SESSION set
+# Environment="VAULTWARDEN_URL={{VAULTWARDEN_URL}}"
+# Environment="BW_SESSION={{BW_SESSION}}"
+
+# Alert customization
+Environment="TELEGRAM_PREFIX={{ TELEGRAM_PREFIX }}"
+Environment="STATE_DIR=/var/lib/aide"
+Environment="RATE_LIMIT_SECONDS={{ RATE_LIMIT_SECONDS }}"
+
+# Timeout settings (alert should be fast)
+TimeoutStartSec=60
+TimeoutStopSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aide-failure-alert
+
+# Never restart this oneshot service
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

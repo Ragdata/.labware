@@ -1,0 +1,45 @@
+[Unit]
+Description=AIDE Database Update
+Documentation=https://github.com/fidpa/ubuntu-server-security
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+
+# Script to execute
+ExecStart={{ SCRIPT_PATH }}/update-aide-db.sh --post-upgrade
+
+# Export metrics after update
+ExecStartPost={{ METRICS_SCRIPT }}/aide-metrics-exporter.sh
+
+# Timeouts (adjust for your database size)
+# Small databases (<1GB): 30-60 minutes
+# Medium databases (1-10GB): 60-120 minutes
+# Large databases (>10GB): 120-240 minutes
+TimeoutStartSec={{ TIMEOUT }}min
+TimeoutStopSec=60min
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aide-update
+
+# Security hardening
+PrivateTmp=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+
+# Explicit write permissions
+ReadWritePaths=/var/lib/aide
+ReadWritePaths=/var/log/aide
+ReadWritePaths=/var/backups/aide
+ReadWritePaths=/var/lib/node_exporter/textfile_collector
+
+# Environment
+Environment="LOG_DIR={{ LOG_DIR }}"
+Environment="AIDE_TIMEOUT={{ TIMEOUT_SECONDS }}"
+
+[Install]
+WantedBy=multi-user.target
