@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import shutil, grp, sys
+import requests, shutil, grp, sys
 
 sys.path.append(".")
 
@@ -174,6 +174,21 @@ def copyRepoFiles(repo: Path, data: list[str], bkp: bool = False, bkpdir: Path =
     except Exception as e:
         logger.error(f"Failed to copy files: {e}", True)
         raise
+
+def downloadFile(url: str, dest: Path | str) -> bool:
+    try:
+        if not isinstance(dest, Path):
+            dest = Path(dest)
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True, mode=0o755)
+        response = requests.get(url)
+        response.raise_for_status()
+        with open(str(dest), 'wb') as f:
+            f.write(response.content)
+        return True
+    except Exception as e:
+        logger.error(f"Failed to download file: {e}", True, 1)
+        return False
 
 def findFileString(filepath: Path, string: str) -> bool:
     try:

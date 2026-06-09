@@ -32,15 +32,14 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TEMPLATE MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
-            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         #
         # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
         line()
         printHead("")
-
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
     except Exception as e:

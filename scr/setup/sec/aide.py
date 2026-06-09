@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
+import sys, requests
 
 sys.path.append(".")
 
@@ -23,12 +23,17 @@ from labware.filesys import *
 #-------------------------------------------------------------------
 CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
 SETUPDIR = Path(config.get("paths", "setup"))
+dropins: list = [
+    "/etc/aide/aide.conf.d/15-monitoring-rules.conf",
+    "/etc/aide/aide.conf.d/16-backup-rules.conf",
+    "/etc/aide/aide.conf.d/40-systemd-rules.conf",
+    "/etc/aide/aide.conf.d/50-network-rules.conf"
+]
 #-------------------------------------------------------------------
 # FUNCTIONS
 #-------------------------------------------------------------------
 def configMetrics() -> bool:
-    line()
-    printHead("Metrics Configuration")
+    printDot("Metrics Configuration")
     line()
     metrics = getData(f"[{cyan}]Enable Prometheus metrics export?[/{cyan}] (Y/n): ")
     if metrics.lower() != 'n':
@@ -38,8 +43,7 @@ def configMetrics() -> bool:
 def configWorkers() -> int:
     cores = run("nproc").stdout.strip()
     workers = int(cores) // 2
-    line()
-    printHead("Worker Configuration")
+    printDot("Worker Configuration")
     line()
     printMessage(f"CPU Cores detected: {cores}")
     printMessage(f"Recommended workers: {workers}")
@@ -50,21 +54,45 @@ def configWorkers() -> int:
     return workers
 
 def configTelegram() -> dict[str, str] | None:
+    printDot("Telegram Bot Configuration")
     line()
-    printHead("Telegram Bot Configuration")
     bot_id = getData(f"[{cyan}]Enter Telegram Bot ID[/{cyan}] (ENTER to skip): ")
     if bot_id:
         bot_token = getData(f"[{cyan}]Enter Telegram Bot Token[/{cyan}]: ")
         return {"BOT_ID": bot_id, "BOT_TOKEN": bot_token}
     return None
 
-def getDropIns() -> list:
-    dropins = [
-        "/etc/aide/aide.conf.d/15-monitoring-rules.conf",
-        "/etc/aide/aide.conf.d/16-backup-rules.conf",
-        "/etc/aide/aide.conf.d/40-systemd-rules.conf",
-        "/etc/aide/aide.conf.d/50-network-rules.conf"
-    ]
+def deployMetrics() -> None:
+    if run("systemctl status node_exporter > /dev/null 2>&1").returncode != 0:
+        logger.warning("Node Exporter is not installed. Skipping metrics deployment.", True)
+        return
+    printDot("Installing 'node_exporter'")
+    line()
+    url = "https://github.com/prometheus/node_exporter/releases/latest"
+    response = requests.get(url).json()
+    _version = response["tag_name"].replace("v", "")
+    node_exporter_url = f"https://github.com/prometheus/node_exporter/releases/download/{response['tag_name']}/node_exporter-{_version}.linux-amd64.tar.gz"
+    downloadFile(node_exporter_url, "/tmp/node_exporter.tar.gz")
+    run("tar -xzf /tmp/node_exporter.tar.gz -C /tmp")
+    run("mv /tmp/node_exporter-* /opt/node_exporter")
+    run("rm -rf /tmp/node_exporter.tar.gz /tmp/node_exporter-*")
+    run("ln -s /opt/node_exporter/node_exporter /usr/local/bin/node_exporter")
+    line()
+    printDot("Enabling 'node_exporter' service")
+    line()
+    run("systemctl daemon-reload")
+    run("systemctl enable node_exporter")
+    run("systemctl start node_exporter")
+    line()
+    printDot("Setting up AIDE metrics exporter")
+    collect = Path("/var/lib/node_exporter/textfile_collector")
+    if not collect.exists():
+        collect.mkdir(mode=0o755, parents=True, exist_ok=True)
+    run("/usr/local/bin/aide-metrics-exporter.sh")
+
+def getDropIns() -> None:
+    global dropins
+    printDot("Detecting installed applications")
     if run("command -v docker >/dev/null 2>&1").returncode == 0:
         line()
         printWarning("Docker detected")
@@ -83,12 +111,13 @@ def getDropIns() -> list:
         dropNextcloud = getData(f"[{cyan}]Enable Nextcloud drop-ins?[/{cyan}] (Y/n): ")
         if dropNextcloud.lower() != 'n':
             dropins.append("/etc/aide/aide.conf.d/30-nextcloud-rules.conf")
-    return dropins
 
 def install():
     """
     Install AIDE (Advanced Intrusion Detection Environment) on the system.
     """
+    printDot("Installing AIDE")
+    line()
     pkgs = ["aide", "aide-common"]
     installAPT(pkgs)
 
@@ -111,69 +140,81 @@ def execute():
         line()
         printHead("Install Advanced Intrusion Detection Environment ('aide')")
         line()
-        ENABLE_METRICS = configMetrics()
+        getDropIns()
+        if configMetrics():
+            deployMetrics()
+        # ── Install AIDE ──────────────────────────────────────────
         install()
-        copyRepoFiles(SETUPDIR, getDropIns())
-        # ── Simple Config Files ───────────────────────────────────
-        files = ["/etc/systemd/system/aide-check.service", "/etc/systemd/system/aide-check.timer",
-                 "/etc/systemd/system/aide-update.timer", "/etc/default/aide"]
-        copyRepoFiles(SETUPDIR, files, True)
+        copyRepoFiles(SETUPDIR, dropins)
         # ── /etc/aide/aide.conf ───────────────────────────────────
-        tmpl = SETUPDIR / "etc" / "aide" / "aide.conf"
+        tmpl = SETUPDIR / "etc/aide/aide.conf"
         dest = Path("/etc/aide/aide.conf")
         data = {"NUM_WORKERS": configWorkers()}
         if not writeTemplate(tmpl, dest, data):
             logger.error(f"Could not write template to {dest}", True, 1)
-        # ── /etc/systemd/system/aide-update.service ───────────────
-        tmpl = SETUPDIR / "etc" / "systemd" / "system" / "aide-update.service"
-        dest = Path("/etc/systemd/system/aide-update.service")
-        data = {
-            "SCRIPT_PATH": "/usr/local/bin",
-            "METRICS_SCRIPT": "/usr/local/bin",
-            "TIMEOUT": "90",
-            "LOG_DIR": "/var/log/aide",
-            "TIMEOUT_SECONDS": "5400"
-        }
-        if not writeTemplate(tmpl, dest, data):
-            logger.error(f"Could not write template to {dest}", True, 1)
         # ── /etc/aide/telegram.conf ───────────────────────────────
-        data = configTelegram()
-        if data is not None:
-            tmpl = SETUPDIR / "etc" / "aide" / "telegram.conf"
+        tele = configTelegram()
+        if tele is not None:
+            tmpl = SETUPDIR / "etc/aide/telegram.conf"
             dest = Path("/etc/aide/telegram.conf")
-            if not writeTemplate(tmpl, dest, data):
+            if not writeTemplate(tmpl, dest, tele):
                 logger.error(f"Could not write template to {dest}", True, 1)
             # ── /etc/systemd/system/aide-alert.service ────────────
-            tmpl = SETUPDIR / "etc" / "systemd" / "system" / "aide-alert.service"
+            tmpl = SETUPDIR / "etc/systemd/system/aide-alert.service"
             dest = Path("/etc/systemd/system/aide-alert.service")
             data = {
                 "BASH_TOOLKIT_PATH": "/usr/local/lib/bash-production-toolkit",
-                "BOT_ID": data["BOT_ID"],
-                "BOT_TOKEN": data["BOT_TOKEN"],
+                "BOT_ID": tele["BOT_ID"],
+                "BOT_TOKEN": tele["BOT_TOKEN"],
                 "RATE_LIMIT_SECONDS": "10",
                 "SCRIPT_PATH": "/usr/local/bin",
                 "TELEGRAM_PREFIX": "[AIDE ALERT] "
             }
             if not writeTemplate(tmpl, dest, data):
                 logger.error(f"Could not write template to {dest}", True, 1)
-        # copyRepoFile(SETUPDIR, "/etc/aide/aide.conf", True)
-
-
-
-
-        # run("aideinit --yes")
-        # db = Path("/var/lib/aide/aide.db.new")
-        # if db.exists():
-        #     mv = Path("/var/lib/aide/aide.db")
-        #     db.replace(mv)
-        # copyConfigs()
-        # run("systemctl enable aide-check.timer")
-        # run("systemctl start aide-check.timer")
-        # run("systemctl daemon-reload")
+        # ── Systemd Config Files ──────────────────────────────────
+        files = ["/etc/systemd/system/aide-check.service", "/etc/systemd/system/aide-check.timer",
+                 "/etc/systemd/system/aide-update.timer", "/etc/default/aide"]
+        copyRepoFiles(SETUPDIR, files, True)
+        # ── /etc/systemd/system/aide-update.service ───────────────
+        tmpl = SETUPDIR / "etc/systemd/system/aide-update.service"
+        dest = Path("/etc/systemd/system/aide-update.service")
+        data = {
+            "SCRIPT_PATH": "/usr/local/bin",
+            "METRICS_SCRIPT": "/usr/local/bin",
+            "TIMEOUT": "240",
+            "LOG_DIR": "/var/log/aide",
+            "TIMEOUT_SECONDS": "5400"
+        }
+        if not writeTemplate(tmpl, dest, data):
+            logger.error(f"Could not write template to {dest}", True, 1)
+        # ── Enable and Start Services ─────────────────────────────
+        run("systemctl daemon-reload")
+        run("systemctl enable aide-check.timer")
+        run("systemctl enable aide-update.timer")
+        run("systemctl start aide-check.timer")
+        run("systemctl start aide-update.timer")
+        if tele is not None:
+            run("systemctl enable aide-alert.service")
+            run("systemctl start aide-alert.service")
+        # ── Initial AIDE Database Creation ────────────────────────
+        if run("aideinit").returncode != 0:
+            logger.error(f"Failed to initialise AIDE database", True, 1)
+        new = Path("/var/lib/aide/aide.db.new")
+        if not new.exists():
+            logger.error(f"Failed to create AIDE database", True, 1)
+        new.rename("/var/lib/aide/aide.db")
+        # ── Set non-root permissions ──────────────────────────────
+        run("groupadd --system _aide 2>/dev/null || true")
+        files = {"/var/lib/aide/aide.db": ["0o640", "root", "_aide"], "/var/lib/aide": ["0o750", "root", "_aide"]}
+        perms(files)
+        # ----------------------------------------------------------
+        # REPORT
+        # ----------------------------------------------------------
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
-        logger.error(f"Failed to install 'aide': {e}", True)
+        logger.error(f"Failed to install 'aide': {e}", True, 1)
         raise
 
 # ===========================================================================

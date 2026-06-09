@@ -30,6 +30,9 @@ SyslogIdentifier=aide-update
 PrivateTmp=yes
 NoNewPrivileges=yes
 ProtectSystem=strict
+# PrivateNetwork=yes
+# PrivateDevices=yes
+# ProtectHome=yes
 
 # Explicit write permissions
 ReadWritePaths=/var/lib/aide

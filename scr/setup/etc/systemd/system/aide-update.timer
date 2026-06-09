@@ -4,7 +4,8 @@ Documentation=https://github.com/fidpa/ubuntu-server-security
 
 [Timer]
 # Run daily at 04:00
-OnCalendar=*-*-* 04:00
+OnCalendar=daily
+RandomizedDelaySec=1800
 
 # Run immediately if missed (e.g., system was off)
 Persistent=true
