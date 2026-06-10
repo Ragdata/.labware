@@ -3,7 +3,7 @@
 # and /etc/cron.daily/sysstat files
 #
 
-# Should sadc collect system activity informations? Valid values
+# Should sadc collect system activity information? Valid values
 # are "true" and "false". Please do not put other values, they
 # will be overwritten by debconf!
 ENABLED="true"

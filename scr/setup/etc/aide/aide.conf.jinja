@@ -1,3 +1,7 @@
+# shellcheck disable=SC1035
+# shellcheck disable=SC2287
+# shellcheck disable=SC2100
+# shellcheck disable=SC2034
 # AIDE Configuration Template
 # Copyright (c) 2025-2026 Marc Allgeier (fidpa)
 # SPDX-License-Identifier: MIT
@@ -22,7 +26,6 @@ gzip_dbout=yes
 
 # Report URL (where AIDE sends its reports)
 report_url=stdout
-;suppress inspection "DuplicateKeyInSection"
 report_url=file:/var/log/aide/aide.log
 
 # Performance tuning: Multi-threading support (AIDE v0.18+)
@@ -110,40 +113,40 @@ num_workers={{ NUM_WORKERS }}
 # Best Practice 2025: Use modern hash algorithms (SHA256 + SHA512)
 # Old algorithms (MD5, SHA1) are deprecated due to collision attacks
 Checksums=sha256+sha512
-# OwnerMode = Only ownership and permissions
-# OwnerMode = p+u+g+acl+selinux
-OwnerMode = p+u+g+ftype
-# Size = Check size and block count
-Size = s+b
-# InodeData = Check inode, number of links, and file type
-InodeData = OwnerMode+n+i+Size+l+X
-# StaticFile = Integrity of static files (e.g. system binaries, config files)
-StaticFile = m+c+Checksums
-# Full = Complete integrity checking for immutable files
-# Full = OwnerMode+n+l+X+acl+selinux+xattrs+sha256+sha512
-Full = ftype+p+l+u+g+s+m+c+a+i+b+n+H+X
+# OwnerMode=Only ownership and permissions
+# OwnerMode=p+u+g+acl+selinux
+OwnerMode=p+u+g+ftype
+# Size=Check size and block count
+Size=s+b
+# InodeData=Check inode, number of links, and file type
+InodeData=OwnerMode+n+i+Size+l+X
+# StaticFile=Integrity of static files (e.g. system binaries, config files)
+StaticFile=m+c+Checksums
+# Full=Complete integrity checking for immutable files
+# Full=OwnerMode+n+l+X+acl+selinux+xattrs+sha256+sha512
+Full=ftype+p+l+u+g+s+m+c+a+i+b+n+H+X
 # Files that change mtime or ctime but not contents
-# VarTime = Full-m
-VarTime = InodeData+Checksums
-# VarInode = Like Full, but ignores inode number (for files that can be recreated)
-VarInode = VarTime-i
-# VarFile = Only metadata, ignores content changes (for files with dynamic content)
-VarFile = OwnerMode+n+l+X
-# VarDir = For directories where content changes but structure should be monitored
-VarDir = OwnerMode+n+i+X
-# RecreatedDir = For directories that are often recreated and change contents (e.g. /tmp)
-RecreatedDir = OwnerMode+n+X
-# LANANA = Linux Assigned Names And Numbers Authority (device files)
-LANANA = p+u+g+acl+selinux
+# VarTime=Full-m
+VarTime=InodeData+Checksums
+# VarInode=Like Full, but ignores inode number (for files that can be recreated)
+VarInode=VarTime-i
+# VarFile=Only metadata, ignores content changes (for files with dynamic content)
+VarFile=OwnerMode+n+l+X
+# VarDir=For directories where content changes but structure should be monitored
+VarDir=OwnerMode+n+i+X
+# RecreatedDir=For directories that are often recreated and change contents (e.g. /tmp)
+RecreatedDir=OwnerMode+n+X
+# LANANA=Linux Assigned Names And Numbers Authority (device files)
+LANANA=p+u+g+acl+selinux
 #
 # DEFAULT LOG HANDLING
 #
 # AIDE v0.18+ Log Groups (Best Practice 2025)
-ActLog = Full+growing+ANF+I         # Active logs (allowed to grow)
-RotLog = Full                       # Rotated logs (size can change)
-CompSerLog = Full+I+compressed      # Compressed logs (gzip)
-MidlSerLog = Full+I                 # Mid-level logs (e.g. rotated but not compressed)
-LastSerLog = Full+ARF+I             # Last logs (removed after rotation)
+ActLog=Full+growing+ANF+I         # Active logs (allowed to grow)
+RotLog=Full                       # Rotated logs (size can change)
+CompSerLog=Full+I+compressed      # Compressed logs (gzip)
+MidlSerLog=Full+I                 # Mid-level logs (e.g. rotated but not compressed)
+LastSerLog=Full+ARF+I             # Last logs (removed after rotation)
 
 # ============================================
 # AIDE Rules (What to monitor)

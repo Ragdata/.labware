@@ -1,3 +1,4 @@
+# shellcheck disable=SC1073
 # System-wide .bashrc file for interactive bash(1) shells.
 
 # To enable the settings / commands in this file for login shells as well,
@@ -45,10 +46,10 @@ if [ ! -e "$HOME/.sudo_as_admin_successful" ] && [ ! -e "$HOME/.hushlogin" ] ; t
     case " $(groups) " in *\ admin\ *|*\ sudo\ *)
     if [ -x /usr/bin/sudo ]; then
         cat <<-EOF
-        To run a command as administrator (user "root"), use "sudo <command>".
-        See "man sudo_root" for details.
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
 
-        EOF
+EOF
     fi
     esac
 fi
