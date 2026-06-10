@@ -112,7 +112,7 @@ def getDropIns() -> None:
         if dropNextcloud.lower() != 'n':
             dropins.append("/etc/aide/aide.conf.d/30-nextcloud-rules.conf")
 
-def install():
+def install() -> None:
     """
     Install AIDE (Advanced Intrusion Detection Environment) on the system.
     """
@@ -120,6 +120,13 @@ def install():
     line()
     pkgs = ["aide", "aide-common"]
     installAPT(pkgs)
+
+def verify() -> None:
+    """
+    Verify that AIDE is installed and configured correctly.
+    """
+    # logger.success("AIDE configuration is valid") if run("aide --config-check").returncode == 0 else logger.error("AIDE configuration is invalid", True, 1)
+
 
 #-------------------------------------------------------------------
 # PROCESS
@@ -140,12 +147,12 @@ def execute():
         line()
         printHead("Install Advanced Intrusion Detection Environment ('aide')")
         line()
-        getDropIns()
-        if configMetrics():
-            deployMetrics()
         # ── Install AIDE ──────────────────────────────────────────
         install()
         copyRepoFiles(SETUPDIR, dropins)
+        getDropIns()
+        if configMetrics():
+            deployMetrics()
         # ── /etc/aide/aide.conf ───────────────────────────────────
         tmpl = SETUPDIR / "etc/aide/aide.conf"
         dest = Path("/etc/aide/aide.conf")
@@ -160,7 +167,7 @@ def execute():
             if not writeTemplate(tmpl, dest, tele):
                 logger.error(f"Could not write template to {dest}", True, 1)
             # ── /etc/systemd/system/aide-alert.service ────────────
-            tmpl = SETUPDIR / "etc/systemd/system/aide-alert.service"
+            tmpl = SETUPDIR / "etc/systemd/system/aide-alert.service.jinja"
             dest = Path("/etc/systemd/system/aide-alert.service")
             data = {
                 "BASH_TOOLKIT_PATH": "/usr/local/lib/bash-production-toolkit",
@@ -177,7 +184,7 @@ def execute():
                  "/etc/systemd/system/aide-update.timer", "/etc/default/aide"]
         copyRepoFiles(SETUPDIR, files, True)
         # ── /etc/systemd/system/aide-update.service ───────────────
-        tmpl = SETUPDIR / "etc/systemd/system/aide-update.service"
+        tmpl = SETUPDIR / "etc/systemd/system/aide-update.service.jinja"
         dest = Path("/etc/systemd/system/aide-update.service")
         data = {
             "SCRIPT_PATH": "/usr/local/bin",
@@ -211,12 +218,36 @@ def execute():
         # ----------------------------------------------------------
         # REPORT
         # ----------------------------------------------------------
+        version = run("aide --version").stdout.strip()
+        entry_count = run("aide --check 2>&1 | grep \"^Total number of entries:\" | awk '{print $5}'").stdout.strip()
+        db_size = run("du -sh /var/lib/aide/aide.db | awk '{print $1}'").stdout.strip()
+        line()
+        printYellow("─────────────────────────────────────────────────────────────────────────────")
+        printYellow("AIDE DEPLOYMENT COMPLETE")
+        printYellow("─────────────────────────────────────────────────────────────────────────────")
+        line()
+        printDot(f"Version: {version}")
+        printDot(f"Database Enttries: {entry_count}")
+        printDot(f"Database Size: {db_size}")
+        printSuccess("Main config syntax verified") if run("aide --config=/etc/aide/aide.conf").returncode == 0 else logger.error("Main config syntax invalid", True)
+        printDot("Update Script Test:")
+        run("/usr/local/bin/update-aide-db.sh --check")
+        printDot("Verify CHECK timer:")
+        run("systemctl status aide-check.timer")
+        run("systemctl list-timers aide-check.timer")
+        printDot("Verify UPDATE timer:")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"Failed to install 'aide': {e}", True, 1)
         raise
 
+def report():
+    try:
+        pass
+    except Exception as e:
+        logger.error(f"Failed to report 'aide': {e}", True, 1)
+        raise
 # ===========================================================================
 # ENTRY POINT
 # ===========================================================================

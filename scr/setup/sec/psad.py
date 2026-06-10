@@ -45,9 +45,8 @@ def execute():
         line()
         pkgs = ["psad"]
         installAPT(pkgs)
-        filepath = "/etc/psad/auto_dl"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
+        template = SETUPDIR / "/etc/psad/auto_dl.jinja"
+        filedest = Path("/etc/psad/auto_dl")
         data = {"server_ip": SERVERIP}
         if not writeTemplate(template, filedest, data):
             logger.error(f"Could not write template to {filedest}", True, 1)

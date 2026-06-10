@@ -123,7 +123,7 @@ def execute():
             printDot("GNUPG CONFIG")
             gpgcfg = getData(f"[{cyan}]Default Key ID for {user}[/{cyan}] (ENTER to bypass): ")
             if gpgcfg:
-                tmpl = SETUPDIR / "cfg/gnupg/gpg.conf"
+                tmpl = SETUPDIR / "cfg/gnupg/gpg.conf.jinja"
                 dest = USERDIR / ".gnupg/gpg.conf"
                 data = {"signing_key": gpgcfg}
                 if not writeTemplate(tmpl, dest, data, user=user):
@@ -139,7 +139,7 @@ def execute():
             if git_user:
                 git_email = getData(f"[{cyan}]Enter git email for {user}[/{cyan}]: ")
                 git_key = getData(f"[{cyan}]Enter signing key for {user}[/{cyan}]: ")
-                tmpl = SETUPDIR / "cfg/git/.gitconfig"
+                tmpl = SETUPDIR / "cfg/git/.gitconfig.jinja"
                 dest = USERDIR / ".gitconfig"
                 data = {"user_name": git_user, "user_email": git_email, "signing_key": git_key}
                 if not writeTemplate(tmpl, dest, data, user=user):
