@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
+import sys, io
 
 from pathlib import Path
 
@@ -39,7 +39,10 @@ _theme = Theme({
     "dot": config.get("styles", "dot"),
 })
 
+string_io = io.StringIO()
+
 console = Console(theme=_theme)
+capture = Console(theme=_theme, file=string_io, force_terminal=True)
 
 red = config.get("colors", "red")
 green = config.get("colors", "green")
@@ -111,31 +114,45 @@ def pager(renderable: RenderableType, **kwargs) -> None:
     with console.pager(**kwargs):
         console.print(renderable)
 
-def printHeader(style: Optional[str] = None, banner: Optional[Path] = None, **kwargs) -> None:
+def printHeader(**kwargs) -> str | None:
     """
 	Print the dotfiles banner and copyright information.
 	"""
     msg = ""
-    if banner and banner.exists():
-        with open(banner, 'r') as f:
-            for lne in f:
-                msg += lne
+    if kwargs.get("banner"):
+        banner = kwargs["banner"]
+        kwargs.pop("banner")
+        if not isinstance(banner, Path):
+            banner = Path(banner)
+        if banner.is_file():
+            with open(banner, 'r') as f:
+                for lne in f:
+                    msg += lne
     if msg:
-        console.print(msg, style=style, highlight=False, **kwargs)
+        if kwargs.get("save"):
+            kwargs.pop("save")
+            capture.print(msg, **kwargs)
+            return string_io.getvalue()
+        else:
+            console.print(msg, **kwargs)
 
-def printMessage(msg: str, style: Optional[str] = None, **kwargs) -> None:
+    return None
+
+def printMessage(msg: str, **kwargs) -> str | None:
     """
 	Print a message with an optional style.
 
 	Args:
 		msg (str): 	    The message to print.
-		style (str):    The style to apply to the message. (Optional)
 		**kwargs: 	    Arbitrary keyword arguments. (Optional)
 	"""
-    if style:
-        console.print(msg, style=style, highlight=False, **kwargs)
+    if kwargs.get("save"):
+        kwargs.pop("save")
+        capture.print(msg, **kwargs)
+        return string_io.getvalue()
     else:
-        console.print(msg, highlight=False, **kwargs)
+        console.print(msg, **kwargs)
+        return None
 
 def printInfo(msg: str, **kwargs) -> None:
     """
@@ -344,17 +361,29 @@ def printWhite(msg: str, **kwargs) -> None:
     else:
         printMessage(msg, style=white, **kwargs)
 
-def line(count=1) -> None:
+def line(count=1, save: bool = False) -> str | None:
     """
     Add a newline in the console.
 
     Args:
     	count (int): The number of newlines to add (default: 1).
+    	save (bool): If True, save the output to a string buffer.
     """
-    console.line(count)
+    if save:
+        capture.line(count)
+        return string_io.getvalue()
+    else:
+        console.line(count)
+        return None
 
-def rule(*args, **kwargs) -> None:
+def rule(*args, **kwargs) -> str | None:
     """
 	Draw a line with an optional title
 	"""
-    console.rule(*args, **kwargs)
+    if kwargs.get("save"):
+        kwargs.pop("save")
+        capture.rule(*args, **kwargs)
+        return string_io.getvalue()
+    else:
+        console.rule(*args, **kwargs)
+        return None

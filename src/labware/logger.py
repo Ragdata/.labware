@@ -353,7 +353,7 @@ class Logger(logging.Logger):
             self._log(level, msg, args, **kwargs)
 
     @staticmethod
-    def outlog(msg: str, style: Optional[str] = None) -> None:
+    def outlog(msg: str, style: Optional[str] = None, save: bool = False) -> str | None:
         """
         Print a message to the console with an optional style.
 
@@ -363,19 +363,27 @@ class Logger(logging.Logger):
         Args:
         	msg (str):      The message to log and print.
         	style (str):    The style to apply to the message. (Optional)
+        	save (bool):    Save the message to the log file (Optional)
         """
         if HAS_OUTPUT and cfg is not None:
             try:
                 if style is not None:
                     symbol = cfg.get("symbols", style)
                     msg = f"{symbol} {msg}"
-                printMessage(msg, style=style)
+                if save:
+                    return printMessage(msg, style=style, save=True)
+                else:
+                    printMessage(msg, style=style)
             except Exception:
                 # Fallback if config access fails
                 print(msg)
         else:
             # No Rich output available, use standard print
-            print(msg)
+            if save:
+                return msg
+            else:
+                print(msg)
+                return None
 
 #-------------------------------------------------------------------
 # MODULE FUNCTIONS
