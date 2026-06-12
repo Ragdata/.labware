@@ -19,10 +19,10 @@ if __name__ == "__main__":
     try:
         cmd = "curl -fsSL https://get.docker.com | sh"
         # cmd = "curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh"
-        logger.success("Docker installed successfully", True) if run(cmd).returncode == 0 else logger.error("Docker not installed", True, 1)
+        logger.success("Docker installed successfully", True) if run(cmd).returncode == 0 else logger.error("Docker not installed", True, False, 1)
         # Start and enable Docker service
         run("systemctl enable docker")
-        printDot("Successfully started Docker") if run("systemctl start docker").returncode == 0 else logger.error("Docker not started", True, 1)
+        printDot("Successfully started Docker") if run("systemctl start docker").returncode == 0 else logger.error("Docker not started", True, False, 1)
         printWhite("Hardening Docker Security")
         copyFiles(Path("../setup/etc/docker/daemon.json"), Path("/etc/docker/daemon.json"))
         copyFiles(Path("../setup/etc/security/limits.d/docker.conf"), Path("/etc/security/limits.d/docker.conf"))

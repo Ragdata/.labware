@@ -187,7 +187,7 @@ def downloadFile(url: str, dest: Path | str) -> bool:
             f.write(response.content)
         return True
     except Exception as e:
-        logger.error(f"Failed to download file: {e}", True, 1)
+        logger.error(f"Failed to download file: {e}", True, False, 1)
         return False
 
 def findFileString(filepath: Path, string: str) -> bool:

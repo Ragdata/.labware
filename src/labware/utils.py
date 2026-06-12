@@ -33,20 +33,20 @@ def checkRequired() -> bool:
 
 def checkPython() -> None:
     if sys.version_info < (3, 12):
-        logger.error(f"Requires Python 3.14 or later", True, 1)
+        logger.error(f"Requires Python 3.14 or later", True, False, 1)
     else:
         printSuccess("Python 3.14 or later confirmed")
 
 def checkRoot() -> None:
     if os.geteuid() != 0:
-        logger.error(f"Root privileges required", True, 1)
+        logger.error(f"Root privileges required", True, False, 1)
     else:
         printSuccess("Root privileges confirmed")
 
 def checkUbuntu() -> None:
     version = run("lsb_release -rs", capture=True).stdout.strip()
     if version != "24.04":
-        logger.error(f"Expected Ubuntu 24.04, found '{version}'", True, 1)
+        logger.error(f"Expected Ubuntu 24.04, found '{version}'", True, False, 1)
     else:
         printSuccess("Ubuntu 24.04 confirmed")
 
@@ -153,7 +153,7 @@ def runScript(script, *args) -> dict:
     try:
         result = subprocess.run([sys.executable, script, *args], capture_output=True, text=True)
     except subprocess.CalledProcessError:
-        logger.error(f"Script failed: {script}", True, 1)
+        logger.error(f"Script failed: {script}", True, False, 1)
         raise
 
     return {

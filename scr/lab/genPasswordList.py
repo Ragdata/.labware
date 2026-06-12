@@ -76,7 +76,7 @@ if __name__ == "__main__":
         logger.default(f"Merging Files ...")
 
         if not mergeFiles(files, str(LAB_SHARE / "passwords.txt")):
-            logger.error(f"Failed to merge password files", True, 1)
+            logger.error(f"Failed to merge password files", True, False, 1)
 
         logger.success(f"Password list generated at {str(LAB_SHARE / 'passwords.txt')}", True)
 

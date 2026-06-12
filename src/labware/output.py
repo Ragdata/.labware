@@ -154,7 +154,7 @@ def printMessage(msg: str, **kwargs) -> str | None:
         console.print(msg, **kwargs)
         return None
 
-def printInfo(msg: str, **kwargs) -> None:
+def printInfo(msg: str, **kwargs) -> str | None:
     """
     Print an INFO message.
 
@@ -163,9 +163,13 @@ def printInfo(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "info")
-    printMessage(f"{symbol} " + msg, style="info", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="info", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="info", **kwargs)
+        return None
 
-def printSuccess(msg: str, **kwargs) -> None:
+def printSuccess(msg: str, **kwargs) -> str | None:
     """
     Print a SUCCESS message.
 
@@ -174,9 +178,13 @@ def printSuccess(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "success")
-    printMessage(f"{symbol} " + msg, style="success", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="success", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="success", **kwargs)
+        return None
 
-def printWarning(msg: str, **kwargs) -> None:
+def printWarning(msg: str, **kwargs) -> str | None:
     """
     Print a WARNING message.
 
@@ -185,9 +193,13 @@ def printWarning(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "warning")
-    printMessage(f"{symbol} " + msg, style="warning", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="warning", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="warning", **kwargs)
+        return None
 
-def printError(msg: str, **kwargs) -> None:
+def printError(msg: str, **kwargs) -> str | None:
     """
     Print an ERROR message.
 
@@ -196,9 +208,13 @@ def printError(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "error")
-    printMessage(f"{symbol} " + msg, style="error", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="error", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="error", **kwargs)
+        return None
 
-def printTip(msg: str, **kwargs) -> None:
+def printTip(msg: str, **kwargs) -> str | None:
     """
     Print a TIP message.
 
@@ -207,9 +223,13 @@ def printTip(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "tip")
-    printMessage(f"{symbol} " + msg, style="tip", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="tip", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="tip", **kwargs)
+        return None
 
-def printImportant(msg: str, **kwargs) -> None:
+def printImportant(msg: str, **kwargs) -> str | None:
     """
     Print an IMPORTANT message.
 
@@ -218,9 +238,13 @@ def printImportant(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "important")
-    printMessage(f"{symbol} " + msg, style="important", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="important", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="important", **kwargs)
+        return None
 
-def printDebug(msg: str, **kwargs) -> None:
+def printDebug(msg: str, **kwargs) -> str | None:
     """
     Print a DEBUG message.
 
@@ -229,9 +253,13 @@ def printDebug(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "debug")
-    printMessage(f"{symbol} " + msg, style="debug", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="debug", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="debug", **kwargs)
+        return None
 
-def printHead(msg: str, **kwargs) -> None:
+def printHead(msg: str, **kwargs) -> str | None:
     """
     Print a HEAD message.
 
@@ -240,9 +268,13 @@ def printHead(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "head")
-    printMessage(f"{symbol} " + msg, style="head", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="head", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="head", **kwargs)
+        return None
 
-def printDot(msg: str, **kwargs) -> None:
+def printDot(msg: str, **kwargs) -> str | None:
     """
     Print a DOT message.
 
@@ -251,9 +283,13 @@ def printDot(msg: str, **kwargs) -> None:
     	**kwargs: 	Arbitrary keyword arguments.
     """
     symbol = config.get("symbols", "dot")
-    printMessage(f"{symbol} " + msg, style="dot", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(f"{symbol} " + msg, style="dot", **kwargs)
+    else:
+        printMessage(f"{symbol} " + msg, style="dot", **kwargs)
+        return None
 
-def printDefault(msg: str, **kwargs) -> None:
+def printDefault(msg: str, **kwargs) -> str | None:
     """
     Print a message in DEFAULT colour
 
@@ -261,9 +297,13 @@ def printDefault(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    printMessage(msg, style="default", **kwargs)
+    if kwargs.get("save"):
+        return printMessage(msg, style="default", **kwargs)
+    else:
+        printMessage(msg, style="default", **kwargs)
+        return None
 
-def printRed(msg: str, **kwargs) -> None:
+def printRed(msg: str, **kwargs) -> str | None:
     """
     Print a message in RED
 
@@ -271,13 +311,22 @@ def printRed(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_red, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_red, **kwargs)
+        else:
+            return printMessage(msg, style=red, **kwargs)
     else:
-        printMessage(msg, style=red, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_red, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=red, **kwargs)
+            return None
 
-def printGreen(msg: str, **kwargs) -> None:
+def printGreen(msg: str, **kwargs) -> str | None:
     """
     Print a message in GREEN
 
@@ -285,13 +334,22 @@ def printGreen(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_green, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_green, **kwargs)
+        else:
+            return printMessage(msg, style=green, **kwargs)
     else:
-        printMessage(msg, style=green, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_green, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=green, **kwargs)
+            return None
 
-def printBlue(msg: str, **kwargs) -> None:
+def printBlue(msg: str, **kwargs) -> str | None:
     """
     Print a message in BLUE
 
@@ -299,13 +357,22 @@ def printBlue(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_blue, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_blue, **kwargs)
+        else:
+            return printMessage(msg, style=blue, **kwargs)
     else:
-        printMessage(msg, style=blue, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_blue, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=blue, **kwargs)
+            return None
 
-def printYellow(msg: str, **kwargs) -> None:
+def printYellow(msg: str, **kwargs) -> str | None:
     """
     Print a message in YELLOW
 
@@ -313,13 +380,22 @@ def printYellow(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_yellow, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_yellow, **kwargs)
+        else:
+            return printMessage(msg, style=yellow, **kwargs)
     else:
-        printMessage(msg, style=yellow, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_yellow, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=yellow, **kwargs)
+            return None
 
-def printPurple(msg: str, **kwargs) -> None:
+def printPurple(msg: str, **kwargs) -> str | None:
     """
     Print a message in PURPLE
 
@@ -327,13 +403,22 @@ def printPurple(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_magenta, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_magenta, **kwargs)
+        else:
+            return printMessage(msg, style=magenta, **kwargs)
     else:
-        printMessage(msg, style=magenta, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_magenta, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=magenta, **kwargs)
+            return None
 
-def printCyan(msg: str, **kwargs) -> None:
+def printCyan(msg: str, **kwargs) -> str | None:
     """
     Print a message in CYAN
 
@@ -341,13 +426,22 @@ def printCyan(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_cyan, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_cyan, **kwargs)
+        else:
+            return printMessage(msg, style=cyan, **kwargs)
     else:
-        printMessage(msg, style=cyan, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_cyan, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=cyan, **kwargs)
+            return None
 
-def printWhite(msg: str, **kwargs) -> None:
+def printWhite(msg: str, **kwargs) -> str | None:
     """
     Print a message in WHITE
 
@@ -355,11 +449,20 @@ def printWhite(msg: str, **kwargs) -> None:
     	msg (str): 	The message to print.
     	**kwargs: 	Arbitrary keyword arguments.
     """
-    if kwargs.get("lt"):
-        kwargs.pop("lt")
-        printMessage(msg, style=bright_white, **kwargs)
+    if kwargs.get("save"):
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            return printMessage(msg, style=bright_white, **kwargs)
+        else:
+            return printMessage(msg, style=white, **kwargs)
     else:
-        printMessage(msg, style=white, **kwargs)
+        if kwargs.get("lt"):
+            kwargs.pop("lt")
+            printMessage(msg, style=bright_white, **kwargs)
+            return None
+        else:
+            printMessage(msg, style=white, **kwargs)
+            return None
 
 def line(count=1, save: bool = False) -> str | None:
     """

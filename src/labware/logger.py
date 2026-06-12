@@ -138,27 +138,27 @@ class Logger(logging.Logger):
     Multiple instances can be created with different names for different modules.
     """
 
-    def __init__(self, name: str, level: Optional[int] = None, **kwargs) -> None:
+    def __init__(self, name: str, level: Optional[int] = None) -> None:
         """
         Initialise the logger with a name and level
 
         Args:
             name (str):         Name of the logger
             level (int):        Logging level (defaults to config value or logging.INFO)
-            **kwargs:           Additional keyword arguments for logging config
         """
         if level is None:
             level = _get_config()["level"]
         super().__init__(name, str(level))
         self.setLevel(str(level))
 
-    def critical(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def critical(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a CRITICAL message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -166,16 +166,20 @@ class Logger(logging.Logger):
         self.log(logging.CRITICAL, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "error")
+            if save:
+                return self.outlog(msg, "error", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def debug(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def debug(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a DEBUG message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -183,16 +187,20 @@ class Logger(logging.Logger):
         self.log(logging.DEBUG, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "debug")
+            if save:
+                return self.outlog(msg, "debug", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def default(self, msg: str, out: bool = True, xit: int = 0, *args, **kwargs) -> None:
+    def default(self, msg: str, out: bool = True, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a DEFAULT message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -200,16 +208,20 @@ class Logger(logging.Logger):
         self.log(logging.INFO, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "default")
+        if save:
+            return self.outlog(msg, "default", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def error(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def error(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log an ERROR message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -217,16 +229,20 @@ class Logger(logging.Logger):
         self.log(logging.ERROR, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "error")
+        if save:
+            return self.outlog(msg, "error", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def exception(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def exception(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log an ERROR message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -234,16 +250,20 @@ class Logger(logging.Logger):
         self.log(logging.ERROR, msg, *args, exc_info=True, **kwargs)
         if out:
             self.outlog(msg, "error")
+            if save:
+                return self.outlog(msg, "error", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def fatal(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def fatal(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a FATAL message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -251,16 +271,20 @@ class Logger(logging.Logger):
         self.log(logging.FATAL, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "error")
+            if save:
+                return self.outlog(msg, "error", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def important(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def important(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log an IMPORTANT message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -268,16 +292,20 @@ class Logger(logging.Logger):
         self.log(logging.INFO, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "important")
+        if save:
+            return self.outlog(msg, "important", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def info(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def info(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log an INFO message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -285,16 +313,20 @@ class Logger(logging.Logger):
         self.log(logging.INFO, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "info")
+            if save:
+                return self.outlog(msg, "info", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def success(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def success(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a SUCCESS message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -302,16 +334,20 @@ class Logger(logging.Logger):
         self.log(logging.INFO, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "success")
+            if save:
+                return self.outlog(msg, "success", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def tip(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def tip(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a TIP message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -319,16 +355,20 @@ class Logger(logging.Logger):
         self.log(logging.INFO, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "tip")
+            if save:
+                return self.outlog(msg, "tip", save=True)
         if xit:
             exit(xit)
+        return None
 
-    def warning(self, msg:str, out: bool = False, xit: int = 0, *args, **kwargs) -> None:
+    def warning(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
         Log a WARNING message
 
         Args:
             msg (str):      The message to log
             out (bool):     Print the message to console (Defaults to False)
+            save (bool):    Save the message to a file buffer (Defaults to False)
             xit (int):      Exit the program with this code after logging (Defaults to 0)
             *args:          Variable length argument list
             **kwargs:       Arbitrary keyword arguments
@@ -336,8 +376,11 @@ class Logger(logging.Logger):
         self.log(logging.WARNING, msg, *args, **kwargs)
         if out:
             self.outlog(msg, "warning")
+            if save:
+                return self.outlog(msg, "warning", save=True)
         if xit:
             exit(xit)
+        return None
 
     def log(self, level: int, msg: str, *args, **kwargs) -> None:
         """
@@ -418,14 +461,13 @@ def initRotatingFileHandler(name: str, path: Optional[Path] = None, maxSize: Opt
     logFile = path / f"{name}.log"
     return RotatingFileHandler(logFile, maxBytes=int(str(maxSize)), backupCount=int(str(backups)), encoding='utf-8', delay=False)
 
-def initStreamHandler(stream: Optional[TextIO | Any] = None, level: Optional[int] = None, style: str = "console") -> logging.StreamHandler:
+def initStreamHandler(stream: Optional[TextIO | Any] = None, level: Optional[int] = None) -> logging.StreamHandler:
     """
     Initialise and return a StreamHandler for console output.
 
     Args:
     	stream (TextIO | Any):  The stream (default is sys.stdout).
     	level (int):            Logging level (default from config).
-    	style (str):            Log format style name (default "console").
 
     Returns:
     	logging.StreamHandler: Configured stream handler instance.
@@ -503,7 +545,7 @@ def get_logger(name: str, level: Optional[int] = None, fmt: str = "std", add_str
         - labware package modules
         - External scripts and packages
 
-    The logger will automatically fall back to defaults if the config
+    The logger will automatically fall back to default if the config
     module is not available, making it suitable for use in any context.
 
     Args:
@@ -514,7 +556,7 @@ def get_logger(name: str, level: Optional[int] = None, fmt: str = "std", add_str
     	add_stream (bool):       Also add console output via stream handler (default False)
 
     Returns:
-    	Logger: Configured logger instance. Same instance returned for same name.
+    	Logger: Configured logger instance. The same instance returned for the same name.
 
     Raises:
     	Exception: Only if logger creation catastrophically fails (very rare).
