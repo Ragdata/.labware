@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, requests
+import sys
 
 sys.path.append(".")
 
@@ -217,10 +217,12 @@ def execute():
         # ── Set immutable flags ───────────────────────────────────
         run("chattr +i /usr/bin/aide")
         run("chattr +i /etc/aide/aide.conf")
-
         # ----------------------------------------------------------
         # REPORT
         # ----------------------------------------------------------
+        now = datetime.now()
+        tmpl = SETUPDIR / "sec/reports/aide.jinja"
+        dest = Path.home() / f".labware/reports/aide.{now.strftime('%Y%m%d%H%M%S')}.md"
         title1 = printYellow("─────────────────────────────────────────────────────────────────────────────", save=True)
         title2 = printYellow("AIDE DEPLOYMENT COMPLETE", save=True)
         title3 = printYellow("─────────────────────────────────────────────────────────────────────────────", save=True)
@@ -243,24 +245,8 @@ def execute():
             "update_timer_status": run("systemctl status aide-update.timer").stdout.strip(),
             "update_timer_list": run("systemctl list-timers aide-update.timer").stdout.strip(),
         }
-        # version = run("aide --version").stdout.strip()
-        # entry_count = run("aide --check 2>&1 | grep \"^Total number of entries:\" | awk '{print $5}'").stdout.strip()
-        # db_size = run("du -sh /var/lib/aide/aide.db | awk '{print $1}'").stdout.strip()
-        # line()
-        # printYellow("─────────────────────────────────────────────────────────────────────────────")
-        # printYellow("AIDE DEPLOYMENT COMPLETE")
-        # printYellow("─────────────────────────────────────────────────────────────────────────────")
-        # line()
-        # printDot(f"Version: {version}")
-        # printDot(f"Database Enttries: {entry_count}")
-        # printDot(f"Database Size: {db_size}")
-        # printSuccess("Main config syntax verified") if run("aide --config=/etc/aide/aide.conf").returncode == 0 else logger.error("Main config syntax invalid", True)
-        # printDot("Update Script Test:")
-        # run("/usr/local/bin/update-aide-db.sh --check")
-        # printDot("Verify CHECK timer:")
-        # run("systemctl status aide-check.timer")
-        # run("systemctl list-timers aide-check.timer")
-        # printDot("Verify UPDATE timer:")
+        if not writeTemplate(tmpl, dest, data):
+            logger.error(f"Could not write template to {dest}", True, False, 1)
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
