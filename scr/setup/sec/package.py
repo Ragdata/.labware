@@ -45,14 +45,14 @@ def execute():
         if webmin != 'n':
             path = Path(config.get("paths", "pkg")) / "webmin.py"
             if not path.exists():
-                logger.error(f"Webmin package script not found at: {path}", True, 1)
+                logger.error(f"Webmin package script not found at: {path}", True, False, 1)
             runpy.run_path(str(path))
         else:
             virtualmin = getData(f"[{cyan}]Install Virtualmin[/{cyan}] (Y/n): ").lower()
             if virtualmin != 'n':
                 path = Path(config.get("paths", "pkg")) / "virtualmin.py"
                 if not path.exists():
-                    logger.error(f"Virtualmin package script not found at: {path}", True, 1)
+                    logger.error(f"Virtualmin package script not found at: {path}", True, False, 1)
                 runpy.run_path(str(path))
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
@@ -61,13 +61,13 @@ def execute():
         if docker != 'n':
             path = Path(config.get("paths", "pkg")) / "docker.py"
             if not path.exists():
-                logger.error(f"Docker package script not found at: {path}", True, 1)
+                logger.error(f"Docker package script not found at: {path}", True, False, 1)
             runpy.run_path(str(path))
             lazydocker = getData(f"[{cyan}]Install LazyDocker[/{cyan}] (Y/n): ").lower()
             if lazydocker != 'n':
                 path = Path(config.get("paths", "pkg")) / "lazydocker.py"
                 if not path.exists():
-                    logger.error(f"LazyDocker package script not found at: {path}", True, 1)
+                    logger.error(f"LazyDocker package script not found at: {path}", True, False, 1)
                 runpy.run_path(str(path))
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")

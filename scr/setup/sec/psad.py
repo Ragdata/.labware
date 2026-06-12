@@ -49,7 +49,7 @@ def execute():
         filedest = Path("/etc/psad/auto_dl")
         data = {"server_ip": SERVERIP}
         if not writeTemplate(template, filedest, data):
-            logger.error(f"Could not write template to {filedest}", True, 1)
+            logger.error(f"Could not write template to {filedest}", True, False, 1)
         while True:
             email_address = getData(f"[{cyan}]Enter admin email address[/{cyan}] (required): ")
             if email_address:
@@ -59,7 +59,7 @@ def execute():
         filedest = Path(filepath)
         data = {"email_address": email_address}
         if not writeTemplate(template, filedest, data):
-            logger.error(f"Could not write template to {filedest}", True, 1)
+            logger.error(f"Could not write template to {filedest}", True, False, 1)
         run("iptables -A INPUT -j LOG")
         run("iptables -A FORWARD -j LOG")
         run("netfilter-persistent save")

@@ -158,7 +158,7 @@ def execute():
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
-        logger.error(f"Failed executing script 'users': {e}", True, 1)
+        logger.error(f"Failed executing script 'users': {e}", True, False, 1)
         raise
 
 # ===========================================================================
