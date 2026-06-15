@@ -81,7 +81,7 @@ def execute() -> None:
         psad.execute()
         usbguard.execute()
         rkhunter.execute()
-        postfix.execute()
+        # postfix.execute()
         aide.execute()
         # ----------------------------------------------------------
         # INSTALL PACKAGES

@@ -104,6 +104,8 @@ lw::copyTree "svc" "/opt/labware/svc"
 lw::copyTree "sys" "/opt/labware/sys"
 lw::copyTree "usr/local/bin" "/usr/local/bin"
 
+chmod 0755 /opt/labware/*
+
 echo
 echo -e "${YELLOW}Installing Bash Production Toolkit ...${NC}"
 git clone https://github.com/fidpa/bash-production-toolkit.git /tmp/bash-production-toolkit
