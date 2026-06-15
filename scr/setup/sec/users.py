@@ -78,8 +78,6 @@ def execute():
             line()
             printHead("Installing Library Files ...")
             copyFiles(LIBDIR, WARELIB, user=user)
-            run(f"chown -R {user}:{user} {WARELIB}/*")
-            run(f"chmod 0755 {WARELIB}/*")
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
@@ -89,7 +87,6 @@ def execute():
             line()
             printHead("Installing Dotfiles ...")
             copyFiles(DOTSDIR, USERDIR, user=user)
-            run(f"chown -R {user}:{user} {USERDIR}/*")
             line()
             getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
