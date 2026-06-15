@@ -9,7 +9,7 @@
 # ESSENTIAL ALIASES
 ####################################################################
 
-alias ll='LC_ALL=C ls -avlF --color --group-directories-first'
+alias ll='export LC_ALL=C; ls -avlF --color --group-directories-first'
 alias la='ls -A'
 alias l='ls -CF'
 # python aliases
