@@ -117,10 +117,11 @@ def execute():
                 line()
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
                 writeFile(file, gpgkey, mode=0o600, user=user)
+                line()
                 if user == "root":
-                    printSuccess(f"Imported gpg key from {file}") if not run(f"gpg --import {file}") else printWarning(f"Could not import gpg key from {file}")
+                    printSuccess(f"\nImported gpg key from {file}") if not run(f"gpg --import {file}") else printWarning(f"\nCould not import gpg key from {file}")
                 else:
-                    printSuccess(f"Imported gpg key from {file}") if not run(f"runuser -u {user} -- gpg --import {file}") else printWarning(f"Could not import gpg key from {file}")
+                    printSuccess(f"\nImported gpg key from {file}") if not run(f"runuser -u {user} -- gpg --import {file}") else printWarning(f"\nCould not import gpg key from {file}")
             # GNUPG CONFIG
             line()
             printDot("GNUPG CONFIG")
@@ -133,6 +134,7 @@ def execute():
                 data = {"signing_key": gpgcfg}
                 if not writeTemplate(tmpl, dest, data, user=user):
                     printWarning(f"Could not write GNUPG2 config for user '{user}'")
+                line()
                 file = SETUPDIR / "cfg/gnupg/gpg-agent.conf"
                 dest = USERDIR / ".gnupg/gpg-agent.conf"
                 if not copyFiles(file, dest, user=user):
