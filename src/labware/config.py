@@ -264,6 +264,7 @@ def get_config(config_file: Optional[str | Path] = None) -> Config:
                 home / '.labware.cfg',
                 home / '.labware' / '.labware.cfg',
                 Path('/opt/labware/.labware.cfg'),
+                Path('/opt/labware/lab/cfg/.labware.cfg'),
                 Path('/usr/share/labware/.labware.cfg'),
             ]
 
