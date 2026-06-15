@@ -73,11 +73,12 @@ def execute():
             line()
             printWhite(f"COPYING FILES FOR USER '{user}'")
             if not WARELIB.exists():
-                WARELIB.mkdir(parents=True, exist_ok=True)
+                WARELIB.mkdir(mode=0o755, parents=True, exist_ok=True)
             # Library Files
             line()
             printHead("Installing Library Files ...")
             copyFiles(LIBDIR, WARELIB, user=user)
+            run(f"chown -R {user}:{user} {WARELIB}/*")
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
@@ -87,6 +88,7 @@ def execute():
             line()
             printHead("Installing Dotfiles ...")
             copyFiles(DOTSDIR, USERDIR, user=user)
+            run(f"chown -R {user}:{user} {USERDIR}/*")
             line()
             getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
