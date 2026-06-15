@@ -110,7 +110,7 @@ def execute():
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
-            printMessage("[{cyan}]Paste SECRET key[/{cyan}] (Ctrl+D to end/bypass):")
+            printMessage(f"[{cyan}]Paste SECRET key[/{cyan}] (Ctrl+D to end/bypass):")
             gpgkey = sys.stdin.read()
             if gpgkey:
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
