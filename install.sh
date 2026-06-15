@@ -69,8 +69,8 @@ fi
 clear
 
 echo -e "${YELLOW}Adding Repositories${NC}"
-add-apt-repository -y ppa:deadsnakes/ppa
-add-apt-repository -y ppa:git-core/ppa
+add-apt-repository -y ppa:deadsnakes/ppa > /dev/null
+add-apt-repository -y ppa:git-core/ppa > /dev/null
 
 echo
 echo -e "${YELLOW}Updating System ...${NC}"
