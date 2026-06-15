@@ -43,6 +43,7 @@ def execute():
         global CHECKED
         if not CHECKED:
             CHECKED = checkRequired()
+            line()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # GATHER INFORMATION
