@@ -1,0 +1,6 @@
+[Unit]
+Description=APT Weekly Update
+
+[Service]
+Type=oneshot
+ExecStart=/opt/labware/lab/apt-update

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+apt update && apt -y -d full-upgrade
+exit 0

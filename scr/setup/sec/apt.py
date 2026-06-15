@@ -42,8 +42,20 @@ def execute():
         line()
         printHead("Section 1.5 - Unattended Upgrades + APT Config")
         line()
-        files = ["/etc/apt/apt.conf.d/50unattended-upgrades", "/etc/apt/apt.conf.d/98-hardening", "/etc/apt/apt.conf.d/99-noexec-tmp"]
+        files = [
+            "/etc/apt/apt.conf.d/50unattended-upgrades",
+            "/etc/apt/apt.conf.d/98-hardening",
+            "/etc/apt/apt.conf.d/99-noexec-tmp",
+            "/etc/systemd/system/apt-update.service",
+            "/etc/systemd/system/apt-update.timer"
+        ]
         copyRepoFiles(SETUPDIR, files, True)
+        line()
+        run("systemctl daemon-reload")
+        run("systemctl enable apt-update.service")
+        run("systemctl enable apt-update.timer")
+        run("systemctl start apt-update.service")
+        run("systemctl start apt-update.timer")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:

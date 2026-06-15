@@ -48,9 +48,9 @@ def execute():
         run("chmod og-rwx /etc/cron*")
         run("chown root:root /etc/at*")
         run("chmod og-rwx /etc/at*")
+        run("systemctl daemon-reload")
         run("systemctl mask atd.service")
         run("systemctl stop atd.service")
-        run("systemctl daemon-reload")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
