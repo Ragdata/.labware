@@ -15,4 +15,7 @@
 ####################################################################
 # PYTHON ALIASES
 ####################################################################
-alias dotenv='source "$HOME"/.venv/dotenv/bin/activate'
+# alias dotenv='source "$HOME"/.venv/dotenv/bin/activate'
+alias python='python3.14'
+alias pym='python3.14 -m'
+
