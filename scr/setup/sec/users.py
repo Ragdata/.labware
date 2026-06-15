@@ -114,6 +114,7 @@ def execute():
             printMessage(f"[{cyan}]Paste SECRET key[/{cyan}] (Ctrl+D to end/bypass):")
             gpgkey = sys.stdin.read()
             if gpgkey:
+                line()
                 file = Path(f"{USERDIR}/.ssh/{user}_SECRET.asc")
                 writeFile(file, gpgkey, mode=0o600, user=user)
                 if user == "root":
@@ -126,6 +127,7 @@ def execute():
             line()
             gpgcfg = getData(f"[{cyan}]Default Key ID for {user}[/{cyan}] (ENTER to bypass): ")
             if gpgcfg:
+                line()
                 tmpl = SETUPDIR / "cfg/gnupg/gpg.conf.jinja"
                 dest = USERDIR / ".gnupg/gpg.conf"
                 data = {"signing_key": gpgcfg}
@@ -141,6 +143,7 @@ def execute():
             line()
             git_user = getData(f"[{cyan}]Enter git username for {user}[/{cyan}] (ENTER to bypass): ")
             if git_user:
+                line()
                 git_email = getData(f"[{cyan}]Enter git email for {user}[/{cyan}]: ")
                 git_key = getData(f"[{cyan}]Enter signing key for {user}[/{cyan}]: ")
                 tmpl = SETUPDIR / "cfg/git/.gitconfig.jinja"
