@@ -87,15 +87,9 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
     "paths": {
         "base": "/opt/labware"
     },
-    # "log_formats": {
-    #     "std": "{asctime} :: {levelname} :: {message}",
-    #     "short": "{levelname} :: {message}",
-    #     "long": "{asctime} :: {levelname} :: {message} in {filename}\n{pathname} [ {funcName} line {lineno} ]",
-    #     "console": "{message}",
-    #     # Use double-percent to escape literal percent signs for ConfigParser interpolation,
-    #     # so values like '%Y-%m-%d %H:%M:%S' are stored safely while keeping interpolation enabled.
-    #     "date": "%%Y-%%m-%%d %%H:%%M:%%S",
-    # }
+    "setup": {
+        "chceked": "False"
+    }
 }
 
 # ------------------------------------------------------------------
