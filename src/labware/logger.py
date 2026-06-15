@@ -149,7 +149,7 @@ class Logger(logging.Logger):
         if level is None:
             level = _get_config()["level"]
         super().__init__(name, level)
-        self.setLevel(str(level))
+        self.setLevel(level)
 
     def critical(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
         """
@@ -478,7 +478,7 @@ def initStreamHandler(stream: Optional[TextIO | Any] = None, level: Optional[int
         level = _get_config()["level"]
 
     handler = logging.StreamHandler(stream)
-    handler.setLevel(str(level))
+    handler.setLevel(level)
     return handler
 
 def getFileLogger(name: str, level: Optional[int] = None, fmt: str = "std", add_stream: bool = False) -> Logger:
