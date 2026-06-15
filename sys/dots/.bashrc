@@ -113,5 +113,8 @@ include()
 	done
 }
 
+export BASH_PRODUCTION_TOOLKIT="/usr/local/lib/bash-production-toolkit"
+source "${BASH_PRODUCTION_TOOLKIT}/init.sh"
+
 [ -d "$HOME/.bashrc.d" ] && include "$HOME/.bashrc.d"
 # EOF ##############################################################
