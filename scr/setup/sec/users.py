@@ -79,6 +79,7 @@ def execute():
             printHead("Installing Library Files ...")
             copyFiles(LIBDIR, WARELIB, user=user)
             run(f"chown -R {user}:{user} {WARELIB}/*")
+            run(f"chmod 0755 {WARELIB}/*")
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
