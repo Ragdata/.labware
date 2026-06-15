@@ -120,7 +120,7 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
                     elif item.is_dir():
                         if shutil.copytree(item, dest, dirs_exist_ok=True):
                             chown(dest, user, group)
-                            chmod(dest, mode)
+                            chmod(dest, 0o755)
                             printSuccess(f"Copied Tree '{item.name}'")
                             logger.debug(f"Copied Tree '{item.name}'")
                         else:
