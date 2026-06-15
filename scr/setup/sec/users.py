@@ -149,7 +149,7 @@ def execute():
             if git_user:
                 line()
                 git_email = getData(f"[{cyan}]Enter git email for {user}[/{cyan}]: ")
-                Line()
+                line()
                 git_key = getData(f"[{cyan}]Enter signing key for {user}[/{cyan}]: ")
                 tmpl = SETUPDIR / "cfg/git/.gitconfig.jinja"
                 dest = USERDIR / ".gitconfig"
