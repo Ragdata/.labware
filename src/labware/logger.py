@@ -67,7 +67,7 @@ except ImportError:
     cfg = None
 
 # Initialise logging configuration with a lazy-load approach
-_log_config = None
+_log_config: dict | None = None
 
 def _get_config():
     """
@@ -148,7 +148,7 @@ class Logger(logging.Logger):
         """
         if level is None:
             level = _get_config()["level"]
-        super().__init__(name, str(level))
+        super().__init__(name, level)
         self.setLevel(str(level))
 
     def critical(self, msg:str, out: bool = False, save: bool = False, xit: int = 0, *args, **kwargs) -> str | None:
