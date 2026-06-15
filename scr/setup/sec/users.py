@@ -110,6 +110,7 @@ def execute():
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
+            line()
             printMessage(f"[{cyan}]Paste SECRET key[/{cyan}] (Ctrl+D to end/bypass):")
             gpgkey = sys.stdin.read()
             if gpgkey:
@@ -122,6 +123,7 @@ def execute():
             # GNUPG CONFIG
             line()
             printDot("GNUPG CONFIG")
+            line()
             gpgcfg = getData(f"[{cyan}]Default Key ID for {user}[/{cyan}] (ENTER to bypass): ")
             if gpgcfg:
                 tmpl = SETUPDIR / "cfg/gnupg/gpg.conf.jinja"
@@ -136,6 +138,7 @@ def execute():
             # GITCONFIG
             line()
             printDot("GIT CONFIG")
+            line()
             git_user = getData(f"[{cyan}]Enter git username for {user}[/{cyan}] (ENTER to bypass): ")
             if git_user:
                 git_email = getData(f"[{cyan}]Enter git email for {user}[/{cyan}]: ")
