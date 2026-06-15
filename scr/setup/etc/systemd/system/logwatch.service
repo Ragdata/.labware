@@ -1,0 +1,6 @@
+[Unit]
+Description=Logwatch Daily Report
+
+[Service]
+Type=oneshot
+ExecStart=/opt/labware/lab/logwatch

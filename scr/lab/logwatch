@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+/usr/sbin/logwatch --detail Low --range today
+exit 0
