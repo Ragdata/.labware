@@ -108,7 +108,7 @@ def execute():
                 if nopasswd == "y":
                     line()
                     data = f"{user} ALL=(ALL) NOPASSWD: ALL"
-                    writeFile(Path(f"/etc/sudoers.d/{user}"), data, user=user)
+                    writeFile(Path(f"/etc/sudoers.d/{user}"), data)
             # ADD PGP KEY
             line()
             printDot("ADD PGP KEY")
@@ -121,9 +121,9 @@ def execute():
                 writeFile(file, gpgkey, mode=0o600, user=user)
                 line()
                 if user == "root":
-                    printSuccess(f"\nImported gpg key from {file}") if not run(f"gpg --import {file}") else printWarning(f"\nCould not import gpg key from {file}")
+                    printSuccess(f"\nImported gpg key from {file}") if run(f"gpg --import {file}").returncode == 0 else printWarning(f"\nCould not import gpg key from {file}")
                 else:
-                    printSuccess(f"\nImported gpg key from {file}") if not run(f"runuser -u {user} -- gpg --import {file}") else printWarning(f"\nCould not import gpg key from {file}")
+                    printSuccess(f"\nImported gpg key from {file}") if run(f"runuser -u {user} -- gpg --import {file}").returncode == 0 else printWarning(f"\nCould not import gpg key from {file}")
             # GNUPG CONFIG
             line()
             printDot("GNUPG CONFIG")
