@@ -21,7 +21,7 @@ from labware.filesys import *
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
+CHECKED: bool = config.getbool("setup", "checked", fallback=False)
 BASEDIR  = Path(config.get("paths", "base"))
 SETUPDIR = Path(config.get("paths", "setup"))
 DOTSDIR  = Path(config.get("paths", "sys")) / "dots"

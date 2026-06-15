@@ -22,7 +22,7 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 SETUPDIR = Path(config.get("paths", "setup"))
-CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
+CHECKED: bool = config.getbool("setup", "checked", fallback=False)
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------

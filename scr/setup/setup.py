@@ -34,7 +34,7 @@ logger: Logger = get_logger("setup", logging.DEBUG)
 #-------------------------------------------------------------------
 # VARIABLES
 #-------------------------------------------------------------------
-CHECKED: bool = config.getboolean("setup", "checked", fallback=False)
+CHECKED: bool = config.getbool("setup", "checked", fallback=False)
 #-------------------------------------------------------------------
 # LOCAL FUNCTIONS
 #-------------------------------------------------------------------
