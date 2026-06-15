@@ -69,8 +69,13 @@ fi
 clear
 
 echo -e "${YELLOW}Adding Repositories${NC}"
-add-apt-repository -y ppa:deadsnakes/ppa > /dev/null
-add-apt-repository -y ppa:git-core/ppa > /dev/null
+echo
+if add-apt-repository -y ppa:deadsnakes/ppa > /dev/null; then
+    echo -e "${GREEN}Deadsnakes PPA repository added${NC}"
+fi
+if add-apt-repository -y ppa:git-core/ppa > /dev/null; then
+    echo -e "${GREEN}Git-Core PPA repository added${NC}"
+fi
 
 echo
 echo -e "${YELLOW}Updating System ...${NC}"
