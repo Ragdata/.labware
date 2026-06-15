@@ -40,10 +40,10 @@ def execute():
         clear()
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
+        line()
         global CHECKED
         if not CHECKED:
             CHECKED = checkRequired()
-            line()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
         # GATHER INFORMATION
