@@ -121,9 +121,9 @@ def execute():
                 writeFile(file, gpgkey, mode=0o600, user=user)
                 line()
                 if user == "root":
-                    printSuccess(f"Imported gpg key from {file}") if not run(f"gpg --import {file} && echo") else printWarning(f"Could not import gpg key from {file}")
+                    printSuccess(f"\nImported gpg key from {file}") if not run(f"gpg --import {file}") else printWarning(f"\nCould not import gpg key from {file}")
                 else:
-                    printSuccess(f"Imported gpg key from {file}") if not run(f"runuser -u {user} -- gpg --import {file} && echo") else printWarning(f"Could not import gpg key from {file}")
+                    printSuccess(f"\nImported gpg key from {file}") if not run(f"runuser -u {user} -- gpg --import {file}") else printWarning(f"\nCould not import gpg key from {file}")
             # GNUPG CONFIG
             line()
             printDot("GNUPG CONFIG")
