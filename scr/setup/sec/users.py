@@ -103,8 +103,10 @@ def execute():
             if user != "root":
                 line()
                 printDot("SUDO NOPASSWD")
+                line()
                 nopasswd = getData(f"[{cyan}]Allow user {user} to use sudo without a password?[/{cyan}] (y/N): ").lower()
                 if nopasswd == "y":
+                    line()
                     data = f"{user} ALL=(ALL) NOPASSWD: ALL"
                     writeFile(Path(f"/etc/sudoers.d/{user}"), data, user=user)
             # ADD PGP KEY
@@ -147,6 +149,7 @@ def execute():
             if git_user:
                 line()
                 git_email = getData(f"[{cyan}]Enter git email for {user}[/{cyan}]: ")
+                Line()
                 git_key = getData(f"[{cyan}]Enter signing key for {user}[/{cyan}]: ")
                 tmpl = SETUPDIR / "cfg/git/.gitconfig.jinja"
                 dest = USERDIR / ".gitconfig"
