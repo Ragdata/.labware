@@ -92,6 +92,8 @@ def execute():
             chmod(USERDIR / ".bashrc", 0o644)
             chown(USERDIR / ".profile", user=user, group=user)
             chmod(USERDIR / ".profile", 0o644)
+            chown(USERDIR / ".gitignore_global", user=user, group=user)
+            chmod(USERDIR / ".gitignore_global", 0o644)
             chown(USERDIR / ".bashrc.d", user=user, group=user)
             chmod(USERDIR / ".bashrc.d", 0o755)
             permsDefault(USERDIR / ".bashrc.d", user=user)

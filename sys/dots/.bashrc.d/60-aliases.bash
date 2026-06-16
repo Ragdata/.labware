@@ -9,12 +9,12 @@
 # ESSENTIAL ALIASES
 ####################################################################
 
-alias ll='export LC_ALL=C; ls -avlF --color --group-directories-first'
-alias la='ls -A'
-alias l='ls -CF'
+alias ll="export LC_ALL=C && ls -avlF --color --group-directories-first"
+alias la="ls -A"
+alias l="ls -CF"
 # python aliases
-alias python='python3.14'
-alias pym='python3.14 -m'
+alias python="python3.14"
+alias pym="python3.14 -m"
 # alias py='python3'
 # alias pip='pip3'
 
