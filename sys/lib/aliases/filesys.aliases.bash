@@ -39,4 +39,3 @@ alias mkdir='mkdir -p'
 
 # ls aliases
 alias cls="clear;ll"
-alias ll="LC_"
