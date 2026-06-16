@@ -1,6 +1,11 @@
 [Unit]
 Description=APT Weekly Update
+Requires=network-online.target
+After=network-online.target
 
 [Service]
 Type=oneshot
 ExecStart=/opt/labware/lab/apt-update
+
+[Install]
+WantedBy=apt-update.timer
