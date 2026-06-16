@@ -68,14 +68,8 @@ def chown(tgt: Path, user: str, group: str) -> None:
                 for name in dirs + files:
                     os.chown(os.path.join(root, name), uid, gid)
 
-def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path = Path.home() / ".backup", mode: int = 0o644, user: str = "", group: str = "") -> bool | None:
+def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path = Path.home() / ".backup") -> bool | None:
     try:
-        if not user:
-            user = pwd.getpwuid(os.geteuid()).pw_name
-        if not group:
-            group = user
-        if not userExists(user):
-            raise RuntimeError(f"User '{user}' does not exist")
         if isinstance(src, Path) and not src.exists():
             raise FileNotFoundError(f"{src} does not exist")
         if not dst.exists():
@@ -85,21 +79,21 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
                 dstpath = dst / path.name
                 if not path.exists():
                     raise FileNotFoundError(f"{path} does not exist")
-                if path.is_file() and bkp:
-                    backup(path, bkpdir)
+                if dstpath.is_file():
+                    if bkp:
+                        backup(dstpath, bkpdir)
+                    dstpath.unlink()
                 shutil.copy(path, dstpath)
-                chown(dst, user, group)
-                chmod(dst, mode)
                 printSuccess(f"Copied {path.name}")
                 logger.debug(f"Copied {path.name}")
                 return True
         else:
             if src.is_file():
-                if dst.is_file() and bkp:
-                    backup(src, bkpdir)
+                if dst.is_file():
+                    if bkp:
+                        backup(dst, bkpdir)
+                    dst.unlink()
                 shutil.copy(src, dst)
-                chown(dst, user, group)
-                chmod(dst, mode)
                 printSuccess(f"Copied {src.name}")
                 logger.debug(f"Copied {src.name}")
                 return True
@@ -107,11 +101,11 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
                 for item in os.scandir(src):
                     dest = dst / item.name
                     if item.is_file():
-                        if dest.is_file() and bkp:
-                            backup(Path(item), bkpdir)
+                        if dest.is_file():
+                            if bkp:
+                                backup(dest, bkpdir)
+                            dest.unlink()
                         if shutil.copy(item, dest):
-                            chown(dest, user, group)
-                            chmod(dest, mode)
                             printSuccess(f"Copied '{item.name}'")
                             logger.debug(f"Copied '{item.name}'")
                         else:
@@ -119,8 +113,6 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
                             logger.debug(f"Copy Failed '{item.name}'")
                     elif item.is_dir():
                         if shutil.copytree(item, dest, dirs_exist_ok=True):
-                            chown(dest, user, group)
-                            chmod(dest, 0o755)
                             printSuccess(f"Copied Tree '{item.name}'")
                             logger.debug(f"Copied Tree '{item.name}'")
                         else:
@@ -152,8 +144,10 @@ def copyRepoFile(repo: Path, stub: str, bkp: bool = False, bkpdir: Path = Path.h
             raise FileNotFoundError(f"{tmpl} does not exist")
         if not dest.parent.exists():
             dest.parent.mkdir(parents=True, mode=0o755)
-        if dest.exists() and bkp:
-            backup(dest, bkpdir)
+        if dest.is_file():
+            if bkp:
+                backup(dest, bkpdir)
+            dest.unlink()
         shutil.copy(tmpl, dest)
         chown(dest, user, group)
         chmod(dest, mode)
@@ -236,6 +230,25 @@ def perms(src: dict[str, list]) -> None:
     for path, data in src.items():
         chmod(Path(path), data[0])
         chown(Path(path), data[1], data[2])
+
+def permsDefault(tgt: Path, user: str = "", group: str = "", dirMode: int = 0o755, fileMode: int = 0o644) -> None:
+    if not user:
+        user = pwd.getpwuid(os.geteuid()).pw_name
+    if not group:
+        group = user
+    if not userExists(user):
+        raise RuntimeError(f"User '{user}' does not exist")
+    if not tgt.exists():
+        raise FileNotFoundError(f"{tgt} does not exist")
+    if not tgt.is_dir():
+        raise RuntimeError(f"{tgt} is not a directory")
+    for root, dirs, files in os.walk(tgt):
+        for d in dirs:
+            os.chmod(os.path.join(root, d), dirMode)
+            os.chown(os.path.join(root, d), grp.getgrnam(group).gr_gid, grp.getgrnam(user).gr_gid)
+        for f in files:
+            os.chmod(os.path.join(root, f), fileMode)
+            os.chown(os.path.join(root, f), grp.getgrnam(user).gr_gid, grp.getgrnam(user).gr_gid)
 
 def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:

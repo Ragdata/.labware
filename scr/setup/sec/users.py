@@ -77,7 +77,8 @@ def execute():
             # Library Files
             line()
             printHead("Installing Library Files ...")
-            copyFiles(LIBDIR, WARELIB, user=user)
+            copyFiles(LIBDIR, WARELIB)
+            permsDefault(WARELIB, user=user)
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
@@ -86,7 +87,14 @@ def execute():
             # Install Dotfiles
             line()
             printHead("Installing Dotfiles ...")
-            copyFiles(DOTSDIR, USERDIR, user=user)
+            copyFiles(DOTSDIR, USERDIR)
+            chown(USERDIR / ".bashrc", user=user, group=user)
+            chmod(USERDIR / ".bashrc", 0o644)
+            chown(USERDIR / ".profile", user=user, group=user)
+            chmod(USERDIR / ".profile", 0o644)
+            chown(USERDIR / ".bashrc.d", user=user, group=user)
+            chmod(USERDIR / ".bashrc.d", 0o755)
+            permsDefault(USERDIR / ".bashrc.d", user=user)
             line()
             getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
@@ -139,7 +147,7 @@ def execute():
                 line()
                 file = SETUPDIR / "cfg/gnupg/gpg-agent.conf"
                 dest = USERDIR / ".gnupg/gpg-agent.conf"
-                if not copyFiles(file, dest, user=user):
+                if not copyFiles(file, dest):
                     printWarning(f"Could not copy gpg-agent.conf to {dest}")
             # GITCONFIG
             line()
