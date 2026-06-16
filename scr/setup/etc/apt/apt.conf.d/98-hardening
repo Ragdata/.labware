@@ -1,4 +1,3 @@
-;suppress inspection "DuplicateKeyInSection" for whole file
 Acquire::http::AllowRedirect "false";
 APT::Get::AllowUnauthenticated "false";
 APT::Periodic::AutocleanInterval "7";

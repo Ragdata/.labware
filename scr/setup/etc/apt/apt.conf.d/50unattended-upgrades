@@ -1,4 +1,3 @@
-;suppress inspection "DuplicateKeyInSection" for whole file
 // Ubuntu 24.04 Automatic Updates Configuration
 Unattended-Upgrade::Allowed-Origins {
         "${distro_id}:${distro_codename}";
