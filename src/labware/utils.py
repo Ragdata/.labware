@@ -68,10 +68,10 @@ def installAPT(packages: list, quiet: bool = False):
             if run(f"dpkg -s {pkg}", check=False, capture=True).returncode != 0:
                 if not quiet:
                     run(f"DEBIAN_FRONTEND=noninteractive apt install -y {pkg}")
-                    line()
                 elif quiet:
                     run(f"DEBIAN_FRONTEND=noninteractive apt install -qq -y {pkg}")
                 symbol = config.get("symbols", "success")
+                line()
                 printMessage(f"{symbol} Installed package: {pkg}", style=bright_green)
                 logger.info(f"Installed package: {pkg}")
                 line()
@@ -90,10 +90,13 @@ def installPIP(packages: list):
             if pkg[0] == "#":
                 continue
             if run(f"pip show {pkg}", check=False, capture=True).returncode != 0:
+                line()
                 run(f"pip install --user {pkg} --break-system-packages")
+                line()
                 printSuccess(f"Installed python package: {pkg}")
                 logger.info(f"Installed python package: {pkg}")
             else:
+                line()
                 printDot(f"Package already installed: {pkg}")
                 logger.debug(f"Package already installed: {pkg}")
     except Exception as e:
@@ -109,10 +112,13 @@ def removeAPT(packages: list):
             if pkg[0] == "#":
                 continue
             if run(f"dpkg -s {pkg}", check=False, capture=True).returncode == 0:
+                line()
                 run(f"apt autopurge -y {pkg}")
+                line()
                 printSuccess(f"Removed package: {pkg}")
                 logger.info(f"Removed package: {pkg}")
             else:
+                line()
                 printError(f"Package not installed: {pkg}")
                 logger.debug(f"Package not installed: {pkg}")
     except Exception as e:

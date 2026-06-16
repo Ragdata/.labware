@@ -47,9 +47,9 @@ def execute():
             raise FileNotFoundError(f"File not found: '{filesys}'")
         files = getList(filesys)
         removeAPT(files)
-        line()
         autofs = Path("/etc/systemd/system/autofs.service")
         if autofs.exists():
+            line()
             run("systemctl mask autofs")
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
@@ -58,6 +58,7 @@ def execute():
         # ----------------------------------------------------------
         line()
         printHead("Section 2.1 - Remove Unused Services")
+        line()
         remove = BASEDIR / "setup/cfg/apt-remove.cfg"
         if not remove.exists():
             raise FileNotFoundError(f"File not found: '{remove}'")
