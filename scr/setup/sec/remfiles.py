@@ -30,6 +30,7 @@ def execute():
         clear()
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - REMFILES MODULE [/{yellow}]", style=yellow, align="left")
+        line()
         global CHECKED
         if not CHECKED:
             CHECKED = checkRequired()
@@ -41,7 +42,7 @@ def execute():
         line()
         printHead("Section 1.1 - Remove Unnecessary Filesystems")
         line()
-        filesys = BASEDIR / "src/setup/cfg/apt-filesys.cfg"
+        filesys = BASEDIR / "scr/setup/cfg/apt-filesys.cfg"
         if not filesys.exists():
             raise FileNotFoundError(f"File not found: '{filesys}'")
         files = getList(filesys)
@@ -54,7 +55,7 @@ def execute():
         # ----------------------------------------------------------
         line()
         printHead("Section 2.1 - Remove Unused Services")
-        remove = BASEDIR / "src/setup/cfg/apt-remove.cfg"
+        remove = BASEDIR / "scr/setup/cfg/apt-remove.cfg"
         if not remove.exists():
             raise FileNotFoundError(f"File not found: '{remove}'")
         pkgs = getList(remove)
