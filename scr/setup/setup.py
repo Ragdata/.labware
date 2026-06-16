@@ -57,8 +57,10 @@ def execute() -> None:
         # SERVER HARDENING
         # ----------------------------------------------------------
         remfiles.execute()
-        boot.execute()
-        apparmor.execute()
+        if Path("/boot/grub/grub.cfg").exists():
+            boot.execute()
+        if run("aa-status").returncode == 0:
+            apparmor.execute()
         core.execute()
         apt.execute()
         motd.execute()

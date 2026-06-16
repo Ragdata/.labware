@@ -32,6 +32,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - APPARMOR MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -43,6 +44,7 @@ def execute():
         line()
         pkgs = ["apparmor", "apparmor-utils", "apparmor-profiles", "apparmor-profiles-extra", "libpam-apparmor"]
         installAPT(pkgs)
+        line()
         with os.scandir("/etc/apparmor.d") as entries:
             for entry in entries:
                 if entry.is_file() and entry.name.startswith("profile"):
