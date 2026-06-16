@@ -47,7 +47,10 @@ def execute():
             raise FileNotFoundError(f"File not found: '{filesys}'")
         files = getList(filesys)
         removeAPT(files)
-        run("systemctl mask autofs")
+        line()
+        autofs = Path("/etc/systemd/system/autofs.service")
+        if autofs.exists():
+            run("systemctl mask autofs")
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
