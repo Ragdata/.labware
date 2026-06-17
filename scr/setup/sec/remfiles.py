@@ -41,7 +41,6 @@ def execute():
         logger.info(f"Executing {__file__}")
         line()
         printHead("Section 1.1 - Remove Unnecessary Filesystems")
-        line()
         filesys = BASEDIR / "setup/cfg/apt-filesys.cfg"
         if not filesys.exists():
             raise FileNotFoundError(f"File not found: '{filesys}'")

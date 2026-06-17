@@ -142,7 +142,7 @@ def removeUsers(users: list) -> bool:
         logger.error(f"Remove user failed: {e}", True)
         raise
 
-def run(command: str, check: bool = True, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :
+def run(command: str, check: bool = False, capture: bool = False, input_txt = None) -> subprocess.CompletedProcess[Any] :
     """Execute shell command with error handling"""
     try:
         logger.info(f"Executing BASH: {command}")
