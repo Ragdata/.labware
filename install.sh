@@ -87,7 +87,7 @@ apt full-upgrade -y
 
 echo
 echo -e "${YELLOW}Install Essential Tools ...${NC}"
-apt install -y curl wget git gnupg2 net-tools rsync dnsutils iputils-ping procps python3.14-full python3.14-venv python3-pip
+apt install -y curl wget git gnupg2 net-tools rsync dnsutils iputils-ping procps python3.14-full python3.14-venv python3-pip python3-dev build-essential
 
 # echo -e "${YELLOW}Installing UV ...${NC}"
 # curl -LsSf https://astral.sh/uv/install.sh | sh
