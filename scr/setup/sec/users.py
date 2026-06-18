@@ -49,8 +49,8 @@ def execute():
         # CREATE USER(S)
         # ----------------------------------------------------------
         logger.info(f"Executing {__file__}")
-        line()
         while True:
+            line()
             username = getData(f"[{cyan}]Enter username to create as sudo user[/{cyan}] (ENTER to bypass): ")
             if username == "":
                 break
@@ -70,6 +70,7 @@ def execute():
         # UPDATE ROOT PASSWORD
         # ----------------------------------------------------------
         while True:
+            line()
             change = getData(f"[{cyan}]Change root password?[/{cyan}] (Y/n): ").lower()
             if change != "n":
                 line()
@@ -84,8 +85,8 @@ def execute():
         # GATHER INFORMATION
         # ----------------------------------------------------------
         users = []
-        line()
         while True:
+            line()
             data = getData(f"[{cyan}]Enter list of sudo users to setup[/{cyan}] (space delimited): ")
             if data != "":
                 users = data.split(" ")
