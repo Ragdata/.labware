@@ -57,6 +57,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - TOOLS MODULE [/{yellow}]", style=yellow, align="left")
         line()
         printHead("Installing Security Tools ...")
+        line()
         secure = Path(config.get("paths", "setup")) / "cfg" / "apt-secure.cfg"
         if not secure.exists():
             raise FileNotFoundError(f"File not found: '{secure}'")
