@@ -46,9 +46,43 @@ def execute():
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
-        # GATHER INFORMATION
+        # CREATE USER(S)
         # ----------------------------------------------------------
         logger.info(f"Executing {__file__}")
+        line()
+        while True:
+            username = getData(f"[{cyan}]Enter username to create as sudo user[/{cyan}] (ENTER to bypass): ")
+            if username == "":
+                break
+            else:
+                if userExists(username):
+                    logger.error(f"User '{username}' already exists", True)
+                    continue
+                if run(f"useradd -m -s /bin/bash -G sudo {username}").returncode != 0:
+                    logger.error(f"Failed to create user '{username}'", True)
+                    continue
+                line()
+                password = getData(f"[{cyan}]Enter password for {username}[/{cyan}]: ")
+                if run(f"echo '{username}:{password}' | chpasswd").returncode != 0:
+                    logger.error(f"Failed to set password for user '{username}'", True)
+                    continue
+        # ----------------------------------------------------------
+        # UPDATE ROOT PASSWORD
+        # ----------------------------------------------------------
+        while True:
+            change = getData(f"[{cyan}]Change root password?[/{cyan}] (Y/n): ").lower()
+            if change != "n":
+                line()
+                password = getData(f"[{cyan}]Enter new root password[/{cyan}]: ")
+                if run(f"echo '{password}' | passwd --stdin root").returncode != 0:
+                    logger.error(f"Failed to set password for root user", True)
+                    continue
+                break
+            else:
+                break
+        # ----------------------------------------------------------
+        # GATHER INFORMATION
+        # ----------------------------------------------------------
         users = []
         line()
         while True:
