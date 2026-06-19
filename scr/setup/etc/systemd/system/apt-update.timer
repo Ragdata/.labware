@@ -3,6 +3,7 @@ Description=APT Weekly Update
 
 [Timer]
 OnCalendar=weekly
+RandomizedDelaySec=2m
 Persistent=true
 
 [Install]

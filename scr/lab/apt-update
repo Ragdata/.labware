@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-apt update && apt -y -d full-upgrade
-exit 0
+apt update
+apt -y -d full-upgrade
+apt -y autoremove
+apt autoclean
