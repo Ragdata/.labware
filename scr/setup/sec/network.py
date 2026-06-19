@@ -39,14 +39,20 @@ def updateHostfiles(name: str) -> None:
     run(f"hostname {name}", True)
     # Write to /etc/hostname
     with open("/etc/hostname", "w") as f:
-        f.write(f"{name}\n")
+        if f.write(f"{name}\n") == len(name) + 1:
+            logger.info(f"Updated /etc/hostname", True)
+        else:
+            logger.error(f"Failed to update /etc/hostname", True, False, 1)
     # Update /etc/hosts
     oldName = socket.gethostname()
     with open("/etc/hosts", "r") as f:
         content = f.read()
     updated = content.replace(oldName, name)
     with open("/etc/hosts", "w") as f:
-        f.write(updated)
+        if f.write(updated) == len(updated):
+            logger.info(f"Updated /etc/hosts", True)
+        else:
+            logger.error(f"Failed to update /etc/hosts", True, False, 1)
 
 #-------------------------------------------------------------------
 # PROCESS
