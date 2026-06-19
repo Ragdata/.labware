@@ -42,9 +42,11 @@ def execute():
         line()
         printHead("Section 4 - Install & Configure FirewallD")
         line()
-        run("apt install -y firewalld")
-        run("systemctl enable firewalld")
-        run("systemctl start firewalld")
+        run("apt install -y firewalld python3-firewall")
+        run("systemctl stop ufw")
+        run("systemctl disable ufw")
+        run("systemctl unmask firewalld")
+        run("systemctl enable --now firewalld")
         ports = getList(BASEDIR / "scr/setup/cfg/app-firewalld.conf")
         for port in ports:
             if port[0].isdigit():
