@@ -94,9 +94,8 @@ echo
 dpkg -l | grep python3-pip >/dev/null 2>&1 && dpkg -P python3-pip
 dpkg -l | grep python3-rich >/dev/null 2>&1 && dpkg -P python3-rich
 which python3.14 > /dev/null 2>&1; [[ "$?" -ne 0 ]] && apt install -y python3.14-full python3.14-venv python3-pip python3-dev
-# export TMPDIR=/var/tmp
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | python3.14
-apt install -y curl wget git gnupg2 net-tools rsync dnsutils iputils-ping procps build-essential
+python3.14 vendor/get-pip.py
+apt install -y wget git gnupg2 net-tools rsync dnsutils iputils-ping procps build-essential
 
 # echo -e "${YELLOW}Installing UV ...${NC}"
 # curl -LsSf https://astral.sh/uv/install.sh | sh
