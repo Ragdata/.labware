@@ -42,7 +42,11 @@ def execute():
         line()
         printHead("Section 2.4 - NTP")
         line()
-        copyRepoFile(SETUPDIR, "/etc/systemd/timesync.conf", True)
+        timezone = getData(f"[{cyan}]Enter server timezone:[/{cyan}] ")
+        if timezone:
+            run(f"timedatectl set-timezone {timezone}")
+        line()
+        copyRepoFile(SETUPDIR, "/etc/systemd/timesyncd.conf", True)
         run("systemctl restart systemd-timesyncd")
         run("systemctl enable systemd-timesyncd")
         line()
