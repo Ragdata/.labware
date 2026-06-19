@@ -45,6 +45,7 @@ def execute():
         line()
         files = ["/etc/cron.allow", "/etc/at.allow"]
         copyRepoFiles(SETUPDIR, files, True)
+        line()
         run("chown root:root /etc/cron*")
         run("chmod og-rwx /etc/cron*")
         run("chown root:root /etc/at*")

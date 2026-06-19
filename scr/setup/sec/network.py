@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys
+import sys, socket
 
 sys.path.append(".")
 
@@ -24,6 +24,31 @@ from labware.filesys import *
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
 SETUPDIR = Path(config.get("paths", "setup"))
 #-------------------------------------------------------------------
+# FUNCTIONS
+#-------------------------------------------------------------------
+def setHostname(name: str) -> None:
+    try:
+        if run(f"hostnamectl set-hostname {name}", True).returncode == 0:
+            logger.info(f"Hostname set to {name}", True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Failed to set hostname: {e}", True, False, 1)
+    except FileNotFoundError:
+        logger.error("The 'hostnamectl' command was not found.", True, False, 1)
+
+def updateHostfiles(name: str) -> None:
+    run(f"hostname {name}", True)
+    # Write to /etc/hostname
+    with open("/etc/hostname", "w") as f:
+        f.write(f"{name}\n")
+    # Update /etc/hosts
+    oldName = socket.gethostname()
+    with open("/etc/hosts", "r") as f:
+        content = f.read()
+    updated = content.replace(oldName, name)
+    with open("/etc/hosts", "w") as f:
+        f.write(updated)
+
+#-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
 def execute():
@@ -33,6 +58,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - NETWORK MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -44,12 +70,25 @@ def execute():
         line()
         files = ["/etc/sysctl.d/60-ipv6.conf", "/etc/sysctl.d/60-net.conf", "/etc/modprobe.d/disable.conf", "/etc/systemd/logind.conf", "/etc/hosts.allow", "/etc/hosts.deny"]
         copyRepoFiles(SETUPDIR, files, True)
+        line()
         run(f"sysctl -p /etc/sysctl.d/60-ipv6.conf")
         run(f"sysctl -p /etc/sysctl.d/60-net.conf")
         run("systemctl restart systemd-sysctl")
         modules = ["dccp", "tipc", "rds", "sctp"]
         for mod in modules:
             run(f"modprobe -r {mod} 2>/dev/null")
+        line()
+        printHead("Hostname & Hostfiles")
+        line()
+        oldName = socket.gethostname()
+        printDot(f"Current Hostname: {oldName}")
+        line()
+        hostname = getData(f"[{cyan}]Enter new hostname[/{cyan}] (ENTER to bypass): ")
+        if hostname:
+            line()
+            setHostname(hostname)
+            line()
+            updateHostfiles(hostname)
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
