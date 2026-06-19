@@ -45,6 +45,7 @@ def execute():
         line()
         files = ["/etc/issue.net", "/etc/issue", "/etc/motd"]
         copyRepoFiles(SETUPDIR, files, True)
+        line()
         run("chmod -x /etc/update-motd.d/*")
         run("systemctl stop motd-news.timer")
         run("systemctl mask motd-news.timer")
