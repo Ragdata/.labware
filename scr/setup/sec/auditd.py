@@ -33,6 +33,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AUDITD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -47,6 +48,8 @@ def execute():
         line()
         files = ["/etc/audit/rules.d/50-scope.rules", "/etc/audit/rules.d/50-processes.rules", "/etc/audit/auditd.conf"]
         copyRepoFiles(SETUPDIR, files, True)
+        line()
+        run("systemctl daemon-reload")
         run("systemctl --now enable auditd")
         run("systemctl restart auditd")
         line()
