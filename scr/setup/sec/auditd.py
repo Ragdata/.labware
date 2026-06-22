@@ -43,7 +43,7 @@ def execute():
         line()
         printHead("Section 6.1 - 'auditd' Logging & Audit Rules")
         line()
-        pkgs = ["auditd", "audispd-plugins", "auditd-plugin-clickhouse"]
+        pkgs = ["auditd", "audispd-plugins"]
         installAPT(pkgs)
         line()
         files = ["/etc/audit/rules.d/50-scope.rules", "/etc/audit/rules.d/50-processes.rules", "/etc/audit/auditd.conf"]
