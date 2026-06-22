@@ -101,7 +101,8 @@ def execute():
         # ----------------------------------------------------------
         for user in users:
             USERDIR = Path(f"/home/{user}") if user != "root" else Path("/root")
-            WARELIB = USERDIR / ".labware" / "lib"
+            WAREDIR = USERDIR / ".labware"
+            WARELIB = WAREDIR / "lib"
             clear()
             banner.execute()
             rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USERS MODULE [/{yellow}]", style=yellow, align="left")
@@ -113,7 +114,7 @@ def execute():
             line()
             printHead("Installing Library Files ...")
             copyFiles(LIBDIR, WARELIB)
-            permsDefault(WARELIB, user=user)
+            permsDefault(WAREDIR, user=user)
             # Backup Dotfiles
             line()
             printHead("Backup Dotfiles ...")
