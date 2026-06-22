@@ -59,6 +59,8 @@ def execute():
         line()
         run("firewall-cmd --reload")
         line()
+        if run("systemctl stop firewalld").returncode == 0:
+            logger.success("FirewallD stopped to allow testing", True)
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
