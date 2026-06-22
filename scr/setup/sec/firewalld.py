@@ -50,7 +50,7 @@ def execute():
         ports = getList(BASEDIR / "setup/cfg/app-firewalld.cfg")
         for port in ports:
             if port[0].isdigit():
-                command = f"firewall-cmd --permanent --zone=public --add-port={port}/tcp"
+                command = f"firewall-cmd --permanent --zone=public --add-port={port}"
             else:
                 command = f"firewall-cmd --permanent --zone=public --add-service={port}"
             run(command)
