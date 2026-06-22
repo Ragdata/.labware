@@ -31,6 +31,11 @@ def execute():
         clear()
         banner.execute()
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - AUDITD MODULE [/{yellow}]", style=yellow, align="left")
+        if isWSL2():
+            line()
+            logger.warning("WSL2 detected, skipping 'auditd' module")
+            getData(f"[{yellow}]WSL2 detected, skipping 'auditd' module :: Press [ENTER] to continue ...[/{yellow}] ")
+            return
         global CHECKED
         if not CHECKED:
             line()

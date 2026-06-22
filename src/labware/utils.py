@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import os, subprocess, pwd, sys, shutil
+import os, subprocess, pwd, sys, shutil, platform
 
 sys.path.append(".")
 
@@ -108,6 +108,12 @@ def isInstalled(cmd) -> bool:
 
 def isLXC() -> bool:
     return True if run("grep -qE 'container=lxc|container=lxd' /proc/1/environ").returncode == 0 else False
+
+def isWSL2() -> bool:
+    if platform.system().lower() != "linux":
+        return False
+    release = platform.release().lower()
+    return "microsoft" in release
 
 def removeAPT(packages: list):
     try:
