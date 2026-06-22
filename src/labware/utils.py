@@ -10,7 +10,7 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import os, subprocess, pwd, sys
+import os, subprocess, pwd, sys, shutil
 
 sys.path.append(".")
 
@@ -102,6 +102,9 @@ def installPIP(packages: list):
     except Exception as e:
         logger.error(f"Install failed: {e}", True)
         raise
+
+def isInstalled(cmd) -> bool:
+    return shutil.which(cmd) is not None
 
 def isLXC() -> bool:
     return True if run("grep -qE 'container=lxc|container=lxd' /proc/1/environ").returncode == 0 else False

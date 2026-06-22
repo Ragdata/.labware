@@ -43,10 +43,11 @@ def execute():
         printHead("Section 4 - Install & Configure FirewallD")
         line()
         run("apt install -y firewalld python3-firewall", True)
-        run("systemctl stop ufw")
-        run("systemctl disable ufw")
+        if isInstalled("ufw"):
+            run("systemctl stop ufw")
+            run("systemctl disable ufw")
         run("systemctl enable --now firewalld")
-        ports = getList(BASEDIR / "setup/cfg/app-firewalld.conf")
+        ports = getList(BASEDIR / "setup/cfg/app-firewalld.cfg")
         for port in ports:
             if port[0].isdigit():
                 command = f"firewall-cmd --permanent --zone=public --add-port={port}/tcp"
