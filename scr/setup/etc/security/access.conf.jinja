@@ -1,4 +1,3 @@
-;suppress inspection "DuplicateKeyInSection" for whole file
 # Login access control table.
 #
 # Comment line must start with "#", no space at front.
@@ -122,6 +121,7 @@
 # All other users should be denied to get access from all sources.
 #-:ALL:ALL
 ##############################################################################
+-:root:ALL
 {% if internal_address %}
 +:root:{{ internal_address }}
 {% endif %}

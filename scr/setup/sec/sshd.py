@@ -42,16 +42,19 @@ def execute():
         line()
         printHead("Section 5.1 - SSH Hardening")
         line()
-        template = SETUPDIR / "/etc/ssh/sshd_config.jinja"
+        template = SETUPDIR / "etc/ssh/sshd_config.jinja"
         filedest = Path("/etc/ssh/sshd_config")
         labusers = getData(f"[{cyan}]Restrict SSH logins to the following users[/{cyan}] (ENTER for none): ")
+        line()
         address  = getData(f"[{cyan}]Internal IP granted root access[/{cyan}] (ENTER for none): ")
         data = {"labusers": labusers, "internal_address": address}
         if not writeTemplate(template, filedest, data, 0o600, "root", "root"):
+            line()
             logger.error(f"Could not write template to {filedest}", True, False, 1)
-        template = SETUPDIR / "/etc/security/access.conf.jinja"
+        template = SETUPDIR / "etc/security/access.conf.jinja"
         filedest = Path("/etc/security/access.conf")
         if not writeTemplate(template, filedest, data):
+            line()
             logger.error(f"Could not write template to {filedest}", True, False, 1)
         run("systemctl enable ssh")
         run("systemctl restart ssh")
