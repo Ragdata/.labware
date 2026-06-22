@@ -47,20 +47,20 @@ def execute():
         labusers = getData(f"[{cyan}]Restrict SSH logins to the following users[/{cyan}] (ENTER for none): ")
         line()
         address  = getData(f"[{cyan}]Internal IP granted root access[/{cyan}] (ENTER for none): ")
+        line()
         data = {"labusers": labusers, "internal_address": address}
         if not writeTemplate(template, filedest, data, 0o600, "root", "root"):
-            line()
             logger.error(f"Could not write template to {filedest}", True, False, 1)
         template = SETUPDIR / "etc/security/access.conf.jinja"
         filedest = Path("/etc/security/access.conf")
         if not writeTemplate(template, filedest, data):
-            line()
             logger.error(f"Could not write template to {filedest}", True, False, 1)
-        run("systemctl enable ssh")
+        line()
+        run("systemctl daemon-reload")
+        # run("systemctl enable ssh")
         run("systemctl restart ssh")
         run("systemctl mask debug-shell.service")
         run("systemctl stop debug-shell.service")
-        run("systemctl daemon-reload")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
