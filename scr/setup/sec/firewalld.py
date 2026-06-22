@@ -46,7 +46,9 @@ def execute():
         if isInstalled("ufw"):
             run("systemctl stop ufw")
             run("systemctl disable ufw")
+        line()
         run("systemctl enable --now firewalld")
+        line()
         ports = getList(BASEDIR / "setup/cfg/app-firewalld.cfg")
         for port in ports:
             if port[0].isdigit():
@@ -54,6 +56,7 @@ def execute():
             else:
                 command = f"firewall-cmd --permanent --zone=public --add-service={port}"
             run(command)
+        line()
         run("firewall-cmd --reload")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
