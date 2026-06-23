@@ -19,9 +19,6 @@ path = Path(__file__).parents[2] / "lab"
 sys.path.append(str(path))
 sys.path.append(".")
 
-print(path)
-exit(0)
-
 import banner
 
 import lab.genPasswordList as pw
