@@ -12,8 +12,6 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import tempfile, argparse, sys
 
-from pathlib import Path
-
 sys.path.append(".")
 
 from urllib.parse import urlparse
@@ -30,21 +28,22 @@ from labware.filesys import *
 BASEDIR = Path(config.get("paths", "base"))
 LABDIR = Path(config.get("paths", "lab"))
 DEFAULT_FILE = LABDIR / "cfg" / "pwd-sources.cfg"
+DEFAULT_DEST = Path("/usr/share/dict/passwords")
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
-def execute(filepath: Path = DEFAULT_FILE):
+def execute(configfile: Path = DEFAULT_FILE, destfile: Path = DEFAULT_DEST):
     try:
 
-        if not filepath.exists():
-            raise FileNotFoundError(f"File not found: {filepath}")
+        if not configfile.exists():
+            raise FileNotFoundError(f"File not found: {configfile}")
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
 
         files = []
 
-        with open(filepath, "r") as f:
+        with open(configfile, "r") as f:
             for url in f:
                 url = url.strip()
                 if url:
@@ -62,10 +61,10 @@ def execute(filepath: Path = DEFAULT_FILE):
 
         logger.default(f"Merging Files ...")
 
-        if not mergeFiles(files, str(LABDIR / "passwords.txt")):
+        if not mergeFiles(files, str(destfile)):
             logger.error(f"Failed to merge password files", True, False, 1)
 
-        logger.success(f"Password list generated at {str(LABDIR / 'passwords.txt')}", True)
+        logger.success(f"Password list generated at {str(destfile)}", True)
 
     except Exception as e:
         logger.error(f"Script encountered an error: {e}", True)
@@ -80,9 +79,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", dest="file", nargs="?", default=str(DEFAULT_FILE),
                         help="Path to the password sources configuration file")
+    parser.add_argument("-d", "--dest", dest="dest", nargs="?", default=str(DEFAULT_DEST),
+                        help="Path to the destination file")
 
     args = parser.parse_args()
 
     file = Path(args.file)
+    dest = Path(args.dest)
 
-    execute(file)
+    execute(file, dest)

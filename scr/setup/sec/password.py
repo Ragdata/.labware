@@ -12,9 +12,16 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 """
 import sys
 
+from pathlib import Path
+
+path = Path(__file__).parents[3] / "lab"
+
+sys.path.append(str(path))
 sys.path.append(".")
 
 import banner
+
+import lab.genPasswordList as pw
 
 from labware.filesys import *
 
@@ -43,19 +50,21 @@ def execute():
         line()
         printHead("Section 5.4 - Password Policy")
         line()
-        files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc", "/usr/share/dict/passwords"]
+        files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc"]
         copyRepoFiles(SETUPDIR, files, True)
+        line()
+        pw.execute()
         run("useradd -D -f 30")
         run("chmod +x /etc/profile.d/timeout.sh")
         run("passwd -l root")
-        run(f"grep -v '^$' {SETUPDIR}usr/share/dict/passwords | strings > /usr/share/dict/passwords_text")
+        run(f"grep -v '^$' /usr/share/dict/passwords | strings > /usr/share/dict/passwords_text")
         run("update-cracklib")
 
         # Set default umask
         # @TODO - Refine
-        file = Path("/etc/init.d/rc")
-        if file.is_file():
-            run(f"sed -i 's/umask 022/umask 077/g' {file}")
+        filepath = Path("/etc/init.d/rc")
+        if filepath.is_file():
+            run(f"sed -i 's/umask 022/umask 077/g' {filepath}")
         if run("grep -q -i 'umask' '/etc/profile' 2> /dev/null").returncode != 0:
             run("echo 'umask 077' >> /etc/profile")
         if run("grep -q -i 'umask' '/etc/bash.bashrc' 2> /dev/null").returncode != 0:
