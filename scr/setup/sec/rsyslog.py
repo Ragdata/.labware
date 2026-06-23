@@ -45,7 +45,6 @@ def execute():
         line()
         pkgs = ["rsyslog"]
         installAPT(pkgs)
-        line()
         run("systemctl --now enable rsyslog")
         line()
         template = SETUPDIR / "etc/rsyslog.d/50-default.conf"
