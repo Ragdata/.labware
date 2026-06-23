@@ -88,7 +88,7 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
         "base": "/opt/labware"
     },
     "setup": {
-        "chceked": "False"
+        "checked": "False"
     }
 }
 

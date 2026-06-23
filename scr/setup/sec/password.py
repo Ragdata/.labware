@@ -33,6 +33,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PASSWORD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -44,8 +45,8 @@ def execute():
         line()
         files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc", "/usr/share/dict/passwords"]
         copyRepoFiles(SETUPDIR, files, True)
-        run(f"useradd -D -f 30")
-        run(f"chmod +x /etc/profile.d/timeout.sh")
+        run("useradd -D -f 30")
+        run("chmod +x /etc/profile.d/timeout.sh")
         run("passwd -l root")
         run(f"grep -v '^$' {SETUPDIR}usr/share/dict/passwords | strings > /usr/share/dict/passwords_text")
         run("update-cracklib")
