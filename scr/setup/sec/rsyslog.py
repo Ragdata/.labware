@@ -22,6 +22,7 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
+SETUPDIR = Path(config.get("paths", "setup"))
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -47,7 +48,7 @@ def execute():
         line()
         run("systemctl --now enable rsyslog")
         line()
-        template = BASEDIR / "etc/rsyslog.d/50-default.conf"
+        template = SETUPDIR / "etc/rsyslog.d/50-default.conf"
         filedest = Path("/etc/rsyslog.d/50-default.conf")
         copyFiles(template, filedest, True)
         line()
