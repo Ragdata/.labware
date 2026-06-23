@@ -32,6 +32,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - ACCT MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -43,6 +44,7 @@ def execute():
         line()
         pkgs = ["acct"]
         installAPT(pkgs)
+        line()
         run("systemctl enable acct")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
