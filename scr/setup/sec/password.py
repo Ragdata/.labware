@@ -14,7 +14,7 @@ import sys
 
 from pathlib import Path
 
-path = Path(__file__).parents[3] / "lab"
+path = Path(__file__).parents[2] / "lab"
 
 sys.path.append(str(path))
 sys.path.append(".")
