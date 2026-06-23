@@ -32,6 +32,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RSYSLOG MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -43,11 +44,14 @@ def execute():
         line()
         pkgs = ["rsyslog"]
         installAPT(pkgs)
+        line()
         run("systemctl --now enable rsyslog")
+        line()
         filepath = "/etc/rsyslog.d/50-default.conf"
         template = BASEDIR / filepath
         filedest = Path(filepath)
         copyFiles(template, filedest, True)
+        line()
         run("find /var/log -type f -exec chmod 640 {} \\;")
         run("find /var/log -type d -exec chmod 750 {} \\;")
         chmod(Path("/var/log/sudo.log"), 0o640)
