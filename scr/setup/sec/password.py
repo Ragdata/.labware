@@ -54,6 +54,7 @@ def execute():
         copyRepoFiles(SETUPDIR, files, True)
         line()
         pw.execute()
+        line()
         run("useradd -D -f 30")
         run("chmod +x /etc/profile.d/timeout.sh")
         run("passwd -l root")
