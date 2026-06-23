@@ -47,9 +47,8 @@ def execute():
         line()
         run("systemctl --now enable rsyslog")
         line()
-        filepath = "/etc/rsyslog.d/50-default.conf"
-        template = BASEDIR / filepath
-        filedest = Path(filepath)
+        template = BASEDIR / "etc/rsyslog.d/50-default.conf"
+        filedest = Path("/etc/rsyslog.d/50-default.conf")
         copyFiles(template, filedest, True)
         line()
         run("find /var/log -type f -exec chmod 640 {} \\;")
