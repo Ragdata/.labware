@@ -10,15 +10,14 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import tempfile, argparse, sys
+import tempfile
+import argparse
+import sys
 
 sys.path.append(".")
 
+from urllib import request
 from urllib.parse import urlparse
-
-from labware.logger import *
-
-logger: Logger = get_logger("password")
 
 from labware.filesys import *
 
@@ -41,6 +40,8 @@ def execute(configfile: Path = DEFAULT_FILE, destfile: Path = DEFAULT_DEST):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
 
+        logger.info(f"Temporary directory: {tmpdir}", True)
+
         files = []
 
         with open(configfile, "r") as f:
@@ -51,13 +52,9 @@ def execute(configfile: Path = DEFAULT_FILE, destfile: Path = DEFAULT_DEST):
                     purl = Path(urlparse(url).path)
                     filename = purl.name
                     filetemp = Path(tmpdir) / filename
-                    with requests.get(url, stream=True) as r:
-                        r.raise_for_status()
-                        with open(filetemp, "wb") as w:
-                            for chunk in r.iter_content(chunk_size=8192):
-                                w.write(chunk)
-                    files.append(str(filetemp))
+                    request.urlretrieve(url, str(filetemp))
                     logger.success(f"Downloaded to {filetemp}", True)
+                    files.append(str(filetemp))
 
         logger.default(f"Merging Files ...")
 
@@ -86,5 +83,7 @@ if __name__ == "__main__":
 
     file = Path(args.file)
     dest = Path(args.dest)
+
+    logger: Logger = get_logger("password")
 
     execute(file, dest)
