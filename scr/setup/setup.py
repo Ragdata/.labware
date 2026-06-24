@@ -10,13 +10,9 @@ Repository:		https://github.com/Ragdata/.labware
 Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
-import sys, runpy
-
-from pathlib import Path
+import sys
 
 sys.path.append(".")
-
-from labware.config import *
 
 from labware.filesys import *
 

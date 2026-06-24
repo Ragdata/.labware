@@ -11,17 +11,22 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
 import sys
+import importlib.util
 
 from pathlib import Path
 
-path = Path(__file__).parents[2].resolve() / "lab"
+path = Path(__file__).parents[2].resolve() / "lab/genPasswordList.py"
+name = "genPasswordList"
 
-sys.path.append(str(path))
+spec = importlib.util.spec_from_file_location(name, path)
+pw = importlib.util.module_from_spec(spec)
+
+sys.modules[name] = pw
+spec.loader.exec_module(pw)
+
 sys.path.append(".")
 
 import banner
-
-from lab import genPasswordList as pw
 
 from labware.filesys import *
 
