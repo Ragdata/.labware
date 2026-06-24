@@ -55,46 +55,24 @@ def execute():
         line()
         printHead("Section 5.4 - Password Policy")
         line()
-        files = ["/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc"]
+        files = [
+            "/etc/login.defs", "/etc/profile.d/timeout.sh", "/etc/bash.bashrc",
+            "/etc/pam.d/common-password", "/etc/pam.d/common-account", "/etc/pam.d/common-auth", "/etc/pam.d/login", "/etc/pam.d/su",
+            "/etc/security/pwquality.conf", "/etc/security/faillock.conf"
+        ]
         copyRepoFiles(SETUPDIR, files, True)
         line()
-        pw.execute()
+        lockout = getData(f"[{cyan}]Do you want to lock the root account?[/{cyan}] (y/N) ").lower()
+        if lockout == "y":
+            run("passwd -l root")
         line()
-        run("useradd -D -f 30")
-        run("chmod +x /etc/profile.d/timeout.sh")
-        run("passwd -l root")
+        expire = getData(f"[{cyan}]Do you want to expire passwords every 30 days?[/{cyan}] (y/N) ").lower()
+        if expire == "y":
+            run("useradd -D -f 30")
+        line()
+        pw.execute()
         run(f"grep -v '^$' /usr/share/dict/passwords | strings > /usr/share/dict/passwords_text")
         run("update-cracklib")
-
-        # Set default umask
-        # @TODO - Refine
-        filepath = Path("/etc/init.d/rc")
-        if filepath.is_file():
-            run(f"sed -i 's/umask 022/umask 077/g' {filepath}")
-        if run("grep -q -i 'umask' '/etc/profile' 2> /dev/null").returncode != 0:
-            run("echo 'umask 077' >> /etc/profile")
-        if run("grep -q -i 'umask' '/etc/bash.bashrc' 2> /dev/null").returncode != 0:
-            run("echo 'umask 077' >> /etc/bash.bashrc")
-        if run("grep -q -i 'TMOUT' '/etc/profile.d/*' 2> /dev/null").returncode != 0:
-            run("echo -e 'TMOUT=600\nreadonly TMOUT\nexport TMOUT' > /etc/profile.d/autologout.sh")
-            run("chmod +x /etc/profile.d/autologout.sh")
-
-        # # Set default root umask in .profile
-        # dotfile = Path.home() / ".bash_profile"
-        # if not dotfile.exists():
-        #     dotfile = Path.home() / ".profile"
-        # if not dotfile.exists():
-        #     raise FileNotFoundError(f"File not found '{dotfile}'")
-        # if not findFileString(dotfile, "umask 027"):
-        #     with open(dotfile, "a") as f:
-        #         f.write("umask 027")
-        # # Set default root umask in .bashrc
-        # dotfile = Path.home() / ".bashrc"
-        # if not dotfile.exists():
-        #     raise FileNotFoundError(f"File not found '{dotfile}'")
-        # if not findFileString(dotfile, "umask 027"):
-        #     with open(dotfile, "a") as f:
-        #         f.write("umask 027")
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
@@ -103,14 +81,15 @@ def execute():
         line()
         printHead("Section 6.5 - Secure Password Files")
         data = {
-            "/etc/passwd":   [0o644, "root", "root"],
-            "/etc/shadow":   [0o000, "root", "shadow"],
-            "/etc/group":    [0o644, "root", "root"],
-            "/etc/gshadow":  [0o000, "root", "shadow"],
-            "/etc/passwd-":  [0o600, "root", "root"],
-            "/etc/shadow-":  [0o600, "root", "shadow"],
-            "/etc/group-":   [0o600, "root", "root"],
-            "/etc/gshadow-": [0o600, "root", "shadow"]
+            "/etc/passwd":                  [0o644, "root", "root"],
+            "/etc/shadow":                  [0o000, "root", "shadow"],
+            "/etc/group":                   [0o644, "root", "root"],
+            "/etc/gshadow":                 [0o000, "root", "shadow"],
+            "/etc/passwd-":                 [0o600, "root", "root"],
+            "/etc/shadow-":                 [0o600, "root", "shadow"],
+            "/etc/group-":                  [0o600, "root", "root"],
+            "/etc/gshadow-":                [0o600, "root", "shadow"],
+            "/etc/profile.d/timeout.sh":    [0o755, "root", "root"]
         }
         perms(data)
         line()
