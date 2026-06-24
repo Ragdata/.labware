@@ -14,14 +14,14 @@ import sys
 
 from pathlib import Path
 
-path = Path(__file__).parents[2] / "lab"
+path = Path(__file__).parents[2].resolve() / "lab"
 
 sys.path.append(str(path))
 sys.path.append(".")
 
 import banner
 
-import lab.genPasswordList as pw
+from lab import genPasswordList as pw
 
 from labware.filesys import *
 
