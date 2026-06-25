@@ -51,6 +51,7 @@ def execute():
         ascomp = run("command -v as", capture=True).stdout.strip()
         if Path(ascomp).is_file() and os.access(ascomp, os.X_OK):
             chmod(Path(run("readlink -eq $(command -v as)", capture=True).stdout.strip()), 0o750)
+        logger.success("Compilers hardened", True)
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
