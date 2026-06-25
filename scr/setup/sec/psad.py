@@ -34,6 +34,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - PSAD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -41,25 +42,29 @@ def execute():
         # ----------------------------------------------------------
         logger.info(f"Executing {__file__}")
         line()
-        printWhite("Install 'psad'")
+        printWhite("Install Port Scan Attack Detector ('psad')")
         line()
         pkgs = ["psad"]
         installAPT(pkgs)
+        line()
         template = SETUPDIR / "/etc/psad/auto_dl.jinja"
         filedest = Path("/etc/psad/auto_dl")
         data = {"server_ip": SERVERIP}
         if not writeTemplate(template, filedest, data):
             logger.error(f"Could not write template to {filedest}", True, False, 1)
+        line()
         while True:
             email_address = getData(f"[{cyan}]Enter admin email address[/{cyan}] (required): ")
             if email_address:
                 break
+        line()
         filepath = "/etc/psad/psad.conf"
         template = SETUPDIR / filepath
         filedest = Path(filepath)
         data = {"email_address": email_address}
         if not writeTemplate(template, filedest, data):
             logger.error(f"Could not write template to {filedest}", True, False, 1)
+        line()
         run("iptables -A INPUT -j LOG")
         run("iptables -A FORWARD -j LOG")
         run("netfilter-persistent save")
