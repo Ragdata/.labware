@@ -57,7 +57,7 @@ def execute():
                 run(f"dpkg-statoverride --add \"{ug}\" \"{oc}\" \"{file}\" 2> /dev/null")
         shells = run(f"grep -v '^#' /etc/shells", capture=True).stdout.strip()
         for shell in shells:
-            if shell.exists():
+            if Path(shell).exists():
                 run(f"chmod -s {shell}")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
