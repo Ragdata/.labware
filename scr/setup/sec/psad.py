@@ -57,7 +57,7 @@ def execute():
             if email_address:
                 break
         line()
-        template = SETUPDIR / "etc/psad/psad.conf"
+        template = SETUPDIR / "etc/psad/psad.conf.jinja"
         filedest = Path("/etc/psad/psad.conf")
         data = {"email_address": email_address}
         if not writeTemplate(template, filedest, data):
