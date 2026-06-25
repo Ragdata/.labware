@@ -18,6 +18,7 @@ sys.path.append(".")
 
 from urllib import request
 from urllib.parse import urlparse
+from urllib.error import HTTPError, URLError
 
 from labware.filesys import *
 
@@ -53,7 +54,14 @@ def execute(configfile: Path = DEFAULT_FILE, destfile: Path = DEFAULT_DEST):
                     purl = Path(urlparse(url).path)
                     filename = purl.name
                     filetemp = Path(TMPDIR) / filename
-                    request.urlretrieve(url, str(filetemp))
+                    try:
+                        request.urlretrieve(url, str(filetemp))
+                    except HTTPError as e:
+                        logger.error(f"{e}", True)
+                        continue
+                    except URLError as e:
+                        logger.error(f"Could not retrieve URL: {e}", True)
+                        continue
                     logger.success(f"Downloaded to {filetemp}", True)
                     files.append(str(filetemp))
 
