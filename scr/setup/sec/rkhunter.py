@@ -45,9 +45,9 @@ def execute():
         line()
         pkgs = ["rkhunter"]
         installAPT(pkgs)
-        line()
         files = ["/etc/systemd/system/rkhunter.service", "/etc/systemd/system/rkhunter.timer"]
         copyRepoFiles(SETUPDIR, files)
+        line()
         while True:
             email = getData(f"[{cyan}]Enter email address for reports:[/{cyan}] ")
             if email:
