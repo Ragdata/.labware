@@ -45,7 +45,7 @@ def execute():
         line()
         compilers = run("dpkg-query -L $(dpkg -l | grep compil | awk '{print $2}')", capture=True).stdout.strip()
         for comp in compilers:
-            if comp.is_file() and os.access(comp, os.X_OK):
+            if Path(comp).is_file() and os.access(comp, os.X_OK):
                 if not os.path.islink(comp):
                     chmod(comp, 0o750)
         ascomp = run("command -v as", capture=True).stdout.strip()
