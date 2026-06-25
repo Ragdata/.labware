@@ -33,6 +33,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - USBGUARD MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -43,6 +44,7 @@ def execute():
         printWhite("Install 'usbguard'")
         line()
         run("apt install -y --no-install-recommends usbguard")
+        line()
         run("usbguard generate-policy > /tmp/rules.conf")
         run("install -m 0600 -o root -g root /tmp/rules.conf /etc/usbguard/rules.conf")
         run("systemctl enable usbguard.service")
