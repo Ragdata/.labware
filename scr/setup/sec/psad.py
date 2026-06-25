@@ -47,7 +47,7 @@ def execute():
         pkgs = ["psad"]
         installAPT(pkgs)
         line()
-        template = SETUPDIR / "/etc/psad/auto_dl.jinja"
+        template = SETUPDIR / "etc/psad/auto_dl.jinja"
         filedest = Path("/etc/psad/auto_dl")
         data = {"server_ip": SERVERIP}
         if not writeTemplate(template, filedest, data):
@@ -58,9 +58,8 @@ def execute():
             if email_address:
                 break
         line()
-        filepath = "/etc/psad/psad.conf"
-        template = SETUPDIR / filepath
-        filedest = Path(filepath)
+        template = SETUPDIR / "etc/psad/psad.conf"
+        filedest = Path("/etc/psad/psad.conf")
         data = {"email_address": email_address}
         if not writeTemplate(template, filedest, data):
             logger.error(f"Could not write template to {filedest}", True, False, 1)
