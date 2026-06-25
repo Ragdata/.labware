@@ -24,7 +24,7 @@
 EMAIL_ADDRESSES             {{ email_address }};
 
 ### Machine hostname
-HOSTNAME                    $(hostname --fqdn);
+HOSTNAME                    {{ hostname }};
 
 ### Specify the home and external networks. Note that by default the
 ### ENABLE_INTF_LOCAL_NETS is enabled, so psad automatically detects

@@ -11,6 +11,7 @@ Copyright:		Copyright © 2026 Redeyed Technologies
 ====================================================================
 """
 import sys
+import socket
 
 sys.path.append(".")
 
@@ -24,6 +25,7 @@ from labware.filesys import *
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
 SETUPDIR = Path(config.get("paths", "setup"))
 SERVERIP = getIP()
+HOSTNAME = socket.getfqdn()
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -59,7 +61,7 @@ def execute():
         line()
         template = SETUPDIR / "etc/psad/psad.conf.jinja"
         filedest = Path("/etc/psad/psad.conf")
-        data = {"email_address": email_address}
+        data = {"email_address": email_address, "hostname": HOSTNAME}
         if not writeTemplate(template, filedest, data):
             logger.error(f"Could not write template to {filedest}", True, False, 1)
         line()
