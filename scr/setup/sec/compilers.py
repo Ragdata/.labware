@@ -49,7 +49,7 @@ def execute():
                 if not os.path.islink(comp):
                     chmod(comp, 0o750)
         ascomp = run("command -v as", capture=True).stdout.strip()
-        if ascomp.is_file() and os.access(ascomp, os.X_OK):
+        if Path(ascomp).is_file() and os.access(ascomp, os.X_OK):
             chmod(run("readlink -eq $(command -v as)", capture=True).stdout.strip(), 0o750)
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
