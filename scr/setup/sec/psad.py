@@ -46,7 +46,6 @@ def execute():
         line()
         pkgs = ["psad"]
         installAPT(pkgs)
-        line()
         template = SETUPDIR / "etc/psad/auto_dl.jinja"
         filedest = Path("/etc/psad/auto_dl")
         data = {"server_ip": SERVERIP}
