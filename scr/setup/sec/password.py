@@ -93,6 +93,8 @@ def execute():
         }
         perms(data)
         line()
+        logger.success("Password files secured")
+        line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
         logger.error(f"An error occurred: {e}", True)
