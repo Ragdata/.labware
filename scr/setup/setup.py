@@ -77,7 +77,8 @@ def execute() -> None:
         suid.execute()
         compilers.execute()
         psad.execute()
-        usbguard.execute()
+        if Path("/sys/bus/usb/devices").exists():
+            usbguard.execute()
         rkhunter.execute()
         # postfix.execute()
         aide.execute()

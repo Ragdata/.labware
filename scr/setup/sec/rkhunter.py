@@ -33,6 +33,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - RKHUNTER MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
@@ -40,11 +41,27 @@ def execute():
         # ----------------------------------------------------------
         logger.info(f"Executing {__file__}")
         line()
-        printWhite("Install 'rkhunter'")
+        printWhite("Install Rootkit Hunter ('rkhunter')")
         line()
         pkgs = ["rkhunter"]
         installAPT(pkgs)
-        copyRepoFile(SETUPDIR, "/etc/default/rkhunter", True)
+        line()
+        files = ["/etc/systemd/system/rkhunter.service", "/etc/systemd/system/rkhunter.timer"]
+        copyRepoFiles(SETUPDIR, files)
+        while True:
+            email = getData(f"[{cyan}]Enter email address for reports:[/{cyan}] ")
+            if email:
+                break
+        line()
+        tmpl = SETUPDIR / "etc/default/rkhunter.jinja"
+        dest = Path("/etc/default/rkhunter")
+        data = {"email_address": email}
+        if not writeTemplate(tmpl, dest, data):
+            logger.error(f"Could not write template to {dest}", True, False, 1)
+        line()
+        run("systemctl daemon-reload")
+        run("systemctl enable rkhunter")
+        run("systemctl start rkhunter")
         run("rkhunter --update")
         run("rkhunter --propupd")
         line()
