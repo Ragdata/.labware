@@ -33,6 +33,7 @@ def execute():
         rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SYSSTAT MODULE [/{yellow}]", style=yellow, align="left")
         global CHECKED
         if not CHECKED:
+            line()
             CHECKED = checkRequired()
             config.set("setup", "checked", str(CHECKED))
         # ----------------------------------------------------------
