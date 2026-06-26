@@ -4,4 +4,6 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/rkhunter --check --sk --rwo
+ExecStartPre=/usr/bin/rkhunter --update --report-warnings-only
+ExecStart=/usr/bin/rkhunter --cronjob --report-warnings-only
+ExecStartPost=/usr/bin/rkhunter --propupd --report-warnings-only
