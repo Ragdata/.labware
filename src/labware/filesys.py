@@ -242,6 +242,8 @@ def permsDefault(tgt: Path, user: str = "", group: str = "", dirMode: int = 0o75
         raise FileNotFoundError(f"{tgt} does not exist")
     if not tgt.is_dir():
         raise RuntimeError(f"{tgt} is not a directory")
+    os.chmod(tgt, dirMode)
+    os.chown(tgt, pwd.getpwnam(user).pw_uid, grp.getgrnam(group).gr_gid)
     for root, dirs, files in os.walk(tgt):
         for d in dirs:
             os.chmod(os.path.join(root, d), dirMode)
