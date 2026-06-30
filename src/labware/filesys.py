@@ -72,10 +72,11 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
     try:
         if isinstance(src, Path) and not src.exists():
             raise FileNotFoundError(f"{src} does not exist")
-        if not dst.exists():
-            dst.mkdir(parents=True, mode=0o755)
         if isinstance(src, list):
             for path in src:
+                if path.is_dir() and not dst.exists():
+                    if not dst.exists():
+                        dst.mkdir(parents=True, mode=0o755)
                 dstpath = dst / path.name
                 if not path.exists():
                     raise FileNotFoundError(f"{path} does not exist")
@@ -97,7 +98,9 @@ def copyFiles(src: Path | list[Path], dst: Path, bkp: bool = False, bkpdir: Path
                 printSuccess(f"Copied {src.name}")
                 logger.debug(f"Copied {src.name}")
                 return True
-            elif src.is_dir() and dst.is_dir():
+            elif src.is_dir():
+                if not dst.exists():
+                    dst.mkdir(parents=True, mode=0o755)
                 for item in os.scandir(src):
                     dest = dst / item.name
                     if item.is_file():
