@@ -187,6 +187,8 @@ def execute():
                 dest = USERDIR / ".gnupg/gpg-agent.conf"
                 if not copyFiles(file, dest):
                     printWarning(f"Could not copy gpg-agent.conf to {dest}")
+                else:
+                    chown(dest, user, user)
             # GITCONFIG
             line()
             printDot("GIT CONFIG")
