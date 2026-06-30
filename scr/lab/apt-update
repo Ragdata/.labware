@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-apt update
-apt -y -d full-upgrade
-apt -y autoremove
-apt autoclean

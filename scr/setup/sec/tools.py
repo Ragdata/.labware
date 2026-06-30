@@ -22,6 +22,7 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
+SETUPDIR = Path(config.get("paths", "setup"))
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -47,6 +48,8 @@ def execute():
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
         installAPT(pkgs)
+        line()
+        copyRepoFile(SETUPDIR, "/etc/fuse.conf")
         line()
         getData(f"[{cyan}]Press [ENTER] to continue ...[/{cyan}] ")
         # ----------------------------------------------------------
