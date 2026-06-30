@@ -245,10 +245,10 @@ def permsDefault(tgt: Path, user: str = "", group: str = "", dirMode: int = 0o75
     for root, dirs, files in os.walk(tgt):
         for d in dirs:
             os.chmod(os.path.join(root, d), dirMode)
-            os.chown(os.path.join(root, d), grp.getgrnam(group).gr_gid, grp.getgrnam(user).gr_gid)
+            os.chown(os.path.join(root, d), pwd.getpwnam(user).pw_uid, grp.getgrnam(group).gr_gid)
         for f in files:
             os.chmod(os.path.join(root, f), fileMode)
-            os.chown(os.path.join(root, f), grp.getgrnam(user).gr_gid, grp.getgrnam(user).gr_gid)
+            os.chown(os.path.join(root, f), pwd.getpwnam(user).pw_uid, grp.getgrnam(group).gr_gid)
 
 def writeFile(dst: Path, data: str, mode: int = 0o644, user: str = "", group: str = "") -> bool:
     try:
