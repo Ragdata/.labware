@@ -59,7 +59,7 @@ def execute():
         line()
         run("systemctl daemon-reload")
         # run("systemctl enable ssh")
-        run("systemctl restart ssh")
+        run("systemctl restart sshd")
         run("systemctl mask debug-shell.service")
         run("systemctl stop debug-shell.service")
         line()

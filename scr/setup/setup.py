@@ -64,11 +64,13 @@ def execute() -> None:
         timesyncd.execute()
         cron.execute()
         network.execute()
-        firewalld.execute()
+        if not isWSL2():
+            firewalld.execute()
         sshd.execute()
         sudo.execute()
         account.execute()
-        auditd.execute()
+        if not isWSL2():
+            auditd.execute()
         rsyslog.execute()
         journald.execute()
         acct.execute()
