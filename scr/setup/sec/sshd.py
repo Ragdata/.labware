@@ -54,7 +54,7 @@ def execute():
             logger.error(f"Could not write template to {filedest}", True, False, 1)
         template = SETUPDIR / "etc/security/access.conf.jinja"
         filedest = Path("/etc/security/access.conf")
-        if not writeTemplate(template, filedest, data):
+        if not writeTemplate(template, filedest, data, 0o644, "root", "root"):
             logger.error(f"Could not write template to {filedest}", True, False, 1)
         line()
         run("systemctl daemon-reload")
