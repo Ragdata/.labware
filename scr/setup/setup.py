@@ -20,9 +20,9 @@ import sec.users as users, sec.tools as tools, sec.remfiles as remfiles, sec.boo
 import sec.motd as motd, sec.mounts as mounts, sec.timesyncd as timesyncd, sec.cron as cron, sec.network as network, sec.firewalld as firewalld
 import sec.sshd as sshd, sec.sudo as sudo, sec.account as account, sec.auditd as auditd, sec.rsyslog as rsyslog, sec.journald as journald, sec.acct as acct
 import sec.password as password, sec.sysstat as sysstat, sec.psad as psad, sec.usbguard as usbguard, sec.rkhunter as rkhunter, sec.aide as aide, sec.suid as suid
-import sec.compilers as compilers, sec.banner as banner, sec.postfix as postfix, sec.package as package
+import sec.compilers as compilers, sec.banner as banner, sec.package as package
 
-#sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
+#sec.postfix as postfix, sec.logrotate as logrotate, sec.fail2ban as fail2ban, sec.unattended as unattended, sec.appsec as appsec, sec.misc as misc
 
 config: Config = get_config()
 logger: Logger = get_logger("setup", logging.DEBUG)
@@ -55,7 +55,7 @@ def execute() -> None:
         remfiles.execute()
         if Path("/boot/grub/grub.cfg").exists():
             boot.execute()
-        if run("aa-status").returncode == 0:
+        if run("aa-status").returncode != 1:
             apparmor.execute()
         core.execute()
         apt.execute()
