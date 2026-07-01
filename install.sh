@@ -91,8 +91,13 @@ echo
 echo -e "${YELLOW}Install Essential Tools ...${NC}"
 echo
 # shellcheck disable=SC2181
-dpkg -l | grep python3-pip >/dev/null 2>&1 && dpkg -P python3-pip
-dpkg -l | grep python3-rich >/dev/null 2>&1 && dpkg -P python3-rich
+if dpkg -l | grep python3-pip >/dev/null 2>&1; then
+    dpkg -P python3-pip
+fi
+
+if dpkg -l | grep python3-rich >/dev/null 2>&1; then
+    dpkg -P python3-rich
+fi
 which python3.14 > /dev/null 2>&1; [[ "$?" -ne 0 ]] && apt install -y python3.14-full python3.14-venv python3-pip python3-dev
 python3.14 vendor/get-pip.py
 apt install -y wget git gnupg2 net-tools rsync dnsutils iputils-ping procps build-essential
