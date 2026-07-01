@@ -66,7 +66,8 @@ def execute() -> None:
         network.execute()
         if not isWSL2():
             firewalld.execute()
-        sshd.execute()
+        if not isWSL2():
+            sshd.execute()
         sudo.execute()
         account.execute()
         if not isWSL2():
