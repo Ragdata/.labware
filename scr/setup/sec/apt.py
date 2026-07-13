@@ -41,14 +41,15 @@ def execute():
         # ----------------------------------------------------------
         logger.info(f"Executing {__file__}")
         line()
-        printHead("Section 1.5 - Unattended Upgrades + APT Config")
+        printHead("Section 1.5 - Unattended Upgrades")
         line()
-        files = [
-            "/etc/apt/apt.conf.d/50unattended-upgrades",
-            "/etc/apt/apt.conf.d/98-hardening",
-            "/etc/apt/apt.conf.d/99-noexec-tmp"
-        ]
-        copyRepoFiles(SETUPDIR, files, True)
+        # files = [
+        #     "/etc/apt/apt.conf.d/50unattended-upgrades",
+        #     "/etc/apt/apt.conf.d/98-hardening",
+        #     "/etc/apt/apt.conf.d/99-noexec-tmp"
+        # ]
+        # copyRepoFiles(SETUPDIR, files, True)
+        copyRepoFile(SETUPDIR, "/etc/apt/apt.conf.d/50unattended-upgrades", True)
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
