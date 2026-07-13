@@ -46,9 +46,9 @@ def execute():
         files = ["/etc/issue.net", "/etc/issue", "/etc/motd"]
         copyRepoFiles(SETUPDIR, files, True)
         line()
-        run("chmod -x /etc/update-motd.d/*")
-        run("systemctl stop motd-news.timer")
-        run("systemctl mask motd-news.timer")
+        # run("chmod -x /etc/update-motd.d/*")
+        # run("systemctl stop motd-news.timer")
+        # run("systemctl mask motd-news.timer")
         line()
         getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
     except Exception as e:
