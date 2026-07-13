@@ -42,7 +42,7 @@ def execute():
         line()
         printHead("Section 4 - Install & Configure FirewallD")
         line()
-        run("export TMPDIR=/var/tmp; apt install -y firewalld python3-firewall", True)
+        run("apt install -y firewalld python3-firewall", True)
         if isInstalled("ufw"):
             run("systemctl stop ufw")
             run("systemctl disable ufw")
