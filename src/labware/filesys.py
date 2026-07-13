@@ -42,7 +42,7 @@ def backup(filepath: Path, backupdir: Path = Path.home() / ".backup") -> bool:
         if shutil.copy2(filepath, backupfile):
             return True
     except Exception as e:
-        logger.error(f"Failed to get list: {e}", True)
+        logger.error(f"Failed to backup '{filepath}' to '{backupdir}': {e}", True)
         raise
     return False
 
