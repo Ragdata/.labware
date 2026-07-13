@@ -47,17 +47,17 @@ def execute() -> None:
         # ----------------------------------------------------------
         # SETUP USERS & TOOLS
         # ----------------------------------------------------------
-        users.execute()
-        tools.execute()
+        # users.execute()
+        # tools.execute()
         # ----------------------------------------------------------
         # SERVER HARDENING
         # ----------------------------------------------------------
         remfiles.execute()
-        if Path("/boot/grub/grub.cfg").exists():
-            boot.execute()
-        if run("aa-status").returncode != 1:
-            apparmor.execute()
-        core.execute()
+        # if Path("/boot/grub/grub.cfg").exists():
+        #     boot.execute()
+        # if run("aa-status").returncode != 1:
+        #     apparmor.execute()
+        # core.execute()
         apt.execute()
         motd.execute()
         mounts.execute()
