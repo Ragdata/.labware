@@ -17,4 +17,7 @@ OK = "OK"
 CANCEL = "Cancel"
 YES = "Yes"
 NO = "No"
+
 NEW_FOLDER = "Make New Folder"
+OPEN = "Open"
+SAVE = "Save File"

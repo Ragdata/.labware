@@ -34,7 +34,36 @@ class DirectoryOnlyTree(DirectoryTree):
 
 
 class DirectoryDialog(ModalScreen[bool | None]):
-    DEFAULT_CSS = """"""
+    DEFAULT_CSS = """
+    DirectoryDialog {
+        align: center middle;
+        background: $primary-lighten-1 30%;
+
+        #directory-dialog{
+            width: 50%;
+            height: 30;
+            border: thick $background 70%;
+            background: $surface-lighten-1;
+            Button {
+                width: 32%;
+                margin: 1;
+            }
+        }
+
+        Horizontal {
+            height: auto;
+        }
+
+        DirectoryOnlyTree {
+            margin: 1;
+            border: round green;
+        }
+
+        Label {
+            margin: 1;
+        }
+    }
+    """
 
     def __init__(
         self,
