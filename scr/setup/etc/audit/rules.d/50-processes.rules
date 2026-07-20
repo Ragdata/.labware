@@ -1,2 +1,0 @@
--w /usr/bin/ -p x -k processes
--a always,exit -F arch=b64 -S execve -k processes
