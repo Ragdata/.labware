@@ -82,14 +82,7 @@ class OpenFileDialog(ModalScreen[str | bool]):
     }
     """
 
-    def __init__(
-        self,
-        root: str = "/",
-        name: str | None = None,
-        file_types: list[tuple[str, str]] | None = None,
-        id: str | None = None,
-        classes: str | None = None
-    ) -> None:
+    def __init__(self, root: str = "/", name: str | None = None, file_types: list[tuple[str, str]] | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
         self.title = "Choose a File"
         self.root = root

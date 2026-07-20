@@ -27,13 +27,7 @@ from labware.tui import labels
 class SaveFileDialog(ModalScreen[str | bool]):
     DEFAULT_CSS = """"""
 
-    def __init__(
-        self,
-        root: Path = Path("/"),
-        name: str | None = None,
-        id: str | None = None,
-        classes: str | None = None
-    ) -> None:
+    def __init__(self, root: Path = Path("/"), name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
         self.title = "Save File"
         self.root = root

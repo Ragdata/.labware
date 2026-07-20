@@ -65,13 +65,7 @@ class DirectoryDialog(ModalScreen[bool | None]):
     }
     """
 
-    def __init__(
-        self,
-        root_dir: str = "/",
-        name: str | None = None,
-        id: str | None = None,
-        classes: str | None = None
-    ):
+    def __init__(self, root_dir: str = "/", name: str | None = None, id: str | None = None, classes: str | None = None):
         super().__init__(name, id, classes)
         self.root_dir = root_dir
         self.folder = root_dir

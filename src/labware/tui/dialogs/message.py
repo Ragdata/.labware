@@ -44,15 +44,7 @@ class MessageDialog(ModalScreen[bool | None]):
     }
     """
 
-    def __init__(self,
-         message: str,
-         title: str = "",
-         flags: list[str] | None = None,
-         icon: str | Text = "",
-         name: str | None = None,
-         id: str | None = None,
-         classes: str | None = None
-    ) -> None:
+    def __init__(self, message: str, title: str = "", flags: list[str] | None = None, icon: str | Text = "", name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
         self.message = message
         self.title = title
