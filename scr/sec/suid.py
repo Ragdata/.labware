@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""
+====================================================================
+Package: labware
+====================================================================
+Author:			Ragdata
+Date:			12/05/2026
+License:		MIT License
+Repository:		https://github.com/Ragdata/.labware
+Copyright:		Copyright © 2026 Redeyed Technologies
+====================================================================
+"""
+import sys
+
+sys.path.append(".")
+
+import banner
+
+from labware.filesys import *
+
+#-------------------------------------------------------------------
+# VARIABLES
+#-------------------------------------------------------------------
+CHECKED: bool = config.getbool("setup", "checked", fallback=False)
+SETUPDIR = Path(config.get("paths", "setup"))
+#-------------------------------------------------------------------
+# PROCESS
+#-------------------------------------------------------------------
+def execute():
+    try:
+        clear()
+        banner.execute()
+        rule(f"[{yellow}]── CIS BENCHMARKING LEVEL 1 SERVER HARDENING - SUID MODULE [/{yellow}]", style=yellow, align="left")
+        global CHECKED
+        if not CHECKED:
+            line()
+            CHECKED = checkRequired()
+            config.set("setup", "checked", str(CHECKED))
+        # ----------------------------------------------------------
+        # EXTRAS - Remove SUID Bits
+        # ----------------------------------------------------------
+        logger.info(f"Executing {__file__}")
+        line()
+        printWhite("Remove SUID Bits")
+        line()
+        filename = SETUPDIR / "cfg/suid-list.cfg"
+        if not filename.exists():
+            raise FileNotFoundError(f"{filename} not found")
+        ids = getList(filename)
+        for i in ids:
+            file = run(f"command -v {i}", capture=True).stdout.strip()
+            if os.access(file, os.X_OK):
+                run(f"chmod -s {file}")
+                oc = run(f"stat -c \"%A\" {file} | sed 's/s/x/g'", capture=True).stdout.strip()
+                ug = run(f"stat -c \"%U %G\" {file}", capture=True).stdout.strip()
+                run(f"dpkg-statoverride --remove {file} 2> /dev/null")
+                run(f"dpkg-statoverride --add \"{ug}\" \"{oc}\" \"{file}\" 2> /dev/null")
+        shells = run(f"grep -v '^#' /etc/shells", capture=True).stdout.strip()
+        for shell in shells:
+            if Path(shell).exists():
+                run(f"chmod -s {shell}")
+        line()
+        getData(f"[{yellow}]MODULE COMPLETE :: Press [ENTER] to continue ...[/{yellow}] ")
+    except Exception as e:
+        reason = str(e)
+        logger.error(f"Failed to Harden SUID: {reason}", True)
+        raise
+
+# ===========================================================================
+# ENTRY POINT
+# ===========================================================================
+if __name__ == "__main__":
+    execute()
