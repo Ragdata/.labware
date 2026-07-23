@@ -21,6 +21,7 @@ from textual.widgets import Button, Header, Label
 
 
 class MessageDialog(ModalScreen[bool | None]):
+
     DEFAULT_CSS = """
     MessageDialog {
         align: center middle;

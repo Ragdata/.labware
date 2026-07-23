@@ -18,6 +18,7 @@ from textual.widgets import Button, Label
 
 
 class QuitDialog(ModalScreen[bool]):
+
     DEFAULT_CSS = """
     QuitDialog {
         align: center middle;

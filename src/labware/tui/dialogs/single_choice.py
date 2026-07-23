@@ -22,6 +22,7 @@ from labware.tui import labels
 
 
 class SingleChoiceDialog(ModalScreen[bool]):
+
     DEFAULT_CSS = """
     SingleChoiceDialog {
         align: center middle;

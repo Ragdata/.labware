@@ -28,6 +28,7 @@ class MenuHeader(Widget):
 
 
 class MenuItemMarker(Label):
+
     DEFAULT_CSS = """
     MenuItemMarker {
         dock: right;
@@ -39,6 +40,7 @@ class MenuItemMarker(Label):
 
 
 class MenuName(Static):
+
     DEFAULT_CSS = """
     MenuName {
         padding-right: 2;
@@ -54,6 +56,7 @@ class MenuName(Static):
 
 
 class MenuItem(Static):
+
     DEFAULT_CSS = """
     MenuItem {
         align: left top;
@@ -137,6 +140,7 @@ def get_child_index(parent: Widget, child: Widget):
 
 
 class Menu(Vertical):
+
     DEFAULT_CSS = """
     Menu {
         align: left top;
@@ -177,6 +181,7 @@ class Menu(Vertical):
 
 
 class MenuScreen(ModalScreen[str]):
+
     DEFAULT_CSS = """
     MenuScreen {
         align: left top;
@@ -309,6 +314,7 @@ class MenuScreen(ModalScreen[str]):
 
 
 class MenuHeader(Widget):
+
     DEFAULT_CSS = """
     MenuHeader {
         padding: 0 1;
@@ -362,6 +368,7 @@ class MenuHeader(Widget):
 
 
 class MenuBar(Widget):
+
     DEFAULT_CSS = """
     MenuBar {
         dock: top;

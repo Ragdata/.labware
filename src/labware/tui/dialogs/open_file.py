@@ -47,6 +47,7 @@ class FilterableDirectoryTree(DirectoryTree):
 
 
 class OpenFileDialog(ModalScreen[str | bool]):
+
     DEFAULT_CSS = """
     OpenFileDialog {
         align: center middle;

@@ -34,6 +34,7 @@ class DirectoryOnlyTree(DirectoryTree):
 
 
 class DirectoryDialog(ModalScreen[bool | None]):
+
     DEFAULT_CSS = """
     DirectoryDialog {
         align: center middle;

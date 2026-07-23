@@ -22,6 +22,7 @@ from labware.tui import labels
 
 
 class SingleColorPickerDialog(ModalScreen[str | bool | None]):
+
     DEFAULT_CSS = """
     SingleColorPickerDialog {
         align: center middle;

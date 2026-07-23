@@ -21,7 +21,30 @@ from labware.tui import labels
 
 
 class TextEntryDialog(ModalScreen[str | bool]):
-    DEFAULT_CSS = """"""
+
+    DEFAULT_CSS = """
+    TextEntryDialog {
+        align: center middle;
+        background: $primary-lighten-1 30%;
+    }
+
+    #text-entry-dlg {
+        width: 80;
+        height: 14;
+        border: thick $background 70%;
+        content-align: center middle;
+        margin: 1;
+    }
+
+    #text-entry-label {
+        margin: 1;
+    }
+
+    Button {
+        width: 50%;
+        margin: 1;
+    }
+    """
 
     def __init__(self, message: str, title: str, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
