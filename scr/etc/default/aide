@@ -1,0 +1,109 @@
+# AIDE default configuration for /etc/default/aide
+# Copyright (c) 2025-2026 Marc Allgeier (fidpa)
+# SPDX-License-Identifier: MIT
+# https://github.com/fidpa/ubuntu-server-security
+#
+# This file controls the behavior of AIDE when run via cron.daily
+# (If you use systemd timers, most of these settings are handled in the service unit)
+
+# ============================================
+# Database Update Behavior
+# ============================================
+
+# COPYNEWDB: Should AIDE automatically replace the database after successful check?
+# SECURITY CRITICAL: Set to "no" for manual review before accepting changes!
+#
+# no  = Manual review required (recommended for production)
+# yes = Auto-update database (DANGEROUS - accepts all changes blindly)
+#
+# Rationale: A compromised system should not auto-accept its own backdoors.
+# Always review changes before running: sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+COPYNEWDB=no
+
+# ============================================
+# Email Reporting
+# ============================================
+
+# QUIETREPORTS: Suppress email when no changes detected?
+# no  = Daily "All OK" emails (proves monitoring works)
+# yes = Only email when changes detected
+#
+# Recommendation: "no" for peace of mind (you know AIDE is running)
+QUIETREPORTS=no
+
+# TRUNCATEDETAILS: Limit email report size?
+# yes = Truncate at ~100 KB (prevents multi-MB emails)
+# no  = Include full report (can be several MB with many changes)
+#
+# Rationale: Full reports are in /var/log/aide/aide.log anyway
+TRUNCATEDETAILS=yes
+
+# ============================================
+# APT Integration
+# ============================================
+
+# FILTERUPDATES: Reduce noise from package manager updates?
+# yes = Filter out changes from apt/dpkg (99% of daily changes)
+# no  = Report all changes (including package upgrades)
+#
+# Rationale: Package updates are legitimate changes. Filtering reduces
+# false-positives from ~3,799 to ~12 changes per day (99.7% reduction).
+#
+# AIDE will still detect:
+# - Unauthorized file modifications
+# - New files in monitored directories
+# - Permission changes
+# - Manual edits to /etc
+FILTERUPDATES=yes
+
+# FILTERINSTALLATIONS: Suppress reports during package installation?
+# yes = No reports during apt install/upgrade
+# no  = Always report
+#
+# Recommendation: "yes" to avoid noise during planned maintenance
+FILTERINSTALLATIONS=yes
+
+# ============================================
+# Advanced Options
+# ============================================
+
+# LINES: Number of changed files to include in email
+# 0      = Include all changes
+# <number> = Limit to first N changed files
+LINES=1000
+
+# COMMAND: AIDE binary location (usually auto-detected)
+# COMMAND=/usr/bin/aide
+
+# AIDEARGS: Additional arguments passed to AIDE
+# Example: --verbose for more detailed output
+# AIDEARGS=
+
+# ============================================
+# Database Initialization
+# ============================================
+
+# FQDN: Fully qualified domain name for database signature
+# Leave empty to auto-detect
+FQDN=
+
+# ============================================
+# Production Notes
+# ============================================
+
+# 1. COPYNEWDB=no is CRITICAL for security
+#    - Always review changes before accepting: aide --compare
+#    - Only update DB after manual verification
+#
+# 2. FILTERUPDATES=yes dramatically reduces false-positives
+#    - Production testing: 3,799 → 12 changes (99.7% reduction)
+#    - Legitimate intrusions are still detected
+#
+# 3. QUIETREPORTS=no provides peace of mind
+#    - Daily "All OK" proves AIDE is running
+#    - Prevents silent monitoring failures
+#
+# 4. TRUNCATEDETAILS=yes prevents email server overload
+#    - Full reports are always in /var/log/aide/aide.log
+#
+# See docs/FALSE_POSITIVE_REDUCTION.md for methodology
