@@ -23,7 +23,7 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
-SETUPDIR = Path(config.get("paths", "setup"))
+SETUPDIR = Path(config.get("paths", "sec"))
 SERVERIP = getIP()
 HOSTNAME = socket.getfqdn()
 #-------------------------------------------------------------------

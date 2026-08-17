@@ -20,7 +20,7 @@ from jinja2 import Environment, FileSystemLoader
 from labware.utils import *
 
 BASEDIR   = Path(config.get("paths", "base"))
-TEMPLATES = BASEDIR / config.get("paths", "setup")
+TEMPLATES = BASEDIR / config.get("paths", "sec")
 
 #-------------------------------------------------------------------
 # MODULE VARIABLES

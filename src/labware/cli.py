@@ -23,7 +23,7 @@ from labware.config import *
 
 config: Config = Config()
 
-SETUPDIR = config.get("paths", "setup")
+SETUPDIR = config.get("paths", "sec")
 
 sys.path.append(SETUPDIR)
 

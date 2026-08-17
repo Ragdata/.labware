@@ -22,7 +22,7 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
-SETUPDIR = Path(config.get("paths", "setup"))
+SETUPDIR = Path(config.get("paths", "sec"))
 #-------------------------------------------------------------------
 # PROCESS
 #-------------------------------------------------------------------
@@ -43,7 +43,7 @@ def execute():
         line()
         printHead("Installing Basic Tools ...")
         line()
-        basic = Path(config.get("paths", "setup")) / "cfg" / "apt-basic.cfg"
+        basic = Path(config.get("paths", "sec")) / "cfg" / "apt-basic.cfg"
         if not basic.exists():
             raise FileNotFoundError(f"File not found: '{basic}'")
         pkgs = getList(basic)
@@ -61,7 +61,7 @@ def execute():
         line()
         printHead("Installing Security Tools ...")
         line()
-        secure = Path(config.get("paths", "setup")) / "cfg" / "apt-secure.cfg"
+        secure = Path(config.get("paths", "sec")) / "cfg" / "apt-secure.cfg"
         if not secure.exists():
             raise FileNotFoundError(f"File not found: '{secure}'")
         pkgs = getList(secure)

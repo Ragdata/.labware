@@ -22,7 +22,7 @@ from labware.filesys import *
 # VARIABLES
 #-------------------------------------------------------------------
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
-SETUPDIR = Path(config.get("paths", "setup"))
+SETUPDIR = Path(config.get("paths", "sec"))
 dropins: list = [
     "/etc/aide/aide.conf.d/15-monitoring-rules.conf",
     "/etc/aide/aide.conf.d/16-backup-rules.conf",

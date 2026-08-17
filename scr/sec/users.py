@@ -23,7 +23,7 @@ from labware.filesys import *
 #-------------------------------------------------------------------
 CHECKED: bool = config.getbool("setup", "checked", fallback=False)
 BASEDIR  = Path(config.get("paths", "base"))
-SETUPDIR = Path(config.get("paths", "setup"))
+SETUPDIR = Path(config.get("paths", "sec"))
 DOTSDIR  = Path(config.get("paths", "sys")) / "dots"
 LIBDIR   = Path(config.get("paths", "sys")) / "lib"
 PKGDIR   = Path(config.get("paths", "scr")) / "pkg"

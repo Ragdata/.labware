@@ -24,8 +24,8 @@ if __name__ == "__main__":
         run("systemctl enable docker")
         printDot("Successfully started Docker") if run("systemctl start docker").returncode == 0 else logger.error("Docker not started", True, False, 1)
         printWhite("Hardening Docker Security")
-        copyFiles(Path("../setup/etc/docker/daemon.json"), Path("/etc/docker/daemon.json"))
-        copyFiles(Path("../setup/etc/security/limits.d/docker.conf"), Path("/etc/security/limits.d/docker.conf"))
+        copyFiles(Path("../etc/docker/daemon.json"), Path("/etc/docker/daemon.json"))
+        copyFiles(Path("../etc/security/limits.d/docker.conf"), Path("/etc/security/limits.d/docker.conf"))
         printDot("Docker daemon config copied")
         run("systemctl restart docker")
     except Exception as e:
