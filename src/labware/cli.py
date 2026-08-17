@@ -27,7 +27,7 @@ SETUPDIR = config.get("paths", "sec")
 
 sys.path.append(SETUPDIR)
 
-import setup.setup as install
+import scr.setup as install
 
 app = typer.Typer(rich_markup_mode="rich", invoke_without_command=True, suggest_commands=True)
 
