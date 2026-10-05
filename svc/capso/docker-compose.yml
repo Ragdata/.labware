@@ -41,7 +41,7 @@ services:
       - ps-mysql:/var/lib/mysql
 
   minio:
-    image: bitnami/minio:latest
+    image: soldevelo/minio:latest
     restart: unless-stopped
     environment:
       MINIO_API_PORT_NUMBER: 3902
